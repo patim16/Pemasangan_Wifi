@@ -18,17 +18,13 @@ return new class extends Migration
             $table->string('email', 100)->unique();
             $table->string('password');
             $table->string('no_hp', 20);
-
-            // kalau tidak pakai nomor KTP, boleh hapus baris ini
-            $table->string('ktp', 20)->unique();
-
             $table->text('alamat');
 
             // foto KTP
             $table->string('foto_ktp')->nullable();  // <— disini tambahkan
 
             // role user
-            $table->enum('role', ['konsumen', 'teknisi', 'admin', 'super_admin']);
+           $table->enum('role',['superadmin','admin','user'])->default('user');
 
             $table->timestamps();
         });

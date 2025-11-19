@@ -44,7 +44,7 @@ class AuthController extends Controller
         'alamat' => $request->alamat,
         'email' => $request->email,
         'password' => bcrypt($request->password),
-        'role' => 'konsumen',
+        'role' => 'user',
         'foto_ktp' => $fotoPath,
         // kalau masih menyimpan nomor KTP: 'ktp' => $request->ktp,
     ]);
@@ -76,7 +76,7 @@ class AuthController extends Controller
 
         // Redirect berdasarkan role
         switch ($user->role) {
-            case 'super_admin':
+            case 'superadmin':
                 return redirect('/superadmin/dashboard');
             case 'admin':
                 return redirect('/admin/dashboard');
@@ -96,3 +96,4 @@ class AuthController extends Controller
         return redirect('/login');
     }
 }
+
