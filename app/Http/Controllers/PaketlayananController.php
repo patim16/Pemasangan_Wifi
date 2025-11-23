@@ -1,0 +1,49 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\PaketLayanan;
+
+class PaketLayananController extends Controller
+{
+    // TAMPILKAN DATA
+    public function index()
+    {
+        $pakets = PaketLayanan::all();
+        return view('superadmin.paketlayanan', compact('pakets'));
+    }
+
+    // SIMPAN PAKET BARU
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nama_paket' => 'required',
+            'kecepatan' => 'required|numeric',
+            'harga' => 'required|numeric',
+            'deskripsi' => 'nullable|string',
+        ]);
+
+        PaketLayanan::create($request->all());
+
+        return back()->with('success', 'Paket berhasil ditambahkan!');
+    }
+
+    // UPDATE PAKET
+    public function update(Request $request, $id)
+    {
+        $paket = PaketLayanan::findOrFail($id);
+
+        $paket->update($request->all());
+
+        return back()->with('success', 'Paket berhasil diperbarui!');
+    }
+
+    // HAPUS PAKET
+    public function destroy($id)
+    {
+        PaketLayanan::findOrFail($id)->delete();
+
+        return back()->with('success', 'Paket berhasil dihapus!');
+    }
+}

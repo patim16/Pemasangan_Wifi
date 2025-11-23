@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Run the gimigrations.
      */
     public function up()
     {
@@ -24,7 +24,14 @@ return new class extends Migration
             $table->string('foto_ktp')->nullable();  // <— disini tambahkan
 
             // role user
-           $table->enum('role',['superadmin','admin','user'])->default('user');
+           $table->enum('role',['superadmin','admin','user','teknisi','payment'])->default('user');
+
+           // status pelanggan
+          $table->enum('status', ['pending', 'accepted', 'rejected'])->default('pending');
+
+          // alasan penolakan
+        $table->text('alasan_penolakan')->nullable();
+
 
             $table->timestamps();
         });

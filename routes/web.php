@@ -2,35 +2,114 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PaketLayananController;
 
+/*
+|--------------------------------------------------------------------------
+| PUBLIC ROUTES
+|--------------------------------------------------------------------------
+*/
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/contoh', function () {
-    return view('contoh');
-});
-// Form Login
+
+// Auth
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-
-// Proses Login
 Route::post('/login', [AuthController::class, 'login']);
-
-// Logout
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Register Pelanggan
 Route::get('/register', [AuthController::class, 'showRegister']);
 Route::post('/register', [AuthController::class, 'register']);
 
-//dashboard superadmin
-route::get('/superadmin/dashboard', [UserController::class, 'superAdminController'])->name('superadmin.dashboard');
-// route::get('/superadmin/dashboard', function(){
-//     return view('superadmin.dashboard');
-// })->name('superadmin.dashboard');
 
-//dashboard admin
-route::get('/admin/dashboard', function(){
-    return view('admin.dashboard');
-})->name('admin.dashboard');
+/*
+|--------------------------------------------------------------------------
+| SUPERADMIN ROUTES
+|--------------------------------------------------------------------------
+*/
+Route::prefix('superadmin')->group(function () {
+
+    // Dashboard
+    Route::get('/dashboard', [UserController::class, 'superAdminDashboard'])
+        ->name('superadmin.dashboard');
+
+    // Paket Layanan
+    Route::get('/paketlayanan', [PaketLayananController::class, 'index'])
+        ->name('superadmin.paketlayanan');
+    Route::post('/paketlayanan/store', [PaketLayananController::class, 'store']);
+    Route::put('/paketlayanan/update/{id}', [PaketLayananController::class, 'update']);
+    Route::delete('/paketlayanan/delete/{id}', [PaketLayananController::class, 'destroy']);
+
+    // Kelola Admin
+    Route::get('/admin', [UserController::class, 'indexAdmin'])->name('superadmin.admin.index');
+    Route::post('/admin/store', [UserController::class, 'storeAdmin'])->name('superadmin.admin.store');
+    Route::put('/admin/update/{id}', [UserController::class, 'updateAdmin'])->name('superadmin.admin.update');
+    Route::delete('/admin/delete/{id}', [UserController::class, 'deleteAdmin'])->name('superadmin.admin.delete');
+
+    // Kelola Teknisi
+    Route::get('/teknisi', [UserController::class, 'indexTeknisi'])->name('superadmin.teknisi.index');
+    Route::post('/teknisi/store', [UserController::class, 'storeTeknisi'])->name('superadmin.teknisi.store');
+    Route::put('/teknisi/update/{id}', [UserController::class, 'updateTeknisi'])->name('superadmin.teknisi.update');
+    Route::delete('/teknisi/delete/{id}', [UserController::class, 'deleteTeknisi'])->name('superadmin.teknisi.delete');
+
+    // Kelola Payment 
+    Route::get('/payment', [UserController::class, 'indexPayment'])->name('superadmin.payment.index');
+    Route::post('/payment/store', [UserController::class, 'storePayment'])->name('superadmin.payment.store');
+    Route::put('/payment/update/{id}', [UserController::class, 'updatePayment'])->name('superadmin.payment.update');
+    Route::delete('/payment/delete/{id}', [UserController::class, 'deletePayment'])->name('superadmin.payment.delete');
+
+   // SUPERADMIN PELANGGAN
+Route::prefix('superadmin/pelanggan')->name('superadmin.pelanggan.')->group(function () {
+    Route::get('/', [UserController::class, 'indexPelanggan'])->name('index');
+    Route::put('/terima/{id}', [UserController::class, 'terimaPelanggan'])->name('terima');
+    Route::put('/tolak/{id}', [UserController::class, 'tolakPelanggan'])->name('tolak');
+});
+
+
+Route::put('/pelanggan/terima/{id}', [UserController::class, 'terimaPelanggan'])
+    ->name('superadmin.pelanggan.terima');
+
+Route::put('/pelanggan/tolak/{id}', [UserController::class, 'tolakPelanggan'])
+    ->name('superadmin.pelanggan.tolak');
+
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| ADMIN ROUTES
+|--------------------------------------------------------------------------
+*/
+Route::prefix('admin')->group(function () {
+    Route::get('/dashboard', [UserController::class, 'adminDashboard'])
+        ->name('admin.dashboard');
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| TEKNISI ROUTES
+|--------------------------------------------------------------------------
+*/
+Route::prefix('teknisi')->group(function () {
+    Route::get('/dashboard', [UserController::class, 'teknisiDashboard'])
+        ->name('teknisi.dashboard');
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| PAYMENT ROUTES
+|--------------------------------------------------------------------------
+*/
+Route::prefix('payment')->group(function () {
+    Route::get('/dashboard', [UserController::class, 'paymentDashboard'])
+        ->name('payment.dashboard');
+});
+
+
+//pelanggan
+Route::prefix('pelanggan')->group(function () {
+  // nanti diisi
+});
