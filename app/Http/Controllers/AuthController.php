@@ -44,7 +44,7 @@ class AuthController extends Controller
         'alamat' => $request->alamat,
         'email' => $request->email,
         'password' => bcrypt($request->password),
-        'role' => 'user',
+        'role' => 'pelanggan',
         'foto_ktp' => $fotoPath,
         // kalau masih menyimpan nomor KTP: 'ktp' => $request->ktp,
     ]);

@@ -10,8 +10,8 @@
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
         <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+
         <style>
-            /* Modern Elegant Styling */
             :root {
                 --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                 --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
@@ -26,289 +26,50 @@
                 --accent-purple: #667eea;
                 --accent-pink: #f093fb;
             }
-            
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }
-            
+            * { margin: 0; padding: 0; box-sizing: border-box; }
             body {
                 background: #f7fafc;
-                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                font-family: 'Inter', sans-serif;
                 color: var(--text-primary);
-                font-size: 15px;
             }
-            
-            /* Navbar Styling */
             .sb-topnav {
                 background: linear-gradient(135deg, #4361ee 0%, #3f37c9 100%) !important;
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-                border: none;
-                height: 60px;
-                padding: 0 1.5rem;
             }
-            
-            .navbar-brand {
-                font-weight: 700;
-                font-size: 1.25rem;
-                letter-spacing: -0.5px;
-                color: #fff !important;
-            }
-            
-            .btn-link {
-                color: rgba(255, 255, 255, 0.9) !important;
-                font-size: 1.1rem;
-            }
-            
-            .btn-link:hover {
-                color: #fff !important;
-            }
-            
-            /* Sidebar Styling */
-            .sb-sidenav {
-                background: var(--sidebar-bg) !important;
-                box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
-            }
-            
-            .sb-sidenav-menu {
-                padding: 1rem 0;
-            }
-            
-            .sb-sidenav-dark .sb-sidenav-menu .nav-link {
-                color: rgba(255, 255, 255, 0.75);
-                padding: 0.875rem 1.25rem;
-                margin: 0.25rem 0.875rem;
+            .navbar-brand { font-weight: 700; color: #fff !important; }
+            .sb-sidenav { background: var(--sidebar-bg) !important; }
+            .sb-sidenav-dark .nav-link {
+                color: rgba(255,255,255,0.75);
                 border-radius: 12px;
-                font-size: 0.95rem;
-                font-weight: 500;
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                position: relative;
-                border: 1px solid transparent;
             }
-            
-            /* Hover Effect - Elegant Background */
-            .sb-sidenav-dark .sb-sidenav-menu .nav-link:hover {
-                background: var(--sidebar-hover);
-                color: #ffffff;
-                border-color: rgba(102, 126, 234, 0.3);
-                transform: translateX(0);
-            }
-            
-            /* Active State - Highlighted with Color */
-            .sb-sidenav-dark .sb-sidenav-menu .nav-link.active {
+            .sb-sidenav-dark .nav-link.active {
                 background: var(--sidebar-active);
-                color: #ffffff;
-                font-weight: 600;
                 border-left: 4px solid var(--accent-purple);
-                border-color: rgba(102, 126, 234, 0.4);
-                box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
             }
-            
-            .sb-sidenav-menu-heading {
-                color: rgba(255, 255, 255, 0.4);
-                font-weight: 700;
-                text-transform: uppercase;
-                font-size: 0.7rem;
-                letter-spacing: 0.1em;
-                padding: 1.5rem 1.25rem 0.75rem 1.25rem;
-                margin-top: 0.5rem;
-            }
-            
-            .sb-nav-link-icon {
-                color: rgba(255, 255, 255, 0.6);
-                margin-right: 0.75rem;
-                font-size: 1rem;
-                width: 20px;
-                text-align: center;
-                transition: all 0.3s ease;
-            }
-            
-            .nav-link:hover .sb-nav-link-icon {
-                color: var(--accent-purple);
-            }
-            
-            .nav-link.active .sb-nav-link-icon {
-                color: var(--accent-purple);
-            }
-            
-            /* Collapse Menu Styling */
-            .sb-sidenav-collapse-arrow {
-                display: inline-block;
-                margin-left: auto;
-                transition: transform 0.3s ease;
-            }
-            
-            .nav-link[aria-expanded="true"] .sb-sidenav-collapse-arrow {
-                transform: rotate(180deg);
-            }
-            
-            .sb-sidenav-menu-nested {
-                padding-left: 0;
-            }
-            
-            .sb-sidenav-menu-nested .nav-link {
-                padding-left: 3.5rem;
-                font-size: 0.9rem;
-            }
-            
-            /* Footer Sidebar */
-            .sb-sidenav-footer {
-                background: rgba(0, 0, 0, 0.3);
-                padding: 1.25rem;
-                border-top: 1px solid rgba(255, 255, 255, 0.1);
-            }
-            
-            .sb-sidenav-footer .small {
-                color: rgba(255, 255, 255, 0.5);
-                font-size: 0.75rem;
-                text-transform: uppercase;
-                letter-spacing: 0.05em;
-            }
-            
-            .sb-sidenav-footer .fw-bold {
-                font-size: 1rem;
-                margin-top: 0.25rem;
-                display: block;
-            }
-            
-            .sb-sidenav-footer .text-info {
-                color: var(--accent-purple) !important;
-                font-size: 0.85rem;
-                margin-top: 0.25rem;
-            }
-            
-            /* Content Area */
-            #layoutSidenav_content {
-                background: #f7fafc;
-            }
-            
-            main {
-                min-height: calc(100vh - 120px);
-            }
-            
-            /* Card Styling */
-            .card {
-                border: none;
-                border-radius: 16px;
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-                transition: all 0.3s ease;
-                background: var(--card-bg);
-            }
-            
-            .card:hover {
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            }
-            
-            /* Footer Styling */
-            .footer {
-                background: #ffffff !important;
-                border-top: 1px solid var(--border-color);
-                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.03);
-            }
-            
-            /* Dropdown Menu */
-            .dropdown-menu {
-                border: none;
-                border-radius: 12px;
-                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-                padding: 0.5rem;
-                margin-top: 0.5rem;
-            }
-            
-            .dropdown-item {
-                border-radius: 8px;
-                padding: 0.625rem 1rem;
-                margin: 0.125rem 0;
-                transition: all 0.2s ease;
-                font-size: 0.9rem;
-            }
-            
-            .dropdown-item:hover {
-                background: var(--sidebar-hover);
-                color: var(--accent-purple);
-            }
-            
-            .dropdown-divider {
-                margin: 0.5rem 0;
-                border-color: var(--border-color);
-            }
-            
-            /* Navbar User Icon */
-            .nav-link.dropdown-toggle {
-                padding: 0.5rem 0.75rem;
-                border-radius: 8px;
-                transition: all 0.3s ease;
-            }
-            
-            .nav-link.dropdown-toggle:hover {
-                background: rgba(255, 255, 255, 0.15);
-            }
-            
-            /* Custom Scrollbar */
-            ::-webkit-scrollbar {
-                width: 8px;
-                height: 8px;
-            }
-            
-            ::-webkit-scrollbar-track {
-                background: #f1f1f1;
-            }
-            
-            ::-webkit-scrollbar-thumb {
-                background: var(--accent-purple);
-                border-radius: 4px;
-            }
-            
-            ::-webkit-scrollbar-thumb:hover {
-                background: #5568d3;
-            }
-            
-            /* Sidebar Toggle Button */
-            #sidebarToggle {
-                transition: all 0.3s ease;
-            }
-            
-            #sidebarToggle:hover {
-                background: rgba(255, 255, 255, 0.15) !important;
-                border-radius: 8px;
-            }
-            
-            /* Responsive */
-            @media (max-width: 768px) {
-                .sb-sidenav-dark .sb-sidenav-menu .nav-link {
-                    padding: 0.75rem 1rem;
-                    margin: 0.25rem 0.5rem;
-                }
-                
-                .sb-sidenav-menu-heading {
-                    padding: 1.25rem 1rem 0.5rem 1rem;
-                }
-            }
+            .sb-sidenav-footer { background: rgba(0,0,0,0.3); }
         </style>
-    </head> 
+    </head>
 
 <body class="sb-nav-fixed">
 
     {{-- TOP NAV --}}
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-       <a class="navbar-brand ps-3" href="#">
-    @if(session()->has('user'))
-        {{ ucfirst(session('user')->role) }} 
-    @else
-        Dashboard
-    @endif
-</a>
+        <a class="navbar-brand ps-3">
+            @if(session()->has('user'))
+                {{ ucfirst(session('user')->role) }}
+            @else
+                Dashboard
+            @endif
+        </a>
 
         <button class="btn btn-link btn-sm" id="sidebarToggle"><i class="fas fa-bars"></i></button>
 
-        <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+        <ul class="navbar-nav ms-auto me-3">
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" data-bs-toggle="dropdown">
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                     <i class="fas fa-user fa-fw"></i>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                    
+                <ul class="dropdown-menu dropdown-menu-end">
                     <li><hr class="dropdown-divider" /></li>
                     <li><a class="dropdown-item" href="{{ url('/logout') }}">Logout</a></li>
                 </ul>
@@ -322,18 +83,41 @@
 
             <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                 <div class="sb-sidenav-menu">
-
                     <div class="nav">
+
                         <div class="sb-sidenav-menu-heading">Core</div>
 
-                       <a class="nav-link" href="{{ route('superadmin.dashboard') }}">
+                        {{-- DASHBOARD UTAMA --}}
+                        @if(session()->has('user'))
+                        <a class="nav-link" href="{{ url(session('user')->role . '/dashboard') }}">
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                             Dashboard
                         </a>
+                        @endif
 
-                        
-                        {{-- SUPER ADMIN MENU --}}
-                        
+                          {{-- PELANGGAN --}}
+@if(session()->has('user') && session('user')->role == 'pelanggan')
+    <div class="sb-sidenav-menu-heading">Pelanggan</div>
+
+    <a class="nav-link {{ request()->routeIs('pelanggan.pesanwifi') ? 'active' : '' }}" 
+       href="{{ route('pelanggan.pesanwifi') }}">
+        <div class="sb-nav-link-icon"><i class="fas fa-wifi"></i></div>
+        Pesan WiFi
+    </a>
+
+     <a class="nav-link" href="{{ route('pelanggan.riwayat') }}">
+        <div class="sb-nav-link-icon"><i class="fas fa-clock"></i></div>
+        Riwayat Pemesanan
+    </a>
+
+    <a class="nav-link" href="#">
+        <div class="sb-nav-link-icon"><i class="fas fa-receipt"></i></div>
+        Riwayat Transaksi
+    </a>
+@endif
+
+
+                        {{-- SUPERADMIN --}}
                         @if(session()->has('user') && session('user')->role == 'superadmin')
                             <div class="sb-sidenav-menu-heading">Super Admin</div>
 
@@ -341,102 +125,71 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-users-cog"></i></div>
                                 Kelola Daftar Paket
                             </a>
-
-                           <a class="nav-link" href="{{ route('superadmin.admin.index') }}">
-                             <div class="sb-nav-link-icon"><i class="fas fa-user-shield"></i></div>
-                               Kelola Admin
-                          </a>
-
-                           <a class="nav-link" href="{{ route('superadmin.teknisi.index') }}">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tools"></i></div>
-                               Kelola Teknisi
-                          </a>
-                          <a class="nav-link" href="{{ route('superadmin.payment.index') }}">
-                           <div class="sb-nav-link-icon"><i class="fas fa-credit-card"></i></div>
-                              Kelola Payment
-                         </a>
-
-                         <a class="nav-link" href="{{ route('superadmin.pelanggan.index') }}">
-    <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
-    Kelola Pelanggan
-</a>
-
-
-
+                            <a class="nav-link" href="{{ route('superadmin.admin.index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-user-shield"></i></div>
+                                Kelola Admin
+                            </a>
+                            <a class="nav-link" href="{{ route('superadmin.teknisi.index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tools"></i></div>
+                                Kelola Teknisi
+                            </a>
+                            <a class="nav-link" href="{{ route('superadmin.payment.index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-credit-card"></i></div>
+                                Kelola Payment
+                            </a>
+                            <a class="nav-link" href="{{ route('superadmin.pelanggan.index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                Kelola Pelanggan
+                            </a>
                         @endif
 
-                        
-                        {{-- ADMIN MENU --}}
-                    
-                        @if(session()->has('user') && in_array(session('user')->role, ['admin', 'superadmin']))
+                        {{-- ADMIN --}}
+                        @if(session()->has('user') && in_array(session('user')->role, ['admin','superadmin']))
                             <div class="sb-sidenav-menu-heading">Admin</div>
-
-                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts">
+                            <a class="nav-link collapsed" data-bs-toggle="collapse" data-bs-target="#collapseLayouts">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Layouts
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
-
-                            <div class="collapse" id="collapseLayouts" data-bs-parent="#sidenavAccordion">
+                            <div class="collapse" id="collapseLayouts">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="#">Static Navigation</a>
-                                    <a class="nav-link" href="#">Light Sidenav</a>
+                                    <a class="nav-link">Static Navigation</a>
+                                    <a class="nav-link">Light Sidenav</a>
                                 </nav>
                             </div>
                         @endif
 
-                        
-                        {{-- PAYMENT MENU --}}
-                    
+                        {{-- PAYMENT --}}
                         @if(session()->has('user') && session('user')->role == 'payment')
                             <div class="sb-sidenav-menu-heading">Payment</div>
-
-                            <a class="nav-link" href="#">
+                            <a class="nav-link">
                                 <div class="sb-nav-link-icon"><i class="fas fa-money-bill-wave"></i></div>
                                 Transactions
                             </a>
                         @endif
 
-                        
-                        {{-- TEKNISI MENU --}}
-                        
+                        {{-- TEKNISI --}}
                         @if(session()->has('user') && session('user')->role == 'teknisi')
                             <div class="sb-sidenav-menu-heading">Teknisi</div>
-
-                            <a class="nav-link" href="#">
+                            <a class="nav-link">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tools"></i></div>
                                 Service Tickets
-                            </a>
-                        @endif
-
-                        
-                        {{-- PELANGGAN MENU --}}
-                    
-                        @if(session()->has('user') && session('user')->role == 'pelanggan')
-                            <div class="sb-sidenav-menu-heading">Pelanggan</div>
-
-                            <a class="nav-link" href="#">
-                                <div class="sb-nav-link-icon"><i class="fas fa-user-circle"></i></div>
-                                My Profile
                             </a>
                         @endif
                     </div>
                 </div>
 
-                {{-- FOOTER --}}
                 <div class="sb-sidenav-footer">
                     <div class="small">Logged in as:</div>
-
                     @if(session()->has('user'))
-                        <span class="fw-bold text-white">
-                            {{ session('user')->nama }}
-                        </span>
+                        <span class="fw-bold text-white">{{ session('user')->nama }}</span>
                         <div class="text-info">{{ session('user')->role }}</div>
                     @else
                         <span class="fw-bold text-danger">Guest</span>
                     @endif
                 </div>
             </nav>
+
         </div>
 
         {{-- CONTENT --}}
@@ -447,6 +200,7 @@
                 </div>
             </main>
         </div>
+
     </div>
 
     {{-- SCRIPT --}}

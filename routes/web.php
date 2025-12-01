@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PaketLayananController;
+use App\Http\Controllers\PelangganController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -11,7 +13,7 @@ use App\Http\Controllers\PaketLayananController;
 |--------------------------------------------------------------------------
 */
 Route::get('/', function () {
-    return view('welcome');
+    return view('landing');
 });
 
 // Auth
@@ -109,7 +111,45 @@ Route::prefix('payment')->group(function () {
 });
 
 
-//pelanggan
-Route::prefix('pelanggan')->group(function () {
-  // nanti diisi
-});
+/*
+|--------------------------------------------------------------------------
+| PELANGGAN ROUTE
+|--------------------------------------------------------------------------
+*/// Dashboard Pelanggan
+Route::get('/pelanggan/dashboard', [PelangganController::class, 'dashboard'])
+     ->name('pelanggan.dashboard');
+//pilih paket
+    Route::get('/pelanggan/pesan-wifi', [PelangganController::class, 'pilihPaket'])
+     ->name('pelanggan.pesanwifi');
+//detail paket
+     Route::get('/pelanggan/pesan-wifi/{id}', [PelangganController::class, 'detailPaket'])
+     ->name('pelanggan.detailpaket');
+//pilih jadwal
+     Route::get('/pelanggan/pesan-wifi/{id}/jadwal', [PelangganController::class, 'pilihJadwal'])
+    ->name('pelanggan.jadwal');
+    Route::post('/pelanggan/pesan-wifi/{id}/jadwal', [PelangganController::class, 'simpanJadwal'])
+    ->name('pelanggan.jadwal.simpan');
+//input data
+    Route::get('/pelanggan/pesan-wifi/{id}/input-data', [PelangganController::class, 'inputData'])
+    ->name('pelanggan.inputdata');
+    Route::post('/pelanggan/pesan-wifi/{paket_id}/input-data', [PelangganController::class, 'simpanInputData'])
+    ->name('pelanggan.inputdata.simpan');
+//invoice
+    Route::get('/pelanggan/invoice/{paket_id}', [PelangganController::class, 'invoice'])
+    ->name('pelanggan.invoice');
+//konfirmasi pemesanan
+    Route::post('/pelanggan/invoice/{paket_id}/konfirmasi', [PelangganController::class, 'konfirmasiPemesanan'])
+    ->name('pelanggan.konfirmasi');
+// riwayat pemesanan
+    Route::get('/pelanggan/riwayat', [PelangganController::class, 'riwayat'])
+    ->name('pelanggan.riwayat');
+// cetak invoice    
+Route::get('/pelanggan/invoice/cetak/{id}', [PelangganController::class, 'cetakInvoice'])->name('pelanggan.invoice.cetak');
+
+
+
+
+
+
+
+    
