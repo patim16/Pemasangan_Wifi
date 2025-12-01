@@ -31,7 +31,6 @@ class UserController extends Controller
     {
         return view('payment.dashboard');
     }
-
     // ============================
     // KELOLA ADMIN
     // ============================

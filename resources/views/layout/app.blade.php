@@ -87,13 +87,26 @@
 
                         <div class="sb-sidenav-menu-heading">Core</div>
 
-                        {{-- DASHBOARD UTAMA --}}
-                        @if(session()->has('user'))
-                        <a class="nav-link" href="{{ url(session('user')->role . '/dashboard') }}">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            Dashboard
-                        </a>
-                        @endif
+{{-- DASHBOARD BERDASARKAN ROLE --}}
+@if(session()->has('user'))
+    @php 
+        $role = session('user')->role;
+    @endphp
+
+    <a class="nav-link" 
+       href="
+            @if($role == 'superadmin') {{ route('superadmin.dashboard') }}
+            @elseif($role == 'admin') {{ route('admin.dashboard') }}
+            @elseif($role == 'payment') {{ route('payment.dashboard') }}
+            @elseif($role == 'teknisi') {{ route('teknisi.dashboard') }}
+            @elseif($role == 'pelanggan') {{ route('pelanggan.dashboard') }}
+            @endif
+       ">
+        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+        Dashboard
+    </a>
+@endif
+
 
                           {{-- PELANGGAN --}}
 @if(session()->has('user') && session('user')->role == 'pelanggan')
@@ -162,10 +175,19 @@
                         {{-- PAYMENT --}}
                         @if(session()->has('user') && session('user')->role == 'payment')
                             <div class="sb-sidenav-menu-heading">Payment</div>
-                            <a class="nav-link">
-                                <div class="sb-nav-link-icon"><i class="fas fa-money-bill-wave"></i></div>
-                                Transactions
-                            </a>
+
+                               <a class="nav-link" href="{{ route('payment.list') }}">
+                                  <div class="sb-nav-link-icon"><i class="fas fa-money-bill-wave"></i></div>
+                                   Verifikasi Pembayaran
+                               </a>
+                               <a class="nav-link" href="{{ route('payment.status') }}">
+                                  <div class="sb-nav-link-icon"><i class="fas fa-edit"></i></div>
+                                  Update status pembayaran
+                               </a>
+                                <a class="nav-link" href="{{ route('payment.rekap.index') }}">
+                                  <div class="sb-nav-link-icon"><i class="fas fa-chart-bar"></i></div>
+                                   Rekap Transaksi
+                                </a>
                         @endif
 
                         {{-- TEKNISI --}}
@@ -180,7 +202,8 @@
                 </div>
 
                 <div class="sb-sidenav-footer">
-                    <div class="small">Logged in as:</div>
+                    <div class="small">Masuk sebagai:</div>
+
                     @if(session()->has('user'))
                         <span class="fw-bold text-white">{{ session('user')->nama }}</span>
                         <div class="text-info">{{ session('user')->role }}</div>

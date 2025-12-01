@@ -5,7 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PaketLayananController;
 use App\Http\Controllers\PelangganController;
-
+use App\Http\Controllers\PaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -106,8 +106,35 @@ Route::prefix('teknisi')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::prefix('payment')->group(function () {
-    Route::get('/dashboard', [UserController::class, 'paymentDashboard'])
+
+    Route::get('/dashboard', [PaymentController::class, 'dashboard'])
         ->name('payment.dashboard');
+
+    // Pembayaran
+    Route::get('/pembayaran', [PaymentController::class, 'list'])
+        ->name('payment.list');
+
+    Route::get('/pembayaran/{id}', [PaymentController::class, 'detail'])
+        ->name('payment.detail');
+
+   // (valid / invalid)
+    Route::post('/pembayaran/{id}/valid', [PaymentController::class, 'valid'])
+        ->name('payment.valid');
+
+    Route::post('/pembayaran/{id}/invalid', [PaymentController::class, 'invalid'])
+        ->name('payment.invalid');
+
+    // REKAP HARIAN & BULANAN
+    Route::prefix('payment')->group(function () {
+    Route::get('/rekap', [PaymentController::class, 'rekapIndex'])->name('payment.rekap.index');
+    Route::get('/rekap/pdf', [PaymentController::class, 'rekapPDF'])->name('payment.rekap.pdf');
+});    
+    //Halaman update status
+    Route::get('/payment/status', [PaymentController::class, 'statusPage'])
+    ->name('payment.status');
+    Route::post('/payment/status/update/{id}', [PaymentController::class, 'updateStatus'])
+    ->name('payment.status.update');
+
 });
 
 
