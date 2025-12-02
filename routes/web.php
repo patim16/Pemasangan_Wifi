@@ -8,7 +8,6 @@ use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\MetodePembayaranController;
 use App\Http\Controllers\KelolaPesananController;
-use App\Http\Controllers\PaymentController;
 
 /*
 |--------------------------------------------------------------------------
