@@ -233,13 +233,15 @@ Route::prefix('payment')->group(function () {
     Route::get('/rekap/pdf', [PaymentController::class, 'rekapPDF'])->name('payment.rekap.pdf');
 });    
 
-});
 
     //Halaman update status
     Route::get('/payment/status', [PaymentController::class, 'statusPage'])
     ->name('payment.status');
     Route::post('/payment/status/update/{id}', [PaymentController::class, 'updateStatus'])
     ->name('payment.status.update');
+
+});
+
 
 
 /*
