@@ -21,8 +21,9 @@ class AuthController extends Controller
     $request->validate([
         'nama' => 'required|string|max:100',
         'no_hp' => 'required|string|max:20',
-        // jika kamu masih ingin menyimpan nomor KTP, tambahkan validasi 'ktp' di sini
-        'alamat' => 'required|string',
+    
+       'alamat' => 'nullable|string',
+
         'email' => 'required|email|unique:users,email',
         'password' => 'required|min:6',
         'foto_ktp' => 'required|image|mimes:jpeg,png,jpg|max:2048' // max 2MB
@@ -33,9 +34,8 @@ class AuthController extends Controller
     if ($request->hasFile('foto_ktp')) {
         $file = $request->file('foto_ktp');
         $filename = time() . '_' . Str::slug($request->nama) . '.' . $file->getClientOriginalExtension();
-        // simpan di storage/app/public/uploads/ktp
         $file->storeAs('public/uploads/ktp', $filename);
-        $fotoPath = 'uploads/ktp/' . $filename; // path relatif ke folder public
+        $fotoPath = 'uploads/ktp/' . $filename; 
     }
 
     User::create([
@@ -46,8 +46,11 @@ class AuthController extends Controller
         'password' => bcrypt($request->password),
         'role' => 'pelanggan',
         'foto_ktp' => $fotoPath,
-        // kalau masih menyimpan nomor KTP: 'ktp' => $request->ktp,
+        'latitude' => $request->latitude,
+'longitude' => $request->longitude,
+
     ]);
+   
 
     return redirect('/login')->with('success', 'Registrasi Berhasil, silakan login!');
 }
