@@ -8,66 +8,42 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-
-    // ============================
-    // DASHBOARD PER ROLE
-    // ============================
-
-   
-
      //DASHBOARD PER ROLE
     // SUPERADMIN
-   public function superAdminDashboard()
-{
-    return view('superadmin.dashboard', [
-        'totalAdmin'     => User::where('role', 'admin')->count(),
-        'totalPelanggan' => User::where('role', 'user')->count(),
-        'totalTeknisi'   => User::where('role', 'teknisi')->count(),
-        'totalPayment'   => User::where('role', 'payment')->count(),
-        'totalPenghasilan' => 0, 
-        'totalTransaksi' => 0,
-        'paymentPending' => 0,
-        'pesananAktif' => 0,
-        'pesananSelesaiHariIni' => 0,
-    ]);
-}
-
-
-
-    public function adminDashboard()
+    public function superAdminDashboard()
     {
-        return view('admin.dashboard',[
-             'totalPelanggan' => User::where('role', 'user')->count(),
-        'totalTeknisi'   => User::where('role', 'teknisi')->count(),
-        'totalPayment'   => User::where('role', 'payment')->count(),
-        'totalPenghasilan' => 0, 
-        'totalTransaksi' => 0,
-        'paymentPending' => 0,
-        'pesananAktif' => 0,
-        'pesananSelesaiHariIni' => 0,
-        ]);
+        return view('superadmin.dashboard');
     }
 
+    // ADMIN
+    public function adminDashboard()
+    {
+        return view('admin.dashboard');
+    }
+
+    // TEKNISI
     public function teknisiDashboard()
     {
         return view('teknisi.dashboard');
     }
 
-    public function paymentDashboard()
+   
+
+     // pelanggan
+    public function pelangganDashboard()
     {
-        return view('payment.dashboard');
+        return view('pelanggan.dashboard');
     }
-    // ============================
-    // KELOLA ADMIN
-    // ============================
 
-
+    //KELOLA ADMIN
+    // LIST ADMIN
     public function indexAdmin()
     {
         $admins = User::where('role', 'admin')->get();
         return view('superadmin.kelolaadmin', compact('admins'));
     }
 
+    // STORE ADMIN
     public function storeAdmin(Request $request)
     {
         $request->validate([
@@ -90,6 +66,7 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Admin berhasil ditambahkan');
     }
 
+    // UPDATE ADMIN
     public function updateAdmin(Request $request, $id)
     {
         $request->validate([
@@ -111,22 +88,22 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Admin berhasil diperbarui');
     }
 
+    // DELETE ADMIN
     public function deleteAdmin($id)
     {
         User::findOrFail($id)->delete();
         return redirect()->back()->with('success', 'Admin berhasil dihapus');
     }
 
-    // ============================
-    // KELOLA TEKNISI
-    // ============================
-
+     //KELOLA TEKNISI
+    // LIST TEKNISI
     public function indexTeknisi()
     {
         $teknisis = User::where('role', 'teknisi')->get();
         return view('superadmin.kelolateknisi', compact('teknisis'));
     }
 
+    // STORE TEKNISI
     public function storeTeknisi(Request $request)
     {
         $request->validate([
@@ -149,6 +126,7 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Teknisi berhasil ditambahkan');
     }
 
+    // UPDATE TEKNISI
     public function updateTeknisi(Request $request, $id)
     {
         $request->validate([
@@ -170,22 +148,26 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Teknisi berhasil diperbarui');
     }
 
+    // DELETE TEKNISI
     public function deleteTeknisi($id)
     {
         User::findOrFail($id)->delete();
         return redirect()->back()->with('success', 'Teknisi berhasil dihapus');
     }
 
-    // ============================
-    // KELOLA PAYMENT
-    // ============================
 
+
+
+    //KELOLA  PAYMENT
+
+    // LIST PAYMENT 
     public function indexPayment()
     {
         $payments = User::where('role', 'payment')->get();
         return view('superadmin.kelolapayment', compact('payments'));
     }
 
+    // STORE PAYMENT 
     public function storePayment(Request $request)
     {
         $request->validate([
@@ -208,6 +190,7 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Payment staff berhasil ditambahkan');
     }
 
+    // UPDATE PAYMENT 
     public function updatePayment(Request $request, $id)
     {
         $request->validate([
@@ -229,80 +212,49 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Payment staff berhasil diperbarui');
     }
 
+    // DELETE PAYMENT 
     public function deletePayment($id)
     {
         User::findOrFail($id)->delete();
         return redirect()->back()->with('success', 'Payment staff berhasil dihapus');
     }
 
-
-
-
     /*
-/*
 |--------------------------------------------------------------------------
 | KELOLA PELANGGAN
 |--------------------------------------------------------------------------
 */
 
-// LIST SEMUA PELANGGAN (role user)
+// LIST PELANGGAN
 public function indexPelanggan()
 {
-    $pelanggan = User::where('role', 'pelanggan')->get();
+    $pelanggan = User::where('role', 'user')->get();
     return view('superadmin.kelolapelanggan', compact('pelanggan'));
 }
 
+public function terimaPelanggan($id)
+{
+    $p = User::findOrFail($id);
+    $p->update([
+        'status' => 'accepted',
+        'alasan_penolakan' => null
+    ]);
 
-// UPDATE DATA PELANGGAN
-public function updatePelanggan(Request $request, $id)
+    return back()->with('success', 'Pelanggan diterima!');
+}
+
+public function tolakPelanggan(Request $request, $id)
 {
     $request->validate([
-        'nama' => 'required|string|max:255',
-        'email' => 'required|email',
-        'no_hp' => 'required|string|max:20',
-        'alamat' => 'nullable|string',
-        'foto_ktp' => 'nullable|image|max:2048',
+        'alasan' => 'required'
     ]);
 
     $p = User::findOrFail($id);
-
-    // Jika upload foto KTP baru
-    if ($request->hasFile('foto_ktp')) {
-
-        // Hapus foto lama
-        if ($p->foto_ktp && file_exists(storage_path('app/public/' . $p->foto_ktp))) {
-            unlink(storage_path('app/public/' . $p->foto_ktp));
-        }
-
-        $p->foto_ktp = $request->file('foto_ktp')->store('ktp', 'public');
-    }
-
-    // Update data lainnya
     $p->update([
-        'nama' => $request->nama,
-        'email' => $request->email,
-        'no_hp' => $request->no_hp,
-        'alamat' => $request->alamat,
-        'foto_ktp' => $p->foto_ktp,
+        'status' => 'rejected',
+        'alasan_penolakan' => $request->alasan
     ]);
 
-    return back()->with('success', 'Data pelanggan berhasil diperbarui!');
+    return back()->with('success', 'Pelanggan ditolak.');
 }
-
-
-// HAPUS PELANGGAN
-public function deletePelanggan($id)
-{
-    $p = User::findOrFail($id);
-
-    // Hapus foto KTP jika ada
-    if ($p->foto_ktp && file_exists(storage_path('app/public/' . $p->foto_ktp))) {
-        unlink(storage_path('app/public/' . $p->foto_ktp));
-    }
-
-    $p->delete();
-
-    return back()->with('success', 'Pelanggan berhasil dihapus!');
-}
-
 }
