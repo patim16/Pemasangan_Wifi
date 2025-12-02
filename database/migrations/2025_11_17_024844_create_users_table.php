@@ -18,19 +18,17 @@ return new class extends Migration
             $table->string('email', 100)->unique();
             $table->string('password');
             $table->string('no_hp', 20);
-            $table->text('alamat');
+           $table->text('alamat')->nullable();
+
 
             // foto KTP
-            $table->string('foto_ktp')->nullable();  // <— disini tambahkan
-
+            $table->string('foto_ktp')->nullable();  
             // role user
            $table->enum('role',['superadmin','admin','user','teknisi','payment'])->default('user');
 
-           // status pelanggan
-          $table->enum('status', ['pending', 'accepted', 'rejected'])->default('pending');
+       $table->decimal('latitude', 10, 7)->nullable();
+$table->decimal('longitude', 10, 7)->nullable();
 
-          // alasan penolakan
-        $table->text('alasan_penolakan')->nullable();
 
 
             $table->timestamps();

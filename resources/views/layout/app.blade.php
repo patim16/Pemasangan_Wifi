@@ -1,3 +1,6 @@
+{{-- TEMPORARY DEBUG: Uncomment the line below to see session data on the page --}}
+{{-- {{ dd(session('user')) }} --}}
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -6,7 +9,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Dashboard - SB Admin</title>
+        <title>GuidoTechno-wifi</title>
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
         <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
@@ -42,9 +45,211 @@
                 color: rgba(255,255,255,0.75);
                 border-radius: 12px;
             }
+
             .sb-sidenav-dark .nav-link.active {
                 background: var(--sidebar-active);
                 border-left: 4px solid var(--accent-purple);
+            }   
+
+            
+            /* Hover Effect - Elegant Background */
+            .sb-sidenav-dark .sb-sidenav-menu .nav-link:hover {
+                background: var(--sidebar-hover);
+                color: #ffffff;
+                border-color: rgba(102, 126, 234, 0.3);
+                transform: translateX(0);
+            }
+            
+            /* Active State - Highlighted with Color (INI UNTUK GARIS PINGGIRNYA) */
+            .sb-sidenav-dark .sb-sidenav-menu .nav-link.active {
+                background: var(--sidebar-active);
+                color: #ffffff;
+                font-weight: 600;
+                border-left: 4px solid var(--accent-purple); /* Garis ungu di kiri */
+                border-color: rgba(102, 126, 234, 0.4);
+                box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+            }
+            
+            .sb-sidenav-menu-heading {
+                color: rgba(255, 255, 255, 0.4);
+                font-weight: 700;
+                text-transform: uppercase;
+                font-size: 0.7rem;
+                letter-spacing: 0.1em;
+                padding: 1.5rem 1.25rem 0.75rem 1.25rem;
+                margin-top: 0.5rem;
+            }
+            
+            .sb-nav-link-icon {
+                color: rgba(255, 255, 255, 0.6);
+                margin-right: 0.75rem;
+                font-size: 1rem;
+                width: 20px;
+                text-align: center;
+                transition: all 0.3s ease;
+            }
+            
+            .nav-link:hover .sb-nav-link-icon {
+                color: var(--accent-purple);
+            }
+            
+            .nav-link.active .sb-nav-link-icon {
+                color: var(--accent-purple);
+            }
+            
+            /* Collapse Menu Styling */
+            .sb-sidenav-collapse-arrow {
+                display: inline-block;
+                margin-left: auto;
+                transition: transform 0.3s ease;
+            }
+            
+            .nav-link[aria-expanded="true"] .sb-sidenav-collapse-arrow {
+                transform: rotate(180deg);
+            }
+            
+            .sb-sidenav-menu-nested {
+                padding-left: 0;
+            }
+            
+            .sb-sidenav-menu-nested .nav-link {
+                padding-left: 3.5rem;
+                font-size: 0.9rem;
+            }
+            
+            /* Footer Sidebar */
+            .sb-sidenav-footer {
+                background: rgba(0, 0, 0, 0.3);
+                padding: 1.25rem;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            
+            .sb-sidenav-footer .small {
+                color: rgba(255, 255, 255, 0.5);
+                font-size: 0.75rem;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+            
+            .sb-sidenav-footer .fw-bold {
+                font-size: 1rem;
+                margin-top: 0.25rem;
+                display: block;
+            }
+            
+            .sb-sidenav-footer .text-info {
+                color: var(--accent-purple) !important;
+                font-size: 0.85rem;
+                margin-top: 0.25rem;
+            }
+            
+            /* Content Area */
+            #layoutSidenav_content {
+                background: #f7fafc;
+            }
+            
+            main {
+                min-height: calc(100vh - 120px);
+            }
+            
+            /* Card Styling */
+            .card {
+                border: none;
+                border-radius: 16px;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+                transition: all 0.3s ease;
+                background: var(--card-bg);
+            }
+            
+            .card:hover {
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            }
+            
+            /* Footer Styling */
+            .footer {
+                background: #ffffff !important;
+                border-top: 1px solid var(--border-color);
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.03);
+            }
+            
+            /* Dropdown Menu */
+            .dropdown-menu {
+                border: none;
+                border-radius: 12px;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+                padding: 0.5rem;
+                margin-top: 0.5rem;
+            }
+            
+            .dropdown-item {
+                border-radius: 8px;
+                padding: 0.625rem 1rem;
+                margin: 0.125rem 0;
+                transition: all 0.2s ease;
+                font-size: 0.9rem;
+            }
+            
+            .dropdown-item:hover {
+                background: var(--sidebar-hover);
+                color: var(--accent-purple);
+            }
+            
+            .dropdown-divider {
+                margin: 0.5rem 0;
+                border-color: var(--border-color);
+            }
+            
+            /* Navbar User Icon */
+            .nav-link.dropdown-toggle {
+                padding: 0.5rem 0.75rem;
+                border-radius: 8px;
+                transition: all 0.3s ease;
+            }
+            
+            .nav-link.dropdown-toggle:hover {
+                background: rgba(255, 255, 255, 0.15);
+            }
+            
+            /* Custom Scrollbar */
+            ::-webkit-scrollbar {
+                width: 8px;
+                height: 8px;
+            }
+            
+            ::-webkit-scrollbar-track {
+                background: #f1f1f1;
+            }
+            
+            ::-webkit-scrollbar-thumb {
+                background: var(--accent-purple);
+                border-radius: 4px;
+            }
+            
+            ::-webkit-scrollbar-thumb:hover {
+                background: #5568d3;
+            }
+            
+            /* Sidebar Toggle Button */
+            #sidebarToggle {
+                transition: all 0.3s ease;
+            }
+            
+            #sidebarToggle:hover {
+                background: rgba(255, 255, 255, 0.15) !important;
+                border-radius: 8px;
+            }
+            
+            /* Responsive */
+            @media (max-width: 768px) {
+                .sb-sidenav-dark .sb-sidenav-menu .nav-link {
+                    padding: 0.75rem 1rem;
+                    margin: 0.25rem 0.5rem;
+                }
+                
+                .sb-sidenav-menu-heading {
+                    padding: 1.25rem 1rem 0.5rem 1rem;
+                }
+
             }
             .sb-sidenav-footer { background: rgba(0,0,0,0.3); }
         </style>
@@ -64,17 +269,19 @@
 
         <button class="btn btn-link btn-sm" id="sidebarToggle"><i class="fas fa-bars"></i></button>
 
-        <ul class="navbar-nav ms-auto me-3">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                    <i class="fas fa-user fa-fw"></i>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li><hr class="dropdown-divider" /></li>
-                    <li><a class="dropdown-item" href="{{ url('/logout') }}">Logout</a></li>
-                </ul>
-            </li>
+       <ul class="navbar-nav ms-auto me-3">
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button"
+           data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-user fa-fw"></i>
+        </a>
+
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" href="{{ url('/logout') }}">Logout</a></li>
         </ul>
+    </li>
+</ul>
+
     </nav>
 
     {{-- SIDEBAR --}}
@@ -87,13 +294,8 @@
 
                         <div class="sb-sidenav-menu-heading">Core</div>
 
-                        {{-- DASHBOARD UTAMA --}}
-                        @if(session()->has('user'))
-                        <a class="nav-link" href="{{ url(session('user')->role . '/dashboard') }}">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            Dashboard
-                        </a>
-                        @endif
+
+                     
 
                           {{-- PELANGGAN --}}
 @if(session()->has('user') && session('user')->role == 'pelanggan')
@@ -117,49 +319,144 @@
 @endif
 
 
-                        {{-- SUPERADMIN --}}
+                      
+
+                        {{-- PAYMENT --}}
+
+                    
+                        @if(session()->has('user'))
+                            @if(session('user')->role == 'superadmin')
+                                <a class="nav-link {{ request()->routeIs('superadmin.dashboard') ? 'active' : '' }}" href="{{ route('superadmin.dashboard') }}">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                    Dashboard
+                                </a>
+                            @elseif(session('user')->role == 'admin')
+                                <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                    Dashboard
+                                </a>
+                            @endif
+                        @endif
+                        
+                        {{-- SUPER ADMIN MENU --}}
+                        
                         @if(session()->has('user') && session('user')->role == 'superadmin')
                             <div class="sb-sidenav-menu-heading">Super Admin</div>
 
-                            <a class="nav-link" href="{{ route('superadmin.paketlayanan') }}">
+                           <a class="nav-link {{ request()->routeIs('superadmin.admin.index') ? 'active' : '' }}" href="{{ route('superadmin.admin.index') }}">
+                             <div class="sb-nav-link-icon"><i class="fas fa-user-shield"></i></div>
+                               Kelola Admin
+                          </a>
+
+                           <a class="nav-link {{ request()->routeIs('superadmin.teknisi.index') ? 'active' : '' }}" href="{{ route('superadmin.teknisi.index') }}">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tools"></i></div>
+                               Kelola Teknisi
+                          </a>
+                          <a class="nav-link {{ request()->routeIs('superadmin.payment.index') ? 'active' : '' }}" href="{{ route('superadmin.payment.index') }}">
+                           <div class="sb-nav-link-icon"><i class="fas fa-credit-card"></i></div>
+                              Kelola Payment
+                         </a>
+
+                         <a class="nav-link {{ request()->routeIs('superadmin.pelanggan.index') ? 'active' : '' }}" href="{{ route('superadmin.pelanggan.index') }}">
+    <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+    Kelola Pelanggan
+</a>
+
+<a class="nav-link {{ request()->routeIs('superadmin.kelolapesanan') ? 'active' : '' }}" href="{{ route('superadmin.kelolapesanan') }}">
+    <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
+    Kelola Pesanan
+</a>
+
+
+ <a class="nav-link {{ request()->routeIs('superadmin.paketlayanan') ? 'active' : '' }}" href="{{ route('superadmin.paketlayanan') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-users-cog"></i></div>
                                 Kelola Daftar Paket
                             </a>
-                            <a class="nav-link" href="{{ route('superadmin.admin.index') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-user-shield"></i></div>
-                                Kelola Admin
-                            </a>
-                            <a class="nav-link" href="{{ route('superadmin.teknisi.index') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tools"></i></div>
-                                Kelola Teknisi
-                            </a>
-                            <a class="nav-link" href="{{ route('superadmin.payment.index') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-credit-card"></i></div>
-                                Kelola Payment
-                            </a>
-                            <a class="nav-link" href="{{ route('superadmin.pelanggan.index') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
-                                Kelola Pelanggan
-                            </a>
-                        @endif
 
-                        {{-- ADMIN --}}
-                        @if(session()->has('user') && in_array(session('user')->role, ['admin','superadmin']))
-                            <div class="sb-sidenav-menu-heading">Admin</div>
-                            <a class="nav-link collapsed" data-bs-toggle="collapse" data-bs-target="#collapseLayouts">
-                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                                Layouts
+  <a class="nav-link {{ request()->is('superadmin/metodepembayaran*') ? 'active' : '' }}" href="{{ url('superadmin/metodepembayaran') }}">
+    <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
+   Kelola Metode Pembayaran
+</a>
+
+                            <!-- Tambahkan menu Admin sebagai dropdown untuk Super Admin -->
+                            <div class="sb-sidenav-menu-heading">Admin </div>
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#adminCollapse" aria-expanded="false" aria-controls="adminCollapse">
+                                <div class="sb-nav-link-icon"><i class="fas fa-user-cog"></i></div>
+                                Admin Menu
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
-                            <div class="collapse" id="collapseLayouts">
+                            <div class="collapse" id="adminCollapse" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link">Static Navigation</a>
-                                    <a class="nav-link">Light Sidenav</a>
+                                    <a class="nav-link {{ request()->routeIs('admin.kelolapayment') ? 'active' : '' }}" href="{{ route('admin.kelolapayment') }}">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-credit-card"></i></div>
+                                        Kelola Payment
+                                    </a>
+                                    <a class="nav-link {{ request()->routeIs('admin.kelolateknisi') ? 'active' : '' }}" href="{{ route('admin.kelolateknisi') }}">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-user-cog"></i></div>
+                                        Kelola Teknisi
+                                    </a>
+                                    <a class="nav-link {{ request()->routeIs('admin.kelolapelanggan') ? 'active' : '' }}" href="{{ route('admin.kelolapelanggan') }}">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                        Kelola Pelanggan
+                                    </a>
+                                    <a class="nav-link {{ request()->routeIs('admin.kelolapesanan') ? 'active' : '' }}" href="{{ route('admin.kelolapesanan') }}">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
+                                        Kelola Pesanan
+                                    </a>
+                                    <a class="nav-link {{ request()->routeIs('admin.paketlayanan') ? 'active' : '' }}" href="{{ route('admin.paketlayanan') }}">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-users-cog"></i></div>
+                                        Kelola Daftar Paket
+                                    </a>
+                                    <a class="nav-link {{ request()->routeIs('admin.metodepembayaran') ? 'active' : '' }}" href="{{ route('admin.metodepembayaran') }}">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
+                                        Kelola Metode Pembayaran
+                                    </a>
                                 </nav>
                             </div>
+
                         @endif
 
-                        {{-- PAYMENT --}}
+                        
+                        {{-- ADMIN MENU --}}
+                    
+                     @if(session()->has('user') && session('user')->role == 'admin')
+
+    <div class="sb-sidenav-menu-heading">Admin</div>
+
+    <a class="nav-link {{ request()->routeIs('admin.kelolapayment') ? 'active' : '' }}" href="{{ route('admin.kelolapayment') }}">
+        <div class="sb-nav-link-icon"><i class="fas fa-credit-card"></i></div>
+        Kelola Payment
+    </a>
+
+    <a class="nav-link {{ request()->routeIs('admin.kelolateknisi') ? 'active' : '' }}" href="{{ route('admin.kelolateknisi') }}">
+        <div class="sb-nav-link-icon"><i class="fas fa-user-cog"></i></div>
+        Kelola Teknisi
+    </a>
+
+    <a class="nav-link {{ request()->routeIs('admin.kelolapelanggan') ? 'active' : '' }}" href="{{ route('admin.kelolapelanggan') }}">
+        <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+        Kelola Pelanggan
+    </a>
+
+    <a class="nav-link {{ request()->routeIs('admin.kelolapesanan') ? 'active' : '' }}" href="{{ route('admin.kelolapesanan') }}">
+        <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
+        Kelola Pesanan
+    </a>
+
+     <a class="nav-link {{ request()->routeIs('admin.paketlayanan') ? 'active' : '' }}" href="{{ route('admin.paketlayanan') }}">
+        <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
+        Kelola Daftar Paket
+    </a>
+     <a class="nav-link {{ request()->routeIs('admin.metodepembayaran') ? 'active' : '' }}" href="{{ route('admin.metodepembayaran') }}">
+        <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
+        Kelola Metode Pembayaran
+    </a>
+
+
+@endif
+                        {{-- PAYMENT MENU --}}
+                    
+
                         @if(session()->has('user') && session('user')->role == 'payment')
                             <div class="sb-sidenav-menu-heading">Payment</div>
                             <a class="nav-link">
@@ -207,6 +504,49 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"></script>
     <script src="{{ asset('js/scripts.js') }}"></script>
+    
+    {{-- SCRIPT TAMBAHAN UNTUK PERBAIKAN --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.querySelector('.sb-sidenav');
+            const sidebarMenu = document.querySelector('.sb-sidenav-menu');
+
+            // Perbaikan: Kembalikan posisi scroll dari sessionStorage saat halaman dimuat
+            const savedScrollPosition = sessionStorage.getItem('sidebarScrollPosition');
+            if (savedScrollPosition && sidebar) {
+                sidebar.scrollTop = parseInt(savedScrollPosition, 10);
+                // Hapus penyimpanan setelah dipulihkan agar tidak mempengaruhi navigasi lain
+                sessionStorage.removeItem('sidebarScrollPosition');
+            }
+
+            // Perbaikan: Simpan posisi scroll saat ada link di sidebar yang diklik
+            if (sidebarMenu) {
+                sidebarMenu.addEventListener('click', function(event) {
+                    const targetLink = event.target.closest('a');
+                    // Pastikan yang diklik adalah link dan bukan link dropdown atau link tanpa href
+                    if (targetLink && targetLink.href && !targetLink.getAttribute('data-bs-toggle')) {
+                        sessionStorage.setItem('sidebarScrollPosition', sidebar.scrollTop);
+                    }
+                });
+            }
+
+            // Fitur tambahan: Buka dropdown jika ada menu aktif di dalamnya
+            const activeNestedLink = document.querySelector('.sb-sidenav-menu-nested .nav-link.active');
+            if (activeNestedLink) {
+                const collapseElement = activeNestedLink.closest('.collapse');
+                if (collapseElement) {
+                    const triggerLink = document.querySelector(`[data-bs-target="#${collapseElement.id}"]`);
+                    if (triggerLink) {
+                        const bsCollapse = new bootstrap.Collapse(collapseElement, {
+                            show: true
+                        });
+                        triggerLink.classList.remove('collapsed');
+                        triggerLink.setAttribute('aria-expanded', 'true');
+                    }
+                }
+            }
+        });
+    </script>
 
 </body>
 </html>
