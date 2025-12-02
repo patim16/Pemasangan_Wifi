@@ -61,6 +61,7 @@ class UserController extends Controller
     // KELOLA ADMIN
     // ============================
 
+
     public function indexAdmin()
     {
         $admins = User::where('role', 'admin')->get();

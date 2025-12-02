@@ -299,6 +299,24 @@
     @php 
         $role = session('user')->role;
     @endphp
+<<<<<<< Updated upstream
+=======
+
+    <a class="nav-link" 
+       href="
+            @if($role == 'superadmin') {{ route('superadmin.dashboard') }}
+            @elseif($role == 'admin') {{ route('admin.dashboard') }}
+            @elseif($role == 'payment') {{ route('payment.dashboard') }}
+            @elseif($role == 'teknisi') {{ route('teknisi.dashboard') }}
+            @elseif($role == 'pelanggan') {{ route('pelanggan.dashboard') }}
+            @endif
+       ">
+        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+        Dashboard
+    </a>
+@endif
+
+>>>>>>> Stashed changes
 
     <a class="nav-link" 
        href="
@@ -489,7 +507,8 @@
                                 <a class="nav-link" href="{{ route('payment.rekap.index') }}">
                                   <div class="sb-nav-link-icon"><i class="fas fa-chart-bar"></i></div>
                                    Rekap Transaksi
-                                </a>
+                               </a>
+
                         @endif
 
                         {{-- TEKNISI --}}

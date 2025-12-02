@@ -5,13 +5,10 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PaketLayananController;
 use App\Http\Controllers\PelangganController;
-<<<<<<< HEAD
 use App\Http\Controllers\PaymentController;
-=======
 use App\Http\Controllers\MetodePembayaranController;
 use App\Http\Controllers\KelolaPesananController;
-
->>>>>>> d3175c94b0adaf3f7ff2d8731730ef391d4608a0
+use App\Http\Controllers\PaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -235,14 +232,14 @@ Route::prefix('payment')->group(function () {
     Route::get('/rekap', [PaymentController::class, 'rekapIndex'])->name('payment.rekap.index');
     Route::get('/rekap/pdf', [PaymentController::class, 'rekapPDF'])->name('payment.rekap.pdf');
 });    
+
+});
+
     //Halaman update status
     Route::get('/payment/status', [PaymentController::class, 'statusPage'])
     ->name('payment.status');
     Route::post('/payment/status/update/{id}', [PaymentController::class, 'updateStatus'])
     ->name('payment.status.update');
-
-});
-
 
 
 /*
