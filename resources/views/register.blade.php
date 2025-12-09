@@ -70,20 +70,7 @@
                           <textarea name="alamat" class="form-control" rows="3">{{ old('alamat') }}</textarea>
 
                         </div>
-                        <!-- Lokasi Otomatis -->
-<div class="mb-3">
-    <label class="form-label">Lokasi Anda</label>
-
-    <button type="button" onclick="getLocation()" class="btn btn-primary w-100 mb-2">
-        Ambil Lokasi Otomatis
-    </button>
-
-   <input type="text" id="latitude" name="latitude" class="form-control mb-2" placeholder="Latitude" readonly>
-<input type="text" id="longitude" name="longitude" class="form-control" placeholder="Longitude" readonly>
-
-    <small class="text-muted">Klik tombol di atas untuk mengisi lokasi otomatis.</small>
-</div>
-
+                        
 
                         <button class="btn btn-success w-100">Daftar</button>
 

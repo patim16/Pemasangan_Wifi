@@ -16,44 +16,40 @@ class AuthController extends Controller
     }
 
     // PROSES REGISTER
-   public function register(Request $request)
-{
-    $request->validate([
-        'nama' => 'required|string|max:100',
-        'no_hp' => 'required|string|max:20',
-    
-       'alamat' => 'nullable|string',
+    public function register(Request $request)
+    {
+        $request->validate([
+            'nama' => 'required|string|max:100',
+            'no_hp' => 'required|string|max:20',
+            'alamat' => 'nullable|string',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6',
+            'foto_ktp' => 'required|image|mimes:jpeg,png,jpg|max:2048', // max 2MB
+        ]);
 
-        'email' => 'required|email|unique:users,email',
-        'password' => 'required|min:6',
-        'foto_ktp' => 'required|image|mimes:jpeg,png,jpg|max:2048' // max 2MB
-    ]);
+        // Proses upload foto KTP
+        $fotoPath = null;
+        if ($request->hasFile('foto_ktp')) {
+            $file = $request->file('foto_ktp');
+            $filename = time() . '_' . Str::slug($request->nama) . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('public/uploads/ktp', $filename);
+            $fotoPath = 'uploads/ktp/' . $filename; 
+        }
 
-    // Proses upload foto KTP
-    $fotoPath = null;
-    if ($request->hasFile('foto_ktp')) {
-        $file = $request->file('foto_ktp');
-        $filename = time() . '_' . Str::slug($request->nama) . '.' . $file->getClientOriginalExtension();
-        $file->storeAs('public/uploads/ktp', $filename);
-        $fotoPath = 'uploads/ktp/' . $filename; 
+        User::create([
+            'nama' => $request->nama,
+            'no_hp' => $request->no_hp,
+            'alamat' => $request->alamat,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'role' => 'pelanggan',
+            'foto_ktp' => $fotoPath,
+           
+        ]);
+
+        return redirect('/login')->with('success', 'Registrasi Berhasil, silakan login!');
     }
 
-    User::create([
-        'nama' => $request->nama,
-        'no_hp' => $request->no_hp,
-        'alamat' => $request->alamat,
-        'email' => $request->email,
-        'password' => bcrypt($request->password),
-        'role' => 'pelanggan',
-        'foto_ktp' => $fotoPath,
-        'latitude' => $request->latitude,
-'longitude' => $request->longitude,
-
-    ]);
-   
-
-    return redirect('/login')->with('success', 'Registrasi Berhasil, silakan login!');
-}
     // TAMPILKAN FORM LOGIN
     public function showLogin()
     {
@@ -63,7 +59,6 @@ class AuthController extends Controller
     // PROSES LOGIN
     public function login(Request $request)
     {
-        // Cari user berdasarkan email
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
@@ -74,10 +69,8 @@ class AuthController extends Controller
             return back()->with('error', 'Password salah');
         }
 
-        // Simpan user ke session
         session(['user' => $user]);
 
-        // Redirect berdasarkan role
         switch ($user->role) {
             case 'superadmin':
                 return redirect('/superadmin/dashboard');
@@ -99,4 +92,3 @@ class AuthController extends Controller
         return redirect('/login');
     }
 }
-

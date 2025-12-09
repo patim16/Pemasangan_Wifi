@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
 
+
     // ============================
     // DASHBOARD PER ROLE
     // ============================
@@ -33,6 +34,8 @@ class UserController extends Controller
 }
 
 
+    
+
 
     public function adminDashboard()
     {
@@ -48,20 +51,17 @@ class UserController extends Controller
         ]);
     }
 
-    public function teknisiDashboard()
-    {
-        return view('teknisi.dashboard');
-    }
-
     public function paymentDashboard()
     {
         return view('payment.dashboard');
     }
 
-    // ============================
-    // KELOLA ADMIN
-    // ============================
+    public function pelangganDashboard()
+    {
+        return view('pelanggan.dashboard');
+    }
 
+    // KELOLA ADMIN
     public function indexAdmin()
     {
         $admins = User::where('role', 'admin')->get();
@@ -100,13 +100,7 @@ class UserController extends Controller
         ]);
 
         $admin = User::findOrFail($id);
-
-        $admin->update([
-            'nama' => $request->nama,
-            'email' => $request->email,
-            'no_hp' => $request->no_hp,
-            'alamat' => $request->alamat,
-        ]);
+        $admin->update($request->only('nama','email','no_hp','alamat'));
 
         return redirect()->back()->with('success', 'Admin berhasil diperbarui');
     }
@@ -117,10 +111,7 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Admin berhasil dihapus');
     }
 
-    // ============================
-    // KELOLA TEKNISI
-    // ============================
-
+    // KELOLA TEKNISI (hanya user teknisi)
     public function indexTeknisi()
     {
         $teknisis = User::where('role', 'teknisi')->get();
@@ -159,13 +150,7 @@ class UserController extends Controller
         ]);
 
         $teknisi = User::findOrFail($id);
-
-        $teknisi->update([
-            'nama' => $request->nama,
-            'email' => $request->email,
-            'no_hp' => $request->no_hp,
-            'alamat' => $request->alamat,
-        ]);
+        $teknisi->update($request->only('nama','email','no_hp','alamat'));
 
         return redirect()->back()->with('success', 'Teknisi berhasil diperbarui');
     }
@@ -176,10 +161,7 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Teknisi berhasil dihapus');
     }
 
-    // ============================
     // KELOLA PAYMENT
-    // ============================
-
     public function indexPayment()
     {
         $payments = User::where('role', 'payment')->get();
@@ -218,13 +200,7 @@ class UserController extends Controller
         ]);
 
         $payment = User::findOrFail($id);
-
-        $payment->update([
-            'nama' => $request->nama,
-            'email' => $request->email,
-            'no_hp' => $request->no_hp,
-            'alamat' => $request->alamat,
-        ]);
+        $payment->update($request->only('nama','email','no_hp','alamat'));
 
         return redirect()->back()->with('success', 'Payment staff berhasil diperbarui');
     }
@@ -238,19 +214,51 @@ class UserController extends Controller
 
 
 
-    /*
+
 /*
 |--------------------------------------------------------------------------
 | KELOLA PELANGGAN
 |--------------------------------------------------------------------------
 */
 
-// LIST SEMUA PELANGGAN (role user)
+// LIST SEMUA PELANGGAN
 public function indexPelanggan()
 {
+    // kalau pelanggan kamu pakai role = 'pelanggan', gunakan ini:
     $pelanggan = User::where('role', 'pelanggan')->get();
+
     return view('superadmin.kelolapelanggan', compact('pelanggan'));
 }
+
+// TERIMA PELANGGAN
+public function terimaPelanggan($id)
+{
+    $p = User::findOrFail($id);
+    $p->update([
+        'status' => 'accepted',
+        'alasan_penolakan' => null
+    ]);
+
+    return back()->with('success', 'Pelanggan diterima!');
+}
+
+
+    public function tolakPelanggan(Request $request, $id)
+    {
+        $request->validate([
+            'alasan' => 'required'
+        ]);
+
+        $p = User::findOrFail($id);
+        $p->update([
+            'status' => 'rejected',
+            'alasan_penolakan' => $request->alasan
+        ]);
+
+        return back()->with('success', 'Pelanggan ditolak.');
+    }
+
+
 
 
 // UPDATE DATA PELANGGAN

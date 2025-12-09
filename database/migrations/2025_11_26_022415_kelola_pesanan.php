@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('pesanan', function (Blueprint $table) {
+        Schema::create('kelola_pesanan', function (Blueprint $table) {
             $table->id();
 
             // foreign key ke users
@@ -21,7 +21,7 @@ return new class extends Migration
 
             // foreign key ke paket_layanan
             $table->foreignId('paket_id')
-                ->constrained('paket_layanan')
+                ->constrained('paket_layanans')
                 ->onDelete('cascade');
 
             $table->enum('status', ['pending','diterima','ditolak','jadwal_instalasi','selesai'])

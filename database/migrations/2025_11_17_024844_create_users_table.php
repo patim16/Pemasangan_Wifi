@@ -26,9 +26,7 @@ return new class extends Migration
             // role user
            $table->enum('role',['superadmin','admin','user','teknisi','payment'])->default('user');
 
-       $table->decimal('latitude', 10, 7)->nullable();
-$table->decimal('longitude', 10, 7)->nullable();
-
+      
 
 
             $table->timestamps();
