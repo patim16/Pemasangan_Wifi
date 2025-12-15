@@ -118,16 +118,13 @@ Route::prefix('admin')->group(function () {
     ]);
 
     // Kelola Payment
-   Route::get('/kelolapayment', [UserController::class, 'indexPayment'])
-    ->name('admin.kelolapayment');
-
+    Route::get('/kelolapayment', [UserController::class, 'indexPayment'])->name('admin.kelolapayment');
 
     // Kelola Teknisi
-  Route::get('/kelolateknisi', [UserController::class, 'indexTeknisi'])
-    ->name('admin.kelolateknisi');
+    Route::get('/kelolateknisi', [UserController::class, 'indexTeknisi'])->name('admin.kelolateknisi');
 
-Route::get('/kelolapelanggan', [UserController::class, 'indexPelanggan'])
-    ->name('admin.kelolapelanggan');
+    // Kelola Pelanggan
+    Route::get('/kelolapelanggan', [UserController::class, 'indexPelanggan'])->name('admin.kelolapelanggan');
 
     // Pesanan WiFi
     Route::get('/kelolapesanan', [KelolaPesananController::class, 'kelolaPesanan'])
@@ -147,7 +144,7 @@ Route::get('/kelolapelanggan', [UserController::class, 'indexPelanggan'])
 
 
     
-    Route::get('/kelolapesanan', [KelolaPesananController::class, 'index'])
+    Route::get('/kelolapesanan', [KelolaPesananController::class, 'kelolaPesanan'])
         ->name('admin.kelolapesanan');
 
     // TERIMA PESANAN
@@ -199,7 +196,7 @@ Route::prefix('teknisi')->name('teknisi.')->group(function () {
     Route::post('/laporan', [TeknisiController::class, 'kirimLaporanPemasangan'])->name('laporan.store');
 
     // Jadwal Survei
-    Route::get('/jadwal-survei', [TeknisiController::class, 'jadwalSurvei'])->name('jadwal-survei');
+    Route::get('/jadwal-survei', [TeknisiController::class, 'jadwalSurveyTeknisi'])->name('jadwal-survei');
     Route::get('/jadwal-survei/detail/{id}', [TeknisiController::class, 'detailSurvei'])->name('detail-survei');
 
     // Jadwal Pemasangan

@@ -24,9 +24,8 @@
         <tbody>
         @foreach($pesanan as $p)
             <tr>
-                <td>{{ $p->pelanggan->nama ?? 'Nama tidak ditemukan' }}
-</td>
-                <td>{{ $p->paket->nama_paket }}</td>
+                <td>{{ $p->pelanggan->nama ?? 'Nama tidak ditemukan' }}</td>
+                <td>{{ $p->paket->nama_paket ?? 'Nama tidak ditemukan'}}</td>
 
                 {{-- STATUS --}}
                 <td>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Instalasi;
+use App\Models\KelolaPesanan;
 use App\Models\Pemesanan;
 use App\Models\Survei;
 use App\Models\Pemasangan;
@@ -27,17 +28,26 @@ class TeknisiController extends Controller
     | JADWAL SURVEI (FIX UTAMA)
     |--------------------------------------------------------------------------
     */
-    public function jadwalSurvei()
+    // public function jadwalSurvei()
+    // {
+    //     $survei = Pemesanan::where('status', 'jadwal_survei')->get();
+    //     return view('teknisi.jadwal-survei', compact('survei'));
+    // }
+
+    public function jadwalSurveyTeknisi()
     {
-        $survei = Pemesanan::with(['user', 'paket'])
-            ->where('teknisi_id', Auth::id())
-            ->where('status', 'menunggu_survei')
+        $teknisiId = session('user')->id;
+
+        $pesanan = Pemesanan::with(['pelanggan', 'paket'])
+            ->where('teknisi_id', $teknisiId)
             ->whereNotNull('jadwal_survei')
             ->orderBy('jadwal_survei', 'asc')
             ->get();
 
-        return view('teknisi.jadwal-survei', compact('survei'));
+
+        return view('teknisi.jadwal-survei', compact('pesanan'));
     }
+
 
     /*
     |--------------------------------------------------------------------------

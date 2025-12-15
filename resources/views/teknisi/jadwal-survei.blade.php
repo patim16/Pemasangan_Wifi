@@ -8,7 +8,7 @@
             {{-- Header Section --}}
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
-                   <h5 class="fw-bold mb-1 text-dark" style="font-size: 1.4rem;">Jadwal Survei</h5>
+                    <h5 class="fw-bold mb-1 text-dark" style="font-size: 1.4rem;">Jadwal Survei</h5>
                     <p class="text-muted mb-0">Daftar survei yang perlu dilakukan</p>
                 </div>
                 <a href="{{ route('teknisi.dashboard') }}" class="btn btn-sm btn-outline-secondary">
@@ -34,10 +34,11 @@
                             </thead>
 
                             <tbody>
-                                @forelse ($survei as $item)
+                                @forelse ($pesanan as $item)
                                 <tr>
                                     <td class="py-3">#SRV{{ $item->id }}</td>
 
+                                    {{-- Pelanggan --}}
                                     <td class="py-3">
                                         <div class="d-flex align-items-center">
                                             @php
@@ -53,21 +54,25 @@
                                         </div>
                                     </td>
 
+                                    {{-- Alamat --}}
                                     <td class="py-3">
-                                        <div class="text-truncate" style="max-width: 200px;" title="{{ $item->alamat }}">
+                                        <div class="text-truncate" style="max-width: 200px;"
+                                            title="{{ $item->alamat }}">
                                             {{ $item->alamat }}
                                         </div>
                                     </td>
-
                                    <td class="py-3">
-    <span class="badge bg-light text-dark fw-normal">
-        {{ $item->paket->nama_paket ?? '-' }}
-    </span>
-</td>
+                                        <span class="badge bg-light text-dark fw-normal">
+                                            {{ $item->paket->nama_paket ?? '-' }}
+                                        </span>
+                                    </td>
 
+
+                                    {{-- Waktu --}}
                                     <td class="py-3">
                                         <div class="d-flex align-items-center">
                                             <i class="bi bi-clock text-muted me-1"></i>
+<<<<<<< Updated upstream
                                           <span>
    {{ $item->jadwal_survei ? \Carbon\Carbon::parse($item->jadwal_survei)->format('d M Y H:i') : '-- Belum dijadwalkan --' }}
 
@@ -77,18 +82,24 @@
                                     </td>
 
                                    <td class="py-3">
-    <span class="badge 
-        @if($item->status === 'menunggu_survei') bg-warning 
-        @elseif($item->status === 'survei_selesai') bg-success 
-        @else bg-secondary 
-        @endif">
-        {{ ucfirst(str_replace('_', ' ', $item->status)) }}
-    </span>
-</td>
+                                        <span class="badge 
+                                            @if($item->status === 'menunggu_survei') bg-warning 
+                                            @elseif($item->status === 'survei_selesai') bg-success 
+                                            @else bg-secondary 
+                                            @endif">
+                                            {{ ucfirst(str_replace('_', ' ', $item->status)) }}
+                                        </span>
+                                    </td>
 
 
+                                    {{-- Aksi --}}
                                     <td class="py-3 text-center">
-                                        <a href="{{ route('teknisi.detail-survei', $item->id) }}" class="btn btn-sm btn-outline-primary">
+                                        {{-- <a href="{{ route('teknisi.detail-survei', $item->id) }}"
+                                            class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye me-1"></i>Detail
+                                        </a> --}}
+                                        <a href="#"
+                                            class="btn btn-sm btn-outline-primary">
                                             <i class="bi bi-eye me-1"></i>Detail
                                         </a>
                                     </td>
@@ -103,7 +114,6 @@
                                     </td>
                                 </tr>
                                 @endforelse
-
                             </tbody>
                         </table>
                     </div>

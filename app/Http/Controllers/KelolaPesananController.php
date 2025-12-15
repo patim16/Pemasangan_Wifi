@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class KelolaPesananController extends Controller
 {
-    public function index()
+    public function kelolaPesanan()
     {
         $pesanan = Pemesanan::with(['pelanggan', 'paket', 'teknisi'])->get();
         $teknisi = User::where('role', 'teknisi')->get();
@@ -103,6 +103,7 @@ class KelolaPesananController extends Controller
 
         return back()->with('success','Jadwal instalasi diatur.');
     }
+
 
     public function instalasiSelesai($id)
     {
