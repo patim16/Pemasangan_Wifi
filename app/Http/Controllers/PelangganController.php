@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use App\Models\Pemesanan;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use App\Models\PaketLayanan;
+
 
 
 class PelangganController extends Controller
@@ -14,34 +16,19 @@ class PelangganController extends Controller
         return view('pelanggan.dashboard');
     }
 //pilih paket
-     public function pilihPaket()
-    {
-        return view('pelanggan.paket.pilih-paket');
-    }
+    public function pilihPaket()
+{
+    $pakets = PaketLayanan::all();
+    return view('pelanggan.paket.pilih-paket', compact('pakets'));
+}
+
 //detail paket
-    public function detailPaket($id)
-    {
-    // Data sementara (nanti bisa ambil dari database)
-    $paket = [
-        '20' => [
-            'nama' => 'Paket 20 Mbps',
-            'harga' => 180000,
-            'deskripsi' => 'Cocok untuk streaming, sosmed, belajar online.',
-        ],
-        '50' => [
-            'nama' => 'Paket 50 Mbps',
-            'harga' => 250000,
-            'deskripsi' => 'Kecepatan tinggi untuk streaming HD dan gaming ringan.',
-        ],
-    ];
+ public function detailPaket($id)
+{
+    $paket = PaketLayanan::findOrFail($id);
 
-    // Jika paket tidak ditemukan
-    if (!isset($paket[$id])) {
-        abort(404);
-    }
-
-    return view('pelanggan.paket.detail', ['paket' => $paket[$id]]);
-    }
+    return view('pelanggan.paket.detail', compact('paket'));
+}
 
   //pilih jadwal
 public function pilihJadwal($id)
@@ -103,9 +90,11 @@ public function simpanInputData(Request $request, $paket_id)
 public function invoice($paket_id)
 {
     // Ambil data pemesanan terakhir untuk user ini dengan paket_id tersebut
-    $invoice = Pemesanan::where('user_id', session('user')->id)
+    $userId = auth()->id();
+
+    $invoice = Pemesanan::where('user_id', $userId)
                 ->where('paket_id', $paket_id)
-                ->orderBy('created_at', 'desc')
+                ->latest()
                 ->first();
     
     return view('pelanggan.paket.invoice', compact('paket_id', 'invoice'));

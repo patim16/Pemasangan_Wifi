@@ -70,7 +70,7 @@
                           <textarea name="alamat" class="form-control" rows="3">{{ old('alamat') }}</textarea>
 
                         </div>
-                        
+
 
                         <button class="btn btn-success w-100">Daftar</button>
 

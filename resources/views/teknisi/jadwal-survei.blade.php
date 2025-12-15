@@ -41,14 +41,14 @@
                                     <td class="py-3">
                                         <div class="d-flex align-items-center">
                                             @php
-                                                $initials = strtoupper(substr($item->nama_pelanggan, 0, 2));
+                                                $initials = strtoupper(substr($item->pelanggan->nama ?? 'NA', 0, 2));
                                             @endphp
                                             <div class="avatar-circle-sm bg-primary bg-opacity-10 me-2">
                                                 <span class="text-primary fw-bold">{{ $initials }}</span>
                                             </div>
                                             <div>
-                                                <div class="fw-bold">{{ $item->nama_pelanggan }}</div>
-                                                <div class="small text-muted">{{ $item->telepon }}</div>
+                                                <div class="fw-bold">{{ $item->pelanggan->nama ?? '-' }}</div>
+                                                <div class="small text-muted">{{ $item->pelanggan->no_hp ?? '-' }}</div>
                                             </div>
                                         </div>
                                     </td>
@@ -59,26 +59,33 @@
                                         </div>
                                     </td>
 
-                                    <td class="py-3">
-                                        <span class="badge bg-light text-dark fw-normal">{{ $item->paket ?? '-' }}</span>
-                                    </td>
+                                   <td class="py-3">
+    <span class="badge bg-light text-dark fw-normal">
+        {{ $item->paket->nama_paket ?? '-' }}
+    </span>
+</td>
 
                                     <td class="py-3">
                                         <div class="d-flex align-items-center">
                                             <i class="bi bi-clock text-muted me-1"></i>
-                                            <span>{{ $item->jam_mulai ?? '--:--' }} - {{ $item->jam_selesai ?? '--:--' }}</span>
+                                          <span>
+   {{ $item->jadwal_survei ? \Carbon\Carbon::parse($item->jadwal_survei)->format('d M Y H:i') : '-- Belum dijadwalkan --' }}
+
+</span>
+
                                         </div>
                                     </td>
 
-                                    <td class="py-3">
-                                        <span class="badge 
-                                            @if($item->status === 'jadwal_survei') bg-warning 
-                                            @elseif($item->status === 'proses') bg-info 
-                                            @else bg-success 
-                                            @endif">
-                                            {{ ucfirst(str_replace('_', ' ', $item->status)) }}
-                                        </span>
-                                    </td>
+                                   <td class="py-3">
+    <span class="badge 
+        @if($item->status === 'menunggu_survei') bg-warning 
+        @elseif($item->status === 'survei_selesai') bg-success 
+        @else bg-secondary 
+        @endif">
+        {{ ucfirst(str_replace('_', ' ', $item->status)) }}
+    </span>
+</td>
+
 
                                     <td class="py-3 text-center">
                                         <a href="{{ route('teknisi.detail-survei', $item->id) }}" class="btn btn-sm btn-outline-primary">

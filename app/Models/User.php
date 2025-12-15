@@ -23,7 +23,9 @@ class User extends Authenticatable
         'no_hp',
         'alamat',
         'foto_ktp',
+
        
+        
         'role',
     ];
 

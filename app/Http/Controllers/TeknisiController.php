@@ -8,7 +8,6 @@ use App\Models\Pemesanan;
 use App\Models\Survei;
 use App\Models\Pemasangan;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 
 class TeknisiController extends Controller
@@ -25,12 +24,18 @@ class TeknisiController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | JADWAL SURVEI
+    | JADWAL SURVEI (FIX UTAMA)
     |--------------------------------------------------------------------------
     */
     public function jadwalSurvei()
     {
-        $survei = Pemesanan::where('status', 'jadwal_survei')->get();
+        $survei = Pemesanan::with(['user', 'paket'])
+            ->where('teknisi_id', Auth::id())
+            ->where('status', 'menunggu_survei')
+            ->whereNotNull('jadwal_survei')
+            ->orderBy('jadwal_survei', 'asc')
+            ->get();
+
         return view('teknisi.jadwal-survei', compact('survei'));
     }
 
@@ -41,13 +46,13 @@ class TeknisiController extends Controller
     */
     public function detailSurvei($id)
     {
-        $survei = Pemesanan::findOrFail($id);
+        $survei = Pemesanan::with(['user', 'paket'])->findOrFail($id);
         return view('teknisi.detail-survei', compact('survei'));
     }
 
     /*
     |--------------------------------------------------------------------------
-    | FORM & SUBMIT LAPORAN SURVEI
+    | FORM SURVEI
     |--------------------------------------------------------------------------
     */
     public function formSurvei($id)
@@ -56,6 +61,11 @@ class TeknisiController extends Controller
         return view('teknisi.form-survei', compact('data'));
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | SUBMIT SURVEI
+    |--------------------------------------------------------------------------
+    */
     public function submitSurvei(Request $request)
     {
         $request->validate([
@@ -68,12 +78,13 @@ class TeknisiController extends Controller
         $foto = null;
         if ($request->hasFile('foto')) {
             $file = $request->file('foto');
-            $filename = time() . '_' . $file->getClientOriginalName();
+            $filename = time().'_'.$file->getClientOriginalName();
             $file->storeAs('public/survei', $filename);
-            $foto = 'survei/' . $filename;
+            $foto = 'survei/'.$filename;
         }
 
-        DB::transaction(function() use ($request, $foto) {
+        DB::transaction(function () use ($request, $foto) {
+
             Survei::create([
                 'pemesanan_id' => $request->pemesanan_id,
                 'hasil'        => $request->hasil,
@@ -83,7 +94,9 @@ class TeknisiController extends Controller
             ]);
 
             $pesanan = Pemesanan::findOrFail($request->pemesanan_id);
-            $pesanan->status = ($request->hasil === 'bisa') ? 'survei_selesai' : 'ditolak';
+            $pesanan->status = ($request->hasil === 'bisa')
+                ? 'survei_selesai'
+                : 'ditolak';
             $pesanan->save();
         });
 
@@ -92,60 +105,50 @@ class TeknisiController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | JADWAL PEMASANGAN — (SETELAH BAYAR)
+    | JADWAL PEMASANGAN
     |--------------------------------------------------------------------------
     */
     public function jadwalPemasangan()
     {
-        $pemasangan = Pemesanan::where('status', 'paid')->get();
+        $pemasangan = Pemesanan::with(['user', 'paket'])
+            ->where('teknisi_id', Auth::id())
+            ->where('status', 'paid')
+            ->whereNotNull('jadwal_instalasi')
+            ->get();
+
         return view('teknisi.jadwal-pemasangan', compact('pemasangan'));
-    }
-
-    public function simpanJadwalPemasangan(Request $request)
-    {
-        $request->validate([
-            'pemesanan_id'       => 'required|exists:pemesanan,id',
-            'tanggal_pemasangan' => 'required|date',
-            'catatan'            => 'nullable|string|max:255',
-        ]);
-
-        Pemasangan::create([
-            'pemesanan_id'       => $request->pemesanan_id,
-            'tanggal_pemasangan' => $request->tanggal_pemasangan,
-            'catatan'            => $request->catatan,
-            'teknisi_id'         => Auth::id(),
-        ]);
-
-        return back()->with('success', 'Jadwal pemasangan berhasil disimpan!');
     }
 
     /*
     |--------------------------------------------------------------------------
-    | DETAIL PEMASANGAN (PERBAIKAN UTAMA)
+    | DETAIL PEMASANGAN
     |--------------------------------------------------------------------------
     */
     public function detailPemasangan($id)
     {
-        $pemasangan = Pemasangan::where('pemesanan_id', $id)->first();
-
-        if (!$pemasangan) {
-            abort(404, 'Data pemasangan tidak ditemukan.');
-        }
-
+        $pemasangan = Pemasangan::where('pemesanan_id', $id)->firstOrFail();
         return view('teknisi.detail-pemasangan', compact('pemasangan'));
     }
 
     /*
     |--------------------------------------------------------------------------
-    | FORM KIRIM LAPORAN PEMASANGAN
+    | FORM LAPORAN PEMASANGAN
     |--------------------------------------------------------------------------
     */
     public function formLaporan()
     {
-        $pemesanan = Pemesanan::where('status', 'paid')->get();
+        $pemesanan = Pemesanan::where('teknisi_id', Auth::id())
+            ->where('status', 'paid')
+            ->get();
+
         return view('teknisi.kirim-laporan', compact('pemesanan'));
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | KIRIM LAPORAN PEMASANGAN
+    |--------------------------------------------------------------------------
+    */
     public function kirimLaporanPemasangan(Request $request)
     {
         $request->validate([
@@ -157,12 +160,12 @@ class TeknisiController extends Controller
         $foto = null;
         if ($request->hasFile('foto')) {
             $file = $request->file('foto');
-            $filename = time() . '_' . $file->getClientOriginalName();
+            $filename = time().'_'.$file->getClientOriginalName();
             $file->storeAs('public/pemasangan', $filename);
-            $foto = 'pemasangan/' . $filename;
+            $foto = 'pemasangan/'.$filename;
         }
 
-        DB::transaction(function() use ($request, $foto) {
+        DB::transaction(function () use ($request, $foto) {
 
             Instalasi::create([
                 'pemesanan_id' => $request->pemesanan_id,
@@ -173,7 +176,7 @@ class TeknisiController extends Controller
             ]);
 
             Pemesanan::where('id', $request->pemesanan_id)
-                     ->update(['status' => 'pemasangan_selesai']);
+                ->update(['status' => 'pemasangan_selesai']);
         });
 
         return back()->with('success', 'Laporan pemasangan berhasil dikirim!');
@@ -187,8 +190,8 @@ class TeknisiController extends Controller
     public function updateStatus()
     {
         $instalasi = Instalasi::where('teknisi_id', Auth::id())
-                              ->orderBy('created_at', 'desc')
-                              ->get();
+            ->latest()
+            ->get();
 
         return view('teknisi.update-status', compact('instalasi'));
     }

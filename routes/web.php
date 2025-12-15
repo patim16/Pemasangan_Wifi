@@ -8,6 +8,8 @@ use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\MetodePembayaranController;
 use App\Http\Controllers\KelolaPesananController;
 use App\Http\Controllers\TeknisiController;
+use App\Models\PaketLayanan;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -15,8 +17,11 @@ use App\Http\Controllers\TeknisiController;
 |--------------------------------------------------------------------------
 */
 Route::get('/', function () {
-    return view('welcome');
+    $pakets = PaketLayanan::all();
+    return view('landing', compact('pakets'));
 });
+
+
 
 // Auth
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -76,8 +81,11 @@ Route::prefix('superadmin')->group(function () {
     Route::put('/metodepembayaran/update/{id}', [MetodePembayaranController::class, 'update']);
     Route::delete('/metodepembayaran/delete/{id}', [MetodePembayaranController::class, 'destroy']);
 
-    // Kelola Pesanan WiFi
-    Route::get('/kelolapesanan', [KelolaPesananController::class, 'kelolaPesanan'])
+
+
+     // Kelola Pesanan WiFi
+    Route::get('/kelolapesanan', [KelolaPesananController::class, 'index'])
+
         ->name('superadmin.kelolapesanan');
     Route::put('/pesanan/terima/{id}', [KelolaPesananController::class, 'terima'])
         ->name('superadmin.pesanan.terima');
@@ -94,6 +102,8 @@ Route::prefix('superadmin')->group(function () {
 */
 Route::prefix('admin')->group(function () {
 
+   
+    // Dashboard
     Route::get('/dashboard', [UserController::class, 'adminDashboard'])
         ->name('admin.dashboard');
 
@@ -108,19 +118,16 @@ Route::prefix('admin')->group(function () {
     ]);
 
     // Kelola Payment
-    Route::resource('/kelolapayment', UserController::class)->names([
-        'index' => 'admin.kelolapayment'
-    ]);
+   Route::get('/kelolapayment', [UserController::class, 'indexPayment'])
+    ->name('admin.kelolapayment');
+
 
     // Kelola Teknisi
-    Route::resource('/kelolateknisi', UserController::class)->names([
-        'index' => 'admin.kelolateknisi'
-    ]);
+  Route::get('/kelolateknisi', [UserController::class, 'indexTeknisi'])
+    ->name('admin.kelolateknisi');
 
-    // Kelola Pelanggan
-    Route::resource('/kelolapelanggan', UserController::class)->names([
-        'index' => 'admin.kelolapelanggan'
-    ]);
+Route::get('/kelolapelanggan', [UserController::class, 'indexPelanggan'])
+    ->name('admin.kelolapelanggan');
 
     // Pesanan WiFi
     Route::get('/kelolapesanan', [KelolaPesananController::class, 'kelolaPesanan'])
@@ -131,6 +138,50 @@ Route::prefix('admin')->group(function () {
         ->name('admin.pesanan.tolak');
     Route::put('/pesanan/jadwal/{id}', [KelolaPesananController::class, 'aturJadwal'])
         ->name('admin.pesanan.jadwal');
+
+  /*
+|---------------------------------------------
+| KELOLA PESANAN WIFI (ADMIN)
+|---------------------------------------------
+*/
+
+
+    
+    Route::get('/kelolapesanan', [KelolaPesananController::class, 'index'])
+        ->name('admin.kelolapesanan');
+
+    // TERIMA PESANAN
+    Route::post('/pesanan/{id}/terima', [KelolaPesananController::class, 'terima'])
+        ->name('admin.pesanan.terima');
+
+    // JADWAL SURVEI
+    Route::post('/pesanan/{id}/jadwal-survei', [KelolaPesananController::class, 'jadwalSurvei'])
+        ->name('admin.pesanan.jadwalSurvei');
+
+    // LAPORAN SURVEI
+    Route::post('/pesanan/{id}/laporan-survei', [KelolaPesananController::class, 'laporanSurvei'])
+        ->name('admin.pesanan.laporanSurvei');
+
+    // KIRIM TAGIHAN
+    Route::post('/pesanan/{id}/kirim-tagihan', [KelolaPesananController::class, 'kirimTagihan'])
+        ->name('admin.pesanan.kirimTagihan');
+
+    // KONFIRMASI PEMBAYARAN
+    Route::post('/pesanan/{id}/konfirmasi-bayar', [KelolaPesananController::class, 'konfirmasiPembayaran'])
+        ->name('admin.pesanan.konfirmasiPembayaran');
+
+    // JADWAL INSTALASI
+    Route::post('/pesanan/{id}/jadwal-instalasi', [KelolaPesananController::class, 'jadwalInstalasi'])
+        ->name('admin.pesanan.jadwalInstalasi');
+
+    // INSTALASI SELESAI
+    Route::post('/pesanan/{id}/instalasi-selesai', [KelolaPesananController::class, 'instalasiSelesai'])
+        ->name('admin.pesanan.instalasiSelesai');
+//UPDATE JADWAL SURVEI
+    Route::put('/pesanan/{id}/jadwal-survei/update', [KelolaPesananController::class, 'updateJadwalSurvei'])
+    ->name('pesanan.jadwalSurvei.update');
+
+
 });
 
 /*
@@ -159,8 +210,8 @@ Route::prefix('teknisi')->name('teknisi.')->group(function () {
         ->name('jadwal-pemasangan.simpan');
 
     // Detail Pemasangan
-    Route::get('/detail-pemasangan/{kode}', [TeknisiController::class, 'detailPemasangan'])
-        ->name('detail-pemasangan');
+    // Route::get('/detail-pemasangan/{kode}', [TeknisiController::class, 'detailPemasangan'])
+    //     ->name('detail-pemasangan');
 
     // Detail Instalasi
     Route::get('/instalasi/{id}/detail', [TeknisiController::class, 'detailInstalasi'])
@@ -169,6 +220,13 @@ Route::prefix('teknisi')->name('teknisi.')->group(function () {
     // Status Pemasangan
     Route::get('/status', [TeknisiController::class, 'updateStatus'])->name('status');
     Route::post('/status/update', [TeknisiController::class, 'updateStatusSubmit'])->name('status.update');
+
+
+    Route::get('/jadwal-pemasangan', [TeknisiController::class, 'jadwalPemasangan'])
+        ->name('jadwal-pemasangan');
+
+    Route::get('/detail-pemasangan/{id}', [TeknisiController::class, 'detailPemasangan'])
+        ->name('detail-pemasangan');
 });
 
 
@@ -178,6 +236,7 @@ Route::prefix('teknisi')->name('teknisi.')->group(function () {
 | PELANGGAN ROUTES
 |--------------------------------------------------------------------------
 */
+
 Route::prefix('pelanggan')->group(function () {
 
     Route::get('/dashboard', [PelangganController::class, 'dashboard'])
@@ -213,4 +272,60 @@ Route::prefix('pelanggan')->group(function () {
     // Riwayat
     Route::get('/riwayat', [PelangganController::class, 'riwayat'])
         ->name('pelanggan.riwayat');
+});
+
+Route::prefix('payment')->group(function () {
+    Route::get('/dashboard', [UserController::class, 'paymentDashboard'])
+        ->name('payment.dashboard');
+});
+
+
+
+/*
+|--------------------------------------------------------------------------
+| PELANGGAN ROUTE
+|--------------------------------------------------------------------------
+*/// Dashboard Pelanggan
+    Route::get('/pelanggan/dashboard', [PelangganController::class, 'dashboard'])
+    ->name('pelanggan.dashboard');
+
+//pilih paket
+    Route::get('/pelanggan/pesan-wifi', [PelangganController::class, 'pilihPaket'])
+     ->name('pelanggan.pesanwifi');
+//detail paket
+    Route::get('/pelanggan/paket/{id}', [PelangganController::class, 'detailPaket'])->name('pelanggan.paket.detail');
+
+//pilih jadwal
+     Route::get('/pelanggan/pesan-wifi/{id}/jadwal', [PelangganController::class, 'pilihJadwal'])
+    ->name('pelanggan.jadwal');
+    Route::post('/pelanggan/pesan-wifi/{id}/jadwal', [PelangganController::class, 'simpanJadwal'])
+    ->name('pelanggan.jadwal.simpan');
+//input data
+    Route::get('/pelanggan/pesan-wifi/{id}/input-data', [PelangganController::class, 'inputData'])
+    ->name('pelanggan.inputdata');
+    Route::post('/pelanggan/pesan-wifi/{paket_id}/input-data', [PelangganController::class, 'simpanInputData'])
+    ->name('pelanggan.inputdata.simpan');
+//invoice
+    Route::get('/pelanggan/invoice/{paket_id}', [PelangganController::class, 'invoice'])
+    ->name('pelanggan.invoice');
+//konfirmasi pemesanan
+    Route::post('/pelanggan/invoice/{paket_id}/konfirmasi', [PelangganController::class, 'konfirmasiPemesanan'])
+    ->name('pelanggan.konfirmasi');
+// riwayat pemesanan
+    Route::get('/pelanggan/riwayat', [PelangganController::class, 'riwayat'])
+    ->name('pelanggan.riwayat');
+// cetak invoice    
+Route::get('/pelanggan/invoice/cetak/{id}', [PelangganController::class, 'cetakInvoice'])->name('pelanggan.invoice.cetak');
+
+
+
+
+
+
+
+    
+
+// Pelanggan (belum diisi)
+Route::prefix('pelanggan')->group(function () {
+    // nanti diisi
 });

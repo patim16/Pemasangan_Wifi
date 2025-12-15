@@ -851,56 +851,30 @@
             </div>
           </div>
         </div>
+@foreach ($pakets as $p)
+<div class="paket-card">
+    <div class="paket-icon">
+        <i class="lni lni-wifi"></i>
+    </div>
 
-        <div class="paket-cards">
-          <div class="paket-card home">
-            <div class="paket-icon">
-              <i class="lni lni-home"></i>
-            </div>
-            <h3 class="paket-title">Paket Rumahan</h3>
-            <p class="paket-description">Paket internet untuk keluarga dengan harga terjangkau dan kecepatan hingga 50 Mbps. Cocok untuk streaming, browsing, dan gaming.</p>
-            <ul class="paket-features">
-              <li><i class="lni lni-checkmark-circle"></i> Kecepatan hingga 50 Mbps</li>
-              <li><i class="lni lni-checkmark-circle"></i> Unlimited Kuota</li>
-              <li><i class="lni lni-checkmark-circle"></i> Gratis Instalasi</li>
-              <li><i class="lni lni-checkmark-circle"></i> Support 24/7</li>
-            </ul>
-            <div class="paket-price">Rp 299.000 <span>/ bulan</span></div>
-            <a href="#" class="paket-btn">Pilih Paket</a>
-          </div>
-          
-          <div class="paket-card business">
-            <div class="paket-icon">
-              <i class="lni lni-briefcase"></i>
-            </div>
-            <h3 class="paket-title">Paket Bisnis</h3>
-            <p class="paket-description">Solusi internet dedicated untuk kantor dan perusahaan dengan SLA 99.9%, IP static, dan bandwidth hingga 1 Gbps.</p>
-            <ul class="paket-features">
-              <li><i class="lni lni-checkmark-circle"></i> Bandwidth hingga 1 Gbps</li>
-              <li><i class="lni lni-checkmark-circle"></i> IP Static</li>
-              <li><i class="lni lni-checkmark-circle"></i> SLA 99.9%</li>
-              <li><i class="lni lni-checkmark-circle"></i> Support Prioritas</li>
-            </ul>
-            <div class="paket-price">Rp 1.299.000 <span>/ bulan</span></div>
-            <a href="#" class="paket-btn">Pilih Paket</a>
-          </div>
-          
-          <div class="paket-card education">
-            <div class="paket-icon">
-              <i class="lni lni-graduation"></i>
-            </div>
-            <h3 class="paket-title">Paket Edukasi</h3>
-            <p class="paket-description">Paket khusus untuk sekolah dan lembaga pendidikan dengan harga spesial dan kontrol konten internet yang aman.</p>
-            <ul class="paket-features">
-              <li><i class="lni lni-checkmark-circle"></i> Kecepatan hingga 100 Mbps</li>
-              <li><i class="lni lni-checkmark-circle"></i> Kontrol Konten</li>
-              <li><i class="lni lni-checkmark-circle"></i> Harga Spesial</li>
-              <li><i class="lni lni-checkmark-circle"></i> Support Khusus</li>
-            </ul>
-            <div class="paket-price">Rp 599.000 <span>/ bulan</span></div>
-            <a href="#" class="paket-btn">Pilih Paket</a>
-          </div>
-        </div>
+    <h3 class="paket-title">{{ $p->nama_paket }}</h3>
+
+    <p class="paket-description">{{ $p->deskripsi }}</p>
+
+    <ul class="paket-features">
+        <li><i class="lni lni-checkmark-circle"></i> Kecepatan {{ $p->kecepatan }} Mbps</li>
+    </ul>
+
+    <div class="paket-price">
+        Rp {{ number_format($p->harga) }}<span>/ bulan</span>
+    </div>
+
+    <a href="{{ route('pelanggan.paket.detail', $p->id) }}" class="paket-btn">
+        Pilih Paket
+    </a>
+</div>
+@endforeach
+
       </div>
     </section>
     <!-- ========================= feature-section-2 end ========================= -->

@@ -26,7 +26,7 @@ return new class extends Migration
             // role user
            $table->enum('role',['superadmin','admin','user','teknisi','payment'])->default('user');
 
-      
+
 
 
             $table->timestamps();
