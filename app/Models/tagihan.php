@@ -4,10 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-namespace App\Models;
-
-use Illuminate\Database\Eloquent\Model;
-
 class Tagihan extends Model
 {
     protected $table = 'tagihan';
@@ -24,19 +20,27 @@ class Tagihan extends Model
         'alasan_penolakan',
     ];
 
-    public function pesanan() {
-        return $this->belongsTo(KelolaPesanan::class, 'pesanan_id');
+    // RELASI KE PEMESANAN
+    public function pesanan()
+    {
+        return $this->belongsTo(Pemesanan::class, 'pesanan_id');
     }
 
-    public function pelanggan() {
+    // RELASI KE USER
+    public function pelanggan()
+    {
         return $this->belongsTo(User::class, 'pelanggan_id');
     }
 
-    public function paket() {
+    // RELASI KE PAKET
+    public function paket()
+    {
         return $this->belongsTo(PaketLayanan::class, 'paket_id');
     }
 
-    public function metodePembayaran() {
+    // RELASI KE METODE PEMBAYARAN
+    public function metodePembayaran()
+    {
         return $this->belongsTo(MetodePembayaran::class, 'metode_pembayaran_id');
     }
 }

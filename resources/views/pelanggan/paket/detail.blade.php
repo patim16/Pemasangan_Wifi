@@ -3,7 +3,11 @@
 @section('content')
 <div class="container mt-4">
 
-    <h2 class="fw-bold mb-3">{{ $paket['nama'] }}</h2>
+  <h2>{{ $paket->nama_paket }}</h2>
+<p>Kecepatan: {{ $paket->kecepatan }} Mbps</p>
+<p>Harga: Rp {{ number_format($paket->harga) }}</p>
+<p>{{ $paket->deskripsi }}</p>
+
 
     <div class="card shadow-sm">
         <div class="card-body">

@@ -2,147 +2,115 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pemesanan;
+use App\Models\User;
 use Illuminate\Http\Request;
-use App\Models\KelolaPesanan;
-use App\Models\Tagihan;
-use Carbon\Carbon;
 
 class KelolaPesananController extends Controller
 {
-    // =====================================================
-    // 1. TAMPILKAN DAFTAR PESANAN
-    // =====================================================
     public function kelolaPesanan()
     {
-        $pesanan = KelolaPesanan::with('pelanggan', 'paket', 'tagihan')
-                    ->orderBy('created_at','desc')
-                    ->get();
+        $pesanan = Pemesanan::with(['pelanggan', 'paket', 'teknisi'])->get();
+        $teknisi = User::where('role', 'teknisi')->get();
 
-        return view('superadmin.kelolapesanan', compact('pesanan'));
+        return view('admin.kelolapesanan', compact('pesanan', 'teknisi'));
     }
 
-    // =====================================================
-    // 2. TERIMA PESANAN (MENUNGGU SURVEI TEKNISI)
-    // =====================================================
     public function terima($id)
     {
-        $pesanan = KelolaPesanan::findOrFail($id);
+        $pesanan = Pemesanan::findOrFail($id);
+        $pesanan->status = 'pending';
+        $pesanan->save();
 
-        $pesanan->update([
-            'status' => 'diterima',
-            'alasan_penolakan' => null
-        ]);
-
-        return back()->with('success', 'Pesanan diterima. Menunggu survei teknisi.');
+        return back()->with('success','Pesanan diterima.');
     }
 
-    // =====================================================
-    // 3. TOLAK PESANAN
-    // =====================================================
-    public function tolak(Request $request, $id)
+    /** SIMPAN JADWAL SURVEI PERTAMA KALI */
+    public function jadwalSurvei(Request $request, $id)
     {
         $request->validate([
-            'alasan_penolakan' => 'required|string'
+            'jadwal_survei' => 'required|date',
+            'teknisi_id' => 'required'
         ]);
 
-        $pesanan = KelolaPesanan::findOrFail($id);
+        $pesanan = Pemesanan::findOrFail($id);
+        $pesanan->jadwal_survei = $request->jadwal_survei;
+        $pesanan->teknisi_id = $request->teknisi_id;
+        $pesanan->status = 'menunggu_survei';
+        $pesanan->save();
 
-        $pesanan->update([
-            'status' => 'ditolak',
-            'alasan_penolakan' => $request->alasan_penolakan
-        ]);
-
-        return back()->with('success', 'Pesanan ditolak.');
+        return back()->with('success', 'Jadwal survei berhasil disimpan.');
     }
 
-    // =====================================================
-    // 4. TEKNISI SELESAI SURVEI (ADMIN TAMPILKAN STATUS)
-    // =====================================================
-    public function laporanTeknisi(Request $request, $id)
+    /** UPDATE JADWAL SURVEI */
+    public function updateJadwalSurvei(Request $request, $id)
+    {
+        $request->validate([
+            'jadwal_survei' => 'required|date',
+            'teknisi_id' => 'required'
+        ]);
+
+        $pesanan = Pemesanan::findOrFail($id);
+        $pesanan->jadwal_survei = $request->jadwal_survei;
+        $pesanan->teknisi_id = $request->teknisi_id;
+        $pesanan->save();
+
+        return back()->with('success', 'Jadwal survei berhasil diupdate!');
+    }
+
+    public function laporanSurvei(Request $request, $id)
     {
         $request->validate([
             'laporan_teknisi' => 'required'
         ]);
 
-        $pesanan = KelolaPesanan::findOrFail($id);
+        $pesanan = Pemesanan::findOrFail($id);
+        $pesanan->laporan_teknisi = $request->laporan_teknisi;
+        $pesanan->status = 'survei_selesai';
+        $pesanan->save();
 
-        $pesanan->update([
-            'laporan_teknisi' => $request->laporan_teknisi,
-            'status' => 'survei_selesai'
-        ]);
-
-        return back()->with('success', 'Laporan teknisi telah disimpan.');
+        return back()->with('success','Laporan survei disimpan.');
     }
 
-    // =====================================================
-    // 5. BUAT TAGIHAN (SETELAH SURVEI SELESAI)
-    // =====================================================
-    public function buatTagihan($pesanan_id)
+    public function kirimTagihan($id)
     {
-        $pesanan = KelolaPesanan::findOrFail($pesanan_id);
+        $pesanan = Pemesanan::findOrFail($id);
+        $pesanan->status = 'menunggu_pembayaran';
+        $pesanan->save();
 
-        // buat tagihan baru
-        $tagihan = Tagihan::create([
-            'pelanggan_id' => $pesanan->pelanggan_id,
-            'paket_id'     => $pesanan->paket_id,
-            'nominal'      => $pesanan->paket->harga,
-            'status'       => 'menunggu_pembayaran'
-        ]);
-
-        // simpan id tagihan di pesanan
-        $pesanan->update([
-            'tagihan_id' => $tagihan->id,
-            'status'     => 'menunggu_pembayaran'
-        ]);
-
-        return back()->with('success', 'Tagihan berhasil dibuat.');
+        return back()->with('success','Tagihan dikirim.');
     }
 
-    // =====================================================
-    // 6. VERIFIKASI PEMBAYARAN (ADMIN)
-    // =====================================================
-    public function verifikasiPembayaran(Request $request, $id)
+    public function konfirmasiPembayaran($id)
     {
-        $tagihan = Tagihan::findOrFail($id);
+        $pesanan = Pemesanan::findOrFail($id);
+        $pesanan->status = 'lunas';
+        $pesanan->save();
 
-        if ($request->status == 'lunas') {
-            // tagihan lunas
-            $tagihan->update([
-                'status' => 'lunas'
-            ]);
-
-            // ubah pesanan juga jadi lunas
-            $tagihan->pesanan->update([
-                'status' => 'lunas'
-            ]);
-
-        } else {
-            // pembayaran ditolak
-            $tagihan->update([
-                'status' => 'ditolak',
-                'alasan_penolakan' => $request->alasan_penolakan
-            ]);
-        }
-
-        return back()->with('success', 'Status pembayaran diperbarui!');
+        return back()->with('success','Pembayaran diterima.');
     }
 
-    // =====================================================
-    // 7. ATUR JADWAL INSTALASI (SETELAH LUNAS)
-    // =====================================================
-    public function aturJadwal(Request $request, $id)
+    public function jadwalInstalasi(Request $request, $id)
     {
         $request->validate([
             'jadwal_instalasi' => 'required|date'
         ]);
 
-        $pesanan = KelolaPesanan::findOrFail($id);
+        $pesanan = Pemesanan::findOrFail($id);
+        $pesanan->jadwal_instalasi = $request->jadwal_instalasi;
+        $pesanan->status = 'jadwal_instalasi';
+        $pesanan->save();
 
-        $pesanan->update([
-            'jadwal_instalasi' => Carbon::parse($request->jadwal_instalasi),
-            'status'           => 'jadwal_instalasi'
-        ]);
+        return back()->with('success','Jadwal instalasi diatur.');
+    }
 
-        return back()->with('success', 'Jadwal instalasi berhasil diatur.');
+
+    public function instalasiSelesai($id)
+    {
+        $pesanan = Pemesanan::findOrFail($id);
+        $pesanan->status = 'selesai';
+        $pesanan->save();
+
+        return back()->with('success','Instalasi selesai.');
     }
 }

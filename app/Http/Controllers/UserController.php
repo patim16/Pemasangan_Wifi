@@ -4,15 +4,27 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-     //DASHBOARD PER ROLE
+    /* =========================
+       DASHBOARD PER ROLE
+    ========================== */
+
     // SUPERADMIN
     public function superAdminDashboard()
     {
-        return view('superadmin.dashboard');
+        return view('superadmin.dashboard', [
+            'totalAdmin'     => User::where('role', 'admin')->count(),
+            'totalPelanggan' => User::where('role', 'user')->count(),
+            'totalTeknisi'   => User::where('role', 'teknisi')->count(),
+            'totalPayment'   => User::where('role', 'payment')->count(),
+            'totalPenghasilan' => 0,
+            'totalTransaksi' => 0,
+            'paymentPending' => 0,
+            'pesananAktif' => 0,
+            'pesananSelesaiHariIni' => 0,
+        ]);
     }
 
     // ADMIN
@@ -27,23 +39,22 @@ class UserController extends Controller
         return view('teknisi.dashboard');
     }
 
-   
-
-     // pelanggan
+    // PELANGGAN
     public function pelangganDashboard()
     {
         return view('pelanggan.dashboard');
     }
 
-    //KELOLA ADMIN
-    // LIST ADMIN
+    /* =========================
+       KELOLA ADMIN
+    ========================== */
+
     public function indexAdmin()
     {
         $admins = User::where('role', 'admin')->get();
         return view('superadmin.kelolaadmin', compact('admins'));
     }
 
-    // STORE ADMIN
     public function storeAdmin(Request $request)
     {
         $request->validate([
@@ -63,10 +74,9 @@ class UserController extends Controller
             'role' => 'admin',
         ]);
 
-        return redirect()->back()->with('success', 'Admin berhasil ditambahkan');
+        return back()->with('success', 'Admin berhasil ditambahkan');
     }
 
-    // UPDATE ADMIN
     public function updateAdmin(Request $request, $id)
     {
         $request->validate([
@@ -76,34 +86,29 @@ class UserController extends Controller
             'alamat' => 'required',
         ]);
 
-        $admin = User::findOrFail($id);
+        User::findOrFail($id)->update(
+            $request->only('nama','email','no_hp','alamat')
+        );
 
-        $admin->update([
-            'nama' => $request->nama,
-            'email' => $request->email,
-            'no_hp' => $request->no_hp,
-            'alamat' => $request->alamat,
-        ]);
-
-        return redirect()->back()->with('success', 'Admin berhasil diperbarui');
+        return back()->with('success', 'Admin berhasil diperbarui');
     }
 
-    // DELETE ADMIN
     public function deleteAdmin($id)
     {
         User::findOrFail($id)->delete();
-        return redirect()->back()->with('success', 'Admin berhasil dihapus');
+        return back()->with('success', 'Admin berhasil dihapus');
     }
 
-     //KELOLA TEKNISI
-    // LIST TEKNISI
+    /* =========================
+       KELOLA TEKNISI
+    ========================== */
+
     public function indexTeknisi()
     {
         $teknisis = User::where('role', 'teknisi')->get();
         return view('superadmin.kelolateknisi', compact('teknisis'));
     }
 
-    // STORE TEKNISI
     public function storeTeknisi(Request $request)
     {
         $request->validate([
@@ -123,10 +128,9 @@ class UserController extends Controller
             'role' => 'teknisi',
         ]);
 
-        return redirect()->back()->with('success', 'Teknisi berhasil ditambahkan');
+        return back()->with('success', 'Teknisi berhasil ditambahkan');
     }
 
-    // UPDATE TEKNISI
     public function updateTeknisi(Request $request, $id)
     {
         $request->validate([
@@ -136,38 +140,29 @@ class UserController extends Controller
             'alamat' => 'required',
         ]);
 
-        $teknisi = User::findOrFail($id);
+        User::findOrFail($id)->update(
+            $request->only('nama','email','no_hp','alamat')
+        );
 
-        $teknisi->update([
-            'nama' => $request->nama,
-            'email' => $request->email,
-            'no_hp' => $request->no_hp,
-            'alamat' => $request->alamat,
-        ]);
-
-        return redirect()->back()->with('success', 'Teknisi berhasil diperbarui');
+        return back()->with('success', 'Teknisi berhasil diperbarui');
     }
 
-    // DELETE TEKNISI
     public function deleteTeknisi($id)
     {
         User::findOrFail($id)->delete();
-        return redirect()->back()->with('success', 'Teknisi berhasil dihapus');
+        return back()->with('success', 'Teknisi berhasil dihapus');
     }
 
+    /* =========================
+       KELOLA PAYMENT
+    ========================== */
 
-
-
-    //KELOLA  PAYMENT
-
-    // LIST PAYMENT 
     public function indexPayment()
     {
         $payments = User::where('role', 'payment')->get();
         return view('superadmin.kelolapayment', compact('payments'));
     }
 
-    // STORE PAYMENT 
     public function storePayment(Request $request)
     {
         $request->validate([
@@ -187,10 +182,9 @@ class UserController extends Controller
             'role' => 'payment',
         ]);
 
-        return redirect()->back()->with('success', 'Payment staff berhasil ditambahkan');
+        return back()->with('success', 'Payment staff berhasil ditambahkan');
     }
 
-    // UPDATE PAYMENT 
     public function updatePayment(Request $request, $id)
     {
         $request->validate([
@@ -200,61 +194,50 @@ class UserController extends Controller
             'alamat' => 'required',
         ]);
 
-        $payment = User::findOrFail($id);
+        User::findOrFail($id)->update(
+            $request->only('nama','email','no_hp','alamat')
+        );
 
-        $payment->update([
-            'nama' => $request->nama,
-            'email' => $request->email,
-            'no_hp' => $request->no_hp,
-            'alamat' => $request->alamat,
-        ]);
-
-        return redirect()->back()->with('success', 'Payment staff berhasil diperbarui');
+        return back()->with('success', 'Payment staff berhasil diperbarui');
     }
 
-    // DELETE PAYMENT 
     public function deletePayment($id)
     {
         User::findOrFail($id)->delete();
-        return redirect()->back()->with('success', 'Payment staff berhasil dihapus');
+        return back()->with('success', 'Payment staff berhasil dihapus');
     }
 
-    /*
-|--------------------------------------------------------------------------
-| KELOLA PELANGGAN
-|--------------------------------------------------------------------------
-*/
+    /* =========================
+       KELOLA PELANGGAN
+    ========================== */
 
-// LIST PELANGGAN
-public function indexPelanggan()
-{
-    $pelanggan = User::where('role', 'user')->get();
-    return view('superadmin.kelolapelanggan', compact('pelanggan'));
-}
+    public function indexPelanggan()
+    {
+        $pelanggan = User::where('role', 'user')->get();
+        return view('superadmin.kelolapelanggan', compact('pelanggan'));
+    }
 
-public function terimaPelanggan($id)
-{
-    $p = User::findOrFail($id);
-    $p->update([
-        'status' => 'accepted',
-        'alasan_penolakan' => null
-    ]);
+    public function terimaPelanggan($id)
+    {
+        User::findOrFail($id)->update([
+            'status' => 'accepted',
+            'alasan_penolakan' => null
+        ]);
 
-    return back()->with('success', 'Pelanggan diterima!');
-}
+        return back()->with('success', 'Pelanggan diterima!');
+    }
 
-public function tolakPelanggan(Request $request, $id)
-{
-    $request->validate([
-        'alasan' => 'required'
-    ]);
+    public function tolakPelanggan(Request $request, $id)
+    {
+        $request->validate([
+            'alasan' => 'required'
+        ]);
 
-    $p = User::findOrFail($id);
-    $p->update([
-        'status' => 'rejected',
-        'alasan_penolakan' => $request->alasan
-    ]);
+        User::findOrFail($id)->update([
+            'status' => 'rejected',
+            'alasan_penolakan' => $request->alasan
+        ]);
 
-    return back()->with('success', 'Pelanggan ditolak.');
-}
+        return back()->with('success', 'Pelanggan ditolak.');
+    }
 }

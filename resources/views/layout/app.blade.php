@@ -87,6 +87,10 @@
                 border: 1px solid transparent;
             }
             
+            .sb-sidenav-dark .nav-link.active {
+                font-weight: 600;
+            }
+            
             /* Hover Effect - Elegant Background */
             .sb-sidenav-dark .sb-sidenav-menu .nav-link:hover {
                 background: var(--sidebar-hover);
@@ -310,6 +314,24 @@
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                     
                     <li><hr class="dropdown-divider" /></li>
+
+        <a class="navbar-brand ps-3" href="#">
+            @if(session()->has('user'))
+                {{ ucfirst(session('user')->role) }} 
+            @else
+                Dashboard
+            @endif
+        </a>
+
+        <button class="btn btn-link btn-sm" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+        
+        <ul class="navbar-nav ms-auto me-3">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button"
+                   data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-user fa-fw"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                     <li><a class="dropdown-item" href="{{ url('/logout') }}">Logout</a></li>
                 </ul>
             </li>
@@ -319,7 +341,6 @@
     {{-- SIDEBAR --}}
     <div id="layoutSidenav">
         <div id="layoutSidenav_nav">
-
             <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                 <div class="sb-sidenav-menu">
 
@@ -348,15 +369,73 @@
 
 
                         
+=======
+                    <div class="nav">
+                        <div class="sb-sidenav-menu-heading">Core</div>
+
+                        {{-- Dashboard --}}
+                        @if(session()->has('user'))
+                            <a class="nav-link {{ request()->is(session('user')->role.'/dashboard') ? 'active' : '' }}"
+                            href="{{ url(session('user')->role.'/dashboard') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Dashboard
+                            </a>
+                        @endif
+
+                        {{-- PELANGGAN --}}
+                        @if(session()->has('user') && session('user')->role == 'pelanggan')
+                            <div class="sb-sidenav-menu-heading">Pelanggan</div>
+                            <a class="nav-link {{ request()->routeIs('pelanggan.pesanwifi') ? 'active' : '' }}" 
+                            href="{{ route('pelanggan.pesanwifi') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-wifi"></i></div>
+                                Pesan WiFi
+                            </a>
+                            <a class="nav-link {{ request()->routeIs('pelanggan.riwayat') ? 'active' : '' }}" href="{{ route('pelanggan.riwayat') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-clock"></i></div>
+                                Riwayat Pemesanan
+                            </a>
+                            <a class="nav-link" href="#">
+                                <div class="sb-nav-link-icon"><i class="fas fa-receipt"></i></div>
+                                Riwayat Transaksi
+                            </a>
+                        @endif
+
                         {{-- SUPER ADMIN MENU --}}
-                        
                         @if(session()->has('user') && session('user')->role == 'superadmin')
                             <div class="sb-sidenav-menu-heading">Super Admin</div>
 
+
                             <a class="nav-link" href="{{ route('superadmin.paketlayanan') }}">
+=======
+                            <a class="nav-link {{ request()->routeIs('superadmin.admin.index') ? 'active' : '' }}" href="{{ route('superadmin.admin.index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-user-shield"></i></div>
+                                Kelola Admin
+                            </a>
+                            <a class="nav-link {{ request()->routeIs('superadmin.teknisi.index') ? 'active' : '' }}" href="{{ route('superadmin.teknisi.index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tools"></i></div>
+                                Kelola Teknisi
+                            </a>
+                            <a class="nav-link {{ request()->routeIs('superadmin.payment.index') ? 'active' : '' }}" href="{{ route('superadmin.payment.index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-credit-card"></i></div>
+                                Kelola Payment
+                            </a>
+                            <a class="nav-link {{ request()->routeIs('superadmin.pelanggan.index') ? 'active' : '' }}" href="{{ route('superadmin.pelanggan.index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                Kelola Pelanggan
+                            </a>
+                            <a class="nav-link {{ request()->routeIs('superadmin.kelolapesanan') ? 'active' : '' }}" href="{{ route('superadmin.kelolapesanan') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
+                                Kelola Pesanan
+                            </a>
+                            <a class="nav-link {{ request()->routeIs('superadmin.paketlayanan') ? 'active' : '' }}" href="{{ route('superadmin.paketlayanan') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-users-cog"></i></div>
                                 Kelola Daftar Paket
                             </a>
+                            <a class="nav-link {{ request()->is('superadmin/metodepembayaran*') ? 'active' : '' }}" href="{{ url('superadmin/metodepembayaran') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
+                                Kelola Metode Pembayaran
+                            </a>
+
 
                            <a class="nav-link" href="{{ route('superadmin.admin.index') }}">
                              <div class="sb-nav-link-icon"><i class="fas fa-user-shield"></i></div>
@@ -379,9 +458,44 @@
 
 
 
+                            <!-- Admin Menu Dropdown -->
+                            <div class="sb-sidenav-menu-heading">Admin Menu</div>
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#adminCollapse" aria-expanded="false" aria-controls="adminCollapse">
+                                <div class="sb-nav-link-icon"><i class="fas fa-user-cog"></i></div>
+                                Admin Menu
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="adminCollapse" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link {{ request()->routeIs('admin.kelolapayment') ? 'active' : '' }}" href="{{ route('admin.kelolapayment') }}">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-credit-card"></i></div>
+                                        Kelola Payment
+                                    </a>
+                                    <a class="nav-link {{ request()->routeIs('admin.kelolateknisi') ? 'active' : '' }}" href="{{ route('admin.kelolateknisi') }}">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-user-cog"></i></div>
+                                        Kelola Teknisi
+                                    </a>
+                                    <a class="nav-link {{ request()->routeIs('admin.kelolapelanggan') ? 'active' : '' }}" href="{{ route('admin.kelolapelanggan') }}">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                        Kelola Pelanggan
+                                    </a>
+                                    <a class="nav-link {{ request()->routeIs('admin.kelolapesanan') ? 'active' : '' }}" href="{{ route('admin.kelolapesanan') }}">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
+                                        Kelola Pesanan
+                                    </a>
+                                    <a class="nav-link {{ request()->routeIs('admin.paketlayanan') ? 'active' : '' }}" href="{{ route('admin.paketlayanan') }}">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-users-cog"></i></div>
+                                        Kelola Daftar Paket
+                                    </a>
+                                    <a class="nav-link {{ request()->routeIs('admin.metodepembayaran') ? 'active' : '' }}" href="{{ route('admin.metodepembayaran') }}">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
+                                        Kelola Metode Pembayaran
+                                    </a>
+                                </nav>
+                            </div>
+>>>>>>> b6127ccdf0b1a87b4b91bf0516d6bcbd9e95bc85
                         @endif
 
-                        
                         {{-- ADMIN MENU --}}
                     
                         @if(session()->has('user') && in_array(session('user')->role, ['admin', 'superadmin']))
@@ -445,6 +559,65 @@
                             <a class="nav-link" href="#">
                                 <div class="sb-nav-link-icon"><i class="fas fa-user-circle"></i></div>
                                 My Profile
+                        @if(session()->has('user') && session('user')->role == 'admin')
+                            <div class="sb-sidenav-menu-heading">Admin</div>
+                            <a class="nav-link {{ request()->routeIs('admin.kelolapayment') ? 'active' : '' }}" href="{{ route('admin.kelolapayment') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-credit-card"></i></div>
+                                Kelola Payment
+                            </a>
+                            <a class="nav-link {{ request()->routeIs('admin.kelolateknisi') ? 'active' : '' }}" href="{{ route('admin.kelolateknisi') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-user-cog"></i></div>
+                                Kelola Teknisi
+                            </a>
+                            <a class="nav-link {{ request()->routeIs('admin.kelolapelanggan') ? 'active' : '' }}" href="{{ route('admin.kelolapelanggan') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                Kelola Pelanggan
+                            </a>
+                            <a class="nav-link {{ request()->routeIs('admin.kelolapesanan') ? 'active' : '' }}" href="{{ route('admin.kelolapesanan') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
+                                Kelola Pesanan
+                            </a>
+                            <a class="nav-link {{ request()->routeIs('admin.paketlayanan') ? 'active' : '' }}" href="{{ route('admin.paketlayanan') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
+                                Kelola Daftar Paket
+                            </a>
+                            <a class="nav-link {{ request()->routeIs('admin.metodepembayaran') ? 'active' : '' }}" href="{{ route('admin.metodepembayaran') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
+                                Kelola Metode Pembayaran
+                            </a>
+                        @endif
+
+                        {{-- PAYMENT MENU --}}
+                        @if(session()->has('user') && session('user')->role == 'payment')
+                            <div class="sb-sidenav-menu-heading">Payment</div>
+                            <a class="nav-link" href="#">
+                                <div class="sb-nav-link-icon"><i class="fas fa-money-bill-wave"></i></div>
+                                Transactions
+                            </a>
+                        @endif
+
+                    {{-- TEKNISI MENU --}}
+                        @if(session()->has('user') && session('user')->role == 'teknisi')
+                            <div class="sb-sidenav-menu-heading">Teknisi</div>
+
+                            <a class="nav-link {{ request()->is('teknisi/jadwal-survei') ? 'active' : '' }}" href="{{ route('teknisi.jadwal-survei') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-calendar-check"></i></div>
+                                Jadwal Survei
+                            </a>
+
+                            <a class="nav-link {{ request()->is('teknisi/jadwal-pemasangan') ? 'active' : '' }}" href="{{ route('teknisi.jadwal-pemasangan') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-calendar-plus"></i></div>
+                                Atur Jadwal Pemasangan
+                            </a>
+
+                            <a class="nav-link {{ request()->is('teknisi/laporan') ? 'active' : '' }}" href="{{ url('/teknisi/laporan') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-file-signature"></i></div>
+                                Kirim Laporan Instalasi
+                            </a>
+
+                            <a class="nav-link {{ request()->is('teknisi/status') ? 'active' : '' }}" href="/teknisi/status">
+                                <div class="sb-nav-link-icon"><i class="fas fa-sync-alt"></i></div>
+                                Update Status Pemasangan
                             </a>
                         @endif
                     </div>
@@ -481,5 +654,48 @@
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"></script>
     <script src="{{ asset('js/scripts.js') }}"></script>
 
+    
+    {{-- SCRIPT TAMBAHAN UNTUK PERBAIKAN --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.querySelector('.sb-sidenav');
+            const sidebarMenu = document.querySelector('.sb-sidenav-menu');
+
+            // Perbaikan: Kembalikan posisi scroll dari sessionStorage saat halaman dimuat
+            const savedScrollPosition = sessionStorage.getItem('sidebarScrollPosition');
+            if (savedScrollPosition && sidebar) {
+                sidebar.scrollTop = parseInt(savedScrollPosition, 10);
+                // Hapus penyimpanan setelah dipulihkan agar tidak mempengaruhi navigasi lain
+                sessionStorage.removeItem('sidebarScrollPosition');
+            }
+
+            // Perbaikan: Simpan posisi scroll saat ada link di sidebar yang diklik
+            if (sidebarMenu) {
+                sidebarMenu.addEventListener('click', function(event) {
+                    const targetLink = event.target.closest('a');
+                    // Pastikan yang diklik adalah link dan bukan link dropdown atau link tanpa href
+                    if (targetLink && targetLink.href && !targetLink.getAttribute('data-bs-toggle')) {
+                        sessionStorage.setItem('sidebarScrollPosition', sidebar.scrollTop);
+                    }
+                });
+            }
+
+            // Fitur tambahan: Buka dropdown jika ada menu aktif di dalamnya
+            const activeNestedLink = document.querySelector('.sb-sidenav-menu-nested .nav-link.active');
+            if (activeNestedLink) {
+                const collapseElement = activeNestedLink.closest('.collapse');
+                if (collapseElement) {
+                    const triggerLink = document.querySelector(`[data-bs-target="#${collapseElement.id}"]`);
+                    if (triggerLink) {
+                        const bsCollapse = new bootstrap.Collapse(collapseElement, {
+                            show: true
+                        });
+                        triggerLink.classList.remove('collapsed');
+                        triggerLink.setAttribute('aria-expanded', 'true');
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>
