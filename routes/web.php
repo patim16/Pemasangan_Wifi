@@ -22,7 +22,6 @@ Route::get('/', function () {
 });
 
 
-
 // Auth
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
@@ -84,7 +83,7 @@ Route::prefix('superadmin')->group(function () {
 
 
      // Kelola Pesanan WiFi
-    Route::get('/kelolapesanan', [KelolaPesananController::class, 'index'])
+    Route::get('/kelolapesanan', [KelolaPesananController::class, 'KelolaPesanan'])
 
         ->name('superadmin.kelolapesanan');
     Route::put('/pesanan/terima/{id}', [KelolaPesananController::class, 'terima'])
@@ -105,7 +104,7 @@ Route::prefix('admin')->group(function () {
    
     // Dashboard
     Route::get('/dashboard', [UserController::class, 'adminDashboard'])
-        ->name('admin.dashboard');
+        ->name('dashboard');
 
     // Paket Layanan
     Route::resource('/paketlayanan', PaketLayananController::class)->names([
@@ -135,6 +134,7 @@ Route::prefix('admin')->group(function () {
         ->name('admin.pesanan.tolak');
     Route::put('/pesanan/jadwal/{id}', [KelolaPesananController::class, 'aturJadwal'])
         ->name('admin.pesanan.jadwal');
+
 
   /*
 |---------------------------------------------
@@ -189,43 +189,48 @@ Route::prefix('admin')->group(function () {
 Route::prefix('teknisi')->name('teknisi.')->group(function () {
 
     // Dashboard
-    Route::get('/dashboard', [TeknisiController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard', [TeknisiController::class, 'dashboard'])
+        ->name('dashboard');
 
-    // Laporan Pemasangan
-    Route::get('/laporan', [TeknisiController::class, 'formLaporan'])->name('laporan.form');
-    Route::post('/laporan', [TeknisiController::class, 'kirimLaporanPemasangan'])->name('laporan.store');
+    // ======================
+    // SURVEI
+    // ======================
+    Route::get('/jadwal-survei', [TeknisiController::class, 'jadwalSurveyTeknisi'])
+        ->name('jadwal-survei');
 
-    // Jadwal Survei
-    Route::get('/jadwal-survei', [TeknisiController::class, 'jadwalSurveyTeknisi'])->name('jadwal-survei');
-    Route::get('/jadwal-survei/detail/{id}', [TeknisiController::class, 'detailSurvei'])->name('detail-survei');
+    Route::get('/jadwal-survei/detail/{id}', [TeknisiController::class, 'detailSurvei'])
+        ->name('detail-survei');
 
-    // Jadwal Pemasangan
-    Route::get('/jadwal-pemasangan', [TeknisiController::class, 'jadwalPemasangan'])
-        ->name('jadwal-pemasangan');
-
-    Route::post('/jadwal-pemasangan/simpan', [TeknisiController::class, 'simpanJadwalPemasangan'])
-        ->name('jadwal-pemasangan.simpan');
-
-    // Detail Pemasangan
-    // Route::get('/detail-pemasangan/{kode}', [TeknisiController::class, 'detailPemasangan'])
-    //     ->name('detail-pemasangan');
-
-    // Detail Instalasi
-    Route::get('/instalasi/{id}/detail', [TeknisiController::class, 'detailInstalasi'])
-        ->name('instalasi.detail');
-
-    // Status Pemasangan
-    Route::get('/status', [TeknisiController::class, 'updateStatus'])->name('status');
-    Route::post('/status/update', [TeknisiController::class, 'updateStatusSubmit'])->name('status.update');
-
-
+    // ======================
+    // PEMASANGAN
+    // ======================
     Route::get('/jadwal-pemasangan', [TeknisiController::class, 'jadwalPemasangan'])
         ->name('jadwal-pemasangan');
 
     Route::get('/detail-pemasangan/{id}', [TeknisiController::class, 'detailPemasangan'])
         ->name('detail-pemasangan');
-});
 
+    // ======================
+    // LAPORAN PEMASANGAN
+    // ======================
+    Route::get('/laporan', [TeknisiController::class, 'formLaporan'])
+        ->name('laporan.form');
+
+    Route::post('/laporan', [TeknisiController::class, 'kirimLaporanPemasangan'])
+        ->name('laporan.store');
+
+    // ======================
+    // INSTALASI
+    // ======================
+    Route::get('/instalasi/{id}/detail', [TeknisiController::class, 'detailInstalasi'])
+        ->name('instalasi.detail');
+
+    Route::get('/status', [TeknisiController::class, 'updateStatus'])
+        ->name('status');
+
+    Route::post('/status/update', [TeknisiController::class, 'updateStatusSubmit'])
+        ->name('status.update');
+});
 
 
 /*

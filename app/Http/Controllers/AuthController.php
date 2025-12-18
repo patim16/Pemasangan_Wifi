@@ -50,22 +50,7 @@ class AuthController extends Controller
         return redirect('/login')->with('success', 'Registrasi Berhasil, silakan login!');
     
 
-
-    User::create([
-        'nama' => $request->nama,
-        'no_hp' => $request->no_hp,
-        'alamat' => $request->alamat,
-        'email' => $request->email,
-        'password' => bcrypt($request->password),
-        'role' => 'pelanggan',
-        'foto_ktp' => $fotoPath,
-        
-
-    ]);
-   
-
-    return redirect('/login')->with('success', 'Registrasi Berhasil, silakan login!');
-}
+    }
 
     // TAMPILKAN FORM LOGIN
     public function showLogin()
@@ -109,6 +94,8 @@ class AuthController extends Controller
         return redirect('/login');
     }
 
+
 };
+
 
 

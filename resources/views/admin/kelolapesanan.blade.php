@@ -12,6 +12,7 @@
     <table class="table table-bordered table-hover mt-3">
         <thead class="table-light">
             <tr>
+                  <th>No</th>
                 <th>Pelanggan</th>
                 <th>Paket</th>
                 <th>Status</th>
@@ -24,6 +25,8 @@
         <tbody>
         @foreach($pesanan as $p)
             <tr>
+                <td>{{ $pesanan->firstItem() + $loop->index }}</td>
+
                 <td>{{ $p->pelanggan->nama ?? 'Nama tidak ditemukan' }}</td>
                 <td>{{ $p->paket->nama_paket ?? 'Nama tidak ditemukan'}}</td>
 
@@ -49,14 +52,23 @@
                     @endif
                 </td>
 
-                {{-- LAPORAN --}}
-                <td>
-                    @if($p->laporan_teknisi)
-                        <small>{{ $p->laporan_teknisi }}</small>
-                    @else
-                        <span class="text-muted">-</span>
-                    @endif
-                </td>
+             {{-- LAPORAN --}}
+<td>
+    @if($p->status == 'ditolak_survei')
+        <span class="text-danger">
+            Ditolak: {{ $p->alasan_penolakan ?? '-' }}
+        </span>
+
+    @elseif($p->laporan_teknisi)
+        <span class="text-success">
+            {{ $p->laporan_teknisi }}
+        </span>
+
+    @else
+        <span class="text-muted">-</span>
+    @endif
+</td>
+
 
                 {{-- AKSI --}}
                 <td>
@@ -238,8 +250,9 @@
 
                         <div class="modal-body">
 
-                          <p><b>Pelanggan:</b> {{ $p->pelanggan->nama ?? '-' }}</p>
 
+                          <p><b>Pelanggan:</b> {{ $p->pelanggan->nama ?? '-' }}</p>
+                            <p><b>Pelanggan:</b> {{ $p->pelanggan->nama }}</p>
                             <p><b>Paket:</b> {{ $p->paket->nama_paket }}</p>
                             <p><b>Status:</b> {{ $p->status }}</p>
 
@@ -261,13 +274,22 @@
                                 @endif
                             </p>
 
-                            <p><b>Laporan Teknisi:</b>
-                                @if($p->laporan_teknisi)
-                                    {{ $p->laporan_teknisi }}
-                                @else
-                                    <span class="text-muted">Belum ada laporan</span>
-                                @endif
-                            </p>
+                         <p><b>Laporan Teknisi:</b>
+    @if($p->status == 'ditolak_survei')
+        <span class="text-danger">
+            Ditolak: {{ $p->alasan_penolakan }}
+        </span>
+
+    @elseif($p->laporan_teknisi)
+        <span class="text-success">
+            {{ $p->laporan_teknisi }}
+        </span>
+
+    @else
+        <span class="text-muted">Belum ada laporan</span>
+    @endif
+</p>
+
 
                         </div>
 
@@ -283,5 +305,10 @@
         </tbody>
 
     </table>
+   <div class="d-flex justify-content-center mt-3">
+    {{ $pesanan->links('pagination::bootstrap-5') }}
+</div>
+
+
 </div>
 @endsection

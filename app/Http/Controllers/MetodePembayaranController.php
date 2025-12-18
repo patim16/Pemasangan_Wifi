@@ -7,11 +7,18 @@ use App\Models\MetodePembayaran;
 
 class MetodePembayaranController extends Controller
 {
-    public function index()
-    {
-        $data = MetodePembayaran::all();
-        return view('superadmin.metodepembayaran', compact('data'));
-    }
+   public function index(Request $request)
+{
+    $data = MetodePembayaran::when($request->search, function ($query) use ($request) {
+            $query->where('nama_metode', 'like', '%' . $request->search . '%')
+                  ->orWhere('no_rekening', 'like', '%' . $request->search . '%');
+        })
+        ->paginate(5)
+        ->withQueryString();
+
+    return view('superadmin.metodepembayaran', compact('data'));
+}
+
 
     public function create()
     {

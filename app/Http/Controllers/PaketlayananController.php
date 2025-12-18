@@ -8,11 +8,19 @@ use App\Models\PaketLayanan;
 class PaketLayananController extends Controller
 {
     // TAMPILKAN DATA
-    public function index()
-    {
-        $pakets = PaketLayanan::all();
-        return view('superadmin.paketlayanan', compact('pakets'));
-    }
+   public function index(Request $request)
+{
+    $pakets = PaketLayanan::when($request->search, function ($query) use ($request) {
+            $query->where('nama_paket', 'like', '%' . $request->search . '%')
+                  ->orWhere('kecepatan', 'like', '%' . $request->search . '%')
+                  ->orWhere('harga', 'like', '%' . $request->search . '%');
+        })
+        ->paginate(5)
+        ->withQueryString();
+
+    return view('superadmin.paketlayanan', compact('pakets'));
+}
+
 
     // SIMPAN PAKET BARU
     public function store(Request $request)

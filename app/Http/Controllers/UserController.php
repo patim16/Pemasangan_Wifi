@@ -62,11 +62,20 @@ class UserController extends Controller
     }
 
     // KELOLA ADMIN
-    public function indexAdmin()
-    {
-        $admins = User::where('role', 'admin')->get();
-        return view('superadmin.kelolaadmin', compact('admins'));
-    }
+    public function indexAdmin(Request $request)
+{
+    $keyword = $request->search;
+
+    $admins = User::where('role', 'admin')
+        ->when($keyword, function ($query) use ($keyword) {
+            $query->where('nama', 'like', "%{$keyword}%")
+                  ->orWhere('email', 'like', "%{$keyword}%");
+        })
+        ->paginate(5)
+        ->withQueryString(); // supaya paginate + search nyambung
+
+    return view('superadmin.kelolaadmin', compact('admins'));
+}
 
     public function storeAdmin(Request $request)
     {
@@ -112,11 +121,24 @@ class UserController extends Controller
     }
 
     // KELOLA TEKNISI (hanya user teknisi)
-    public function indexTeknisi()
-    {
-        $teknisis = User::where('role', 'teknisi')->get();
-        return view('superadmin.kelolateknisi', compact('teknisis'));
+   public function indexTeknisi(Request $request)
+{
+    $query = User::where('role', 'teknisi');
+
+    // SEARCH
+    if ($request->filled('search')) {
+        $query->where(function ($q) use ($request) {
+            $q->where('nama', 'like', '%' . $request->search . '%')
+              ->orWhere('email', 'like', '%' . $request->search . '%')
+              ->orWhere('no_hp', 'like', '%' . $request->search . '%');
+        });
     }
+
+    $teknisis = $query->paginate(5)->withQueryString();
+
+    return view('superadmin.kelolateknisi', compact('teknisis'));
+}
+
 
     public function storeTeknisi(Request $request)
     {
@@ -162,11 +184,22 @@ class UserController extends Controller
     }
 
     // KELOLA PAYMENT
-    public function indexPayment()
-    {
-        $payments = User::where('role', 'payment')->get();
-        return view('superadmin.kelolapayment', compact('payments'));
-    }
+   public function indexPayment(Request $request)
+{
+    $keyword = $request->search;
+
+    $payments = User::where('role', 'payment')
+        ->when($keyword, function ($query) use ($keyword) {
+            $query->where('nama', 'like', "%$keyword%")
+                  ->orWhere('email', 'like', "%$keyword%")
+                  ->orWhere('no_hp', 'like', "%$keyword%");
+        })
+        ->paginate(5)
+        ->withQueryString(); // supaya search ga hilang saat pindah page
+
+    return view('superadmin.kelolapayment', compact('payments'));
+}
+
 
     public function storePayment(Request $request)
     {
@@ -222,12 +255,21 @@ class UserController extends Controller
 */
 
 // LIST SEMUA PELANGGAN
-public function indexPelanggan()
+public function indexPelanggan(Request $request)
 {
-    // kalau pelanggan kamu pakai role = 'pelanggan', gunakan ini:
-    $pelanggan = User::where('role', 'pelanggan')->get();
+    $query = User::where('role', 'pelanggan');
 
-    return view('superadmin.kelolapelanggan', compact('pelanggan'));
+    if ($request->filled('search')) {
+        $query->where(function ($q) use ($request) {
+            $q->where('nama', 'like', '%' . $request->search . '%')
+              ->orWhere('email', 'like', '%' . $request->search . '%')
+              ->orWhere('no_hp', 'like', '%' . $request->search . '%');
+        });
+    }
+
+    $pelanggans = $query->paginate(5)->withQueryString();
+
+    return view('superadmin.kelolapelanggan', compact('pelanggans'));
 }
 
 // TERIMA PELANGGAN

@@ -8,9 +8,32 @@
     <div class="card shadow-sm">
         <div class="card-body">
 
+          <div class="card shadow-sm">
+        <div class="card-body">
+
+        <form action="{{ route('superadmin.pelanggan.index') }}" method="GET" class="mb-3">
+    <div class="row g-2">
+        <div class="col-md-4">
+            <input 
+                type="text" 
+                name="search" 
+                class="form-control"
+                placeholder="Cari nama / email..."
+                value="{{ request('search') }}"
+            >
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-primary">
+                Cari
+            </button>
+        </div>
+    </div>
+</form>
+
             <table class="table table-bordered align-middle">
                 <thead class="table-light">
                     <tr>
+                          <th>No</th>
                         <th>Foto KTP</th>
                         <th>Nama</th>
                         <th>Email</th>
@@ -22,7 +45,7 @@
                 </thead>
 
                 <tbody>
-                    @forelse ($pelanggan as $p)
+                    @forelse ($pelanggans as $p)
                     <tr>
 
                         <td>
@@ -33,7 +56,7 @@
                                 <span class="text-muted">-</span>
                             @endif
                         </td>
-
+                         <td>{{ $pelanggans->firstItem() + $loop->index }}</td>
                         <td>{{ $p->nama }}</td>
                         <td>{{ $p->email }}</td>
                         <td>{{ $p->no_hp }}</td>
@@ -88,7 +111,7 @@
 {{-- ========================= --}}
 {{--     MODAL EDIT PELANGGAN  --}}
 {{-- ========================= --}}
-@foreach ($pelanggan as $p)
+@foreach ($pelanggans as $p)
 <div class="modal fade" id="modalEdit{{ $p->id }}" tabindex="-1">
     <div class="modal-dialog">
         <form class="modal-content"
@@ -150,7 +173,7 @@
 {{-- ========================= --}}
 {{--     MODAL HAPUS PELANGGAN --}}
 {{-- ========================= --}}
-@foreach ($pelanggan as $p)
+@foreach ($pelanggans as $p)
 <div class="modal fade" id="modalHapus{{ $p->id }}" tabindex="-1">
     <div class="modal-dialog">
         <form class="modal-content"
@@ -176,6 +199,9 @@
 
         </form>
     </div>
+    <div class="d-flex justify-content-center mt-3">
+    {{ $pelanggans->links('pagination::bootstrap-5') }}
+</div>
 </div>
 @endforeach
 

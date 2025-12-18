@@ -8,13 +8,17 @@ use Illuminate\Http\Request;
 
 class KelolaPesananController extends Controller
 {
-    public function kelolaPesanan()
-    {
-        $pesanan = Pemesanan::with(['pelanggan', 'paket', 'teknisi'])->get();
-        $teknisi = User::where('role', 'teknisi')->get();
+public function kelolaPesanan(Request $request)
+{
+    $pesanan = Pemesanan::with(['pelanggan', 'paket', 'teknisi'])
+        ->paginate(10);
 
-        return view('admin.kelolapesanan', compact('pesanan', 'teknisi'));
-    }
+    $teknisi = User::where('role', 'teknisi')->get();
+
+    return view('admin.kelolapesanan', compact('pesanan', 'teknisi'));
+}
+
+
 
     public function terima($id)
     {
@@ -104,7 +108,6 @@ class KelolaPesananController extends Controller
         return back()->with('success','Jadwal instalasi diatur.');
     }
 
-
     public function instalasiSelesai($id)
     {
         $pesanan = Pemesanan::findOrFail($id);
@@ -112,5 +115,9 @@ class KelolaPesananController extends Controller
         $pesanan->save();
 
         return back()->with('success','Instalasi selesai.');
+
     }
+
+
+   
 }

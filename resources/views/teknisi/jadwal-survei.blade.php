@@ -1,189 +1,153 @@
 @extends('layout.app')
 
 @section('content')
-<div class="container-fluid px-3 px-md-4 py-3">
-    <div class="row">
-        <div class="col-12">
+<div class="container-fluid py-3">
 
-            {{-- Header Section --}}
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h5 class="fw-bold mb-1 text-dark" style="font-size: 1.4rem;">Jadwal Survei</h5>
-                    <p class="text-muted mb-0">Daftar survei yang perlu dilakukan</p>
-                </div>
-                <a href="{{ route('teknisi.dashboard') }}" class="btn btn-sm btn-outline-secondary">
-                    <i class="bi bi-arrow-left me-1"></i>Kembali ke Dashboard
-                </a>
-            </div>
+    <h5 class="fw-bold mb-3">Jadwal Survei</h5>
 
-            {{-- Survei List --}}
-            <div class="card border-0 shadow-sm">
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th class="border-0 py-3">ID</th>
-                                    <th class="border-0 py-3">Pelanggan</th>
-                                    <th class="border-0 py-3">Alamat</th>
-                                    <th class="border-0 py-3">Paket</th>
-                                    <th class="border-0 py-3">Waktu</th>
-                                    <th class="border-0 py-3">Status</th>
-                                    <th class="border-0 py-3 text-center">Aksi</th>
-                                </tr>
-                            </thead>
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Pelanggan</th>
+                        <th>Alamat</th>
+                        <th>Paket</th>
+                        <th>Jadwal</th>
+                        <th>Status</th>
+                        <th class="text-center">Aksi</th>
+                    </tr>
+                </thead>
 
-                            <tbody>
-                                @forelse ($pesanan as $item)
-                                <tr>
-                                    <td class="py-3">#SRV{{ $item->id }}</td>
+                <tbody>
+                @forelse ($pesanan as $item)
+                    <tr>
+                        <td>#SRV{{ str_pad($item->id, 4, '0', STR_PAD_LEFT) }}</td>
 
-                                    {{-- Pelanggan --}}
-                                    <td class="py-3">
-                                        <div class="d-flex align-items-center">
-                                            @php
-                                                $initials = strtoupper(substr($item->pelanggan->nama ?? 'NA', 0, 2));
-                                            @endphp
-                                            <div class="avatar-circle-sm bg-primary bg-opacity-10 me-2">
-                                                <span class="text-primary fw-bold">{{ $initials }}</span>
-                                            </div>
-                                            <div>
-                                                <div class="fw-bold">{{ $item->pelanggan->nama ?? '-' }}</div>
-                                                <div class="small text-muted">{{ $item->pelanggan->no_hp ?? '-' }}</div>
-                                            </div>
-                                        </div>
-                                    </td>
+                        <td>
+                            <strong>{{ $item->pelanggan->nama }}</strong><br>
+                            <small>{{ $item->pelanggan->no_hp }}</small>
+                        </td>
 
-                                    {{-- Alamat --}}
-                                    <td class="py-3">
-                                        <div class="text-truncate" style="max-width: 200px;"
-                                            title="{{ $item->alamat }}">
-                                            {{ $item->alamat }}
-                                        </div>
-                                    </td>
-                                   <td class="py-3">
-                                        <span class="badge bg-light text-dark fw-normal">
-                                            {{ $item->paket->nama_paket ?? '-' }}
-                                        </span>
-                                    </td>
+                        <td>{{ $item->alamat }}</td>
+                        <td>{{ $item->paket->nama_paket }}</td>
 
+                        <td>
+                            {{ \Carbon\Carbon::parse($item->jadwal_survei)->format('d M Y H:i') }}
+                        </td>
 
-                                    {{-- Waktu --}}
-                                    <td class="py-3">
-                                        <div class="d-flex align-items-center">
-                                            <i class="bi bi-clock text-muted me-1"></i>
-<<<<<<< Updated upstream
-                                          <span>
-   {{ $item->jadwal_survei ? \Carbon\Carbon::parse($item->jadwal_survei)->format('d M Y H:i') : '-- Belum dijadwalkan --' }}
+                        <td>
+                            <span class="badge bg-warning">
+                                {{ ucfirst(str_replace('_',' ', $item->status)) }}
+                            </span>
+                        </td>
 
-</span>
+                        <td class="text-center">
+                            <button class="btn btn-sm btn-outline-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#detailModal{{ $item->id }}">
+                                Detail
+                            </button>
 
-                                        </div>
-                                    </td>
+                            <button class="btn btn-sm btn-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#laporanModal{{ $item->id }}">
+                                Kirim Laporan
+                            </button>
+                        </td>
+                    </tr>
 
-                                   <td class="py-3">
-                                        <span class="badge 
-                                            @if($item->status === 'menunggu_survei') bg-warning 
-                                            @elseif($item->status === 'survei_selesai') bg-success 
-                                            @else bg-secondary 
-                                            @endif">
-                                            {{ ucfirst(str_replace('_', ' ', $item->status)) }}
-                                        </span>
-                                    </td>
+                    {{-- ================= MODAL DETAIL ================= --}}
+                    <div class="modal fade" id="detailModal{{ $item->id }}" tabindex="-1">
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Detail Survei</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
 
+                                <div class="modal-body">
+                                    <p><b>Pelanggan:</b> {{ $item->pelanggan->nama }}</p>
+                                    <p><b>No HP:</b> {{ $item->pelanggan->no_hp }}</p>
+                                    <p><b>Alamat:</b> {{ $item->alamat }}</p>
+                                    <p><b>Paket:</b> {{ $item->paket->nama_paket }}</p>
+                                    <p><b>Jadwal:</b>
+                                        {{ \Carbon\Carbon::parse($item->jadwal_survei)->format('d M Y H:i') }}
+                                    </p>
+                                </div>
 
-                                    {{-- Aksi --}}
-                                    <td class="py-3 text-center">
-                                        {{-- <a href="{{ route('teknisi.detail-survei', $item->id) }}"
-                                            class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-eye me-1"></i>Detail
-                                        </a> --}}
-                                        <a href="#"
-                                            class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-eye me-1"></i>Detail
-                                        </a>
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="7" class="text-center py-4 text-muted">
-                                        <div class="py-3">
-                                            <i class="bi bi-calendar-x fs-1 text-muted d-block mb-2"></i>
-                                            Belum ada jadwal survei.
-                                        </div>
-                                    </td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
 
+                    {{-- ================= MODAL LAPORAN ================= --}}
+                    <div class="modal fade" id="laporanModal{{ $item->id }}" tabindex="-1">
+                        <div class="modal-dialog">
+                            <form action="{{ route('teknisi.laporan.store') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="pemesanan_id" value="{{ $item->id }}">
+
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Laporan Survei</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <label>Status</label>
+                                        <select name="hasil" class="form-select laporan-status"
+                                            data-target="{{ $item->id }}" required>
+                                            <option value="">-- Pilih --</option>
+                                            <option value="diterima">Diterima</option>
+                                            <option value="ditolak">Ditolak</option>
+                                        </select>
+
+                                        <div class="mt-3 d-none" id="alasanBox{{ $item->id }}">
+                                            <label>Alasan Penolakan</label>
+                                            <textarea name="alasan_penolakan" class="form-control"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button class="btn btn-success">Kirim</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                @empty
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-3">
+                            Belum ada jadwal survei
+                        </td>
+                    </tr>
+                @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
+
 </div>
 
-<style>
-    .avatar-circle-sm {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.8rem;
-        font-weight: bold;
-    }
+{{-- SCRIPT TOGGLE ALASAN --}}
+<script>
+document.querySelectorAll('.laporan-status').forEach(el => {
+    el.addEventListener('change', function () {
+        const target = this.dataset.target;
+        const box = document.getElementById('alasanBox' + target);
+        if (this.value === 'ditolak') {
+            box.classList.remove('d-none');
+        } else {
+            box.classList.add('d-none');
+        }
+    });
+});
+</script>
 
-    .table th {
-        font-weight: 600;
-        color: #495057;
-        font-size: 0.85rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        border-bottom: 2px solid #e9ecef;
-    }
 
-    .table td {
-        vertical-align: middle;
-        font-size: 0.9rem;
-        border-bottom: 1px solid #f8f9fa;
-    }
-
-    .table tbody tr {
-        transition: all 0.2s ease;
-    }
-
-    .table tbody tr:hover {
-        background-color: rgba(0, 0, 0, 0.02);
-        transform: translateY(-1px);
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    }
-
-    .badge {
-        font-size: 0.75rem;
-        padding: 0.35em 0.65em;
-        border-radius: 4px;
-    }
-
-    .btn-outline-primary {
-        border-radius: 4px;
-        transition: all 0.2s ease;
-    }
-
-    .btn-outline-primary:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 2px 5px rgba(0, 123, 255, 0.2);
-    }
-
-    .card {
-        border-radius: 8px;
-        overflow: hidden;
-    }
-
-    .table-responsive {
-        border-radius: 8px;
-    }
-</style>
 @endsection

@@ -9,6 +9,28 @@
     <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalTambahPayment">
         + Tambah Akun Payment
     </button>
+     <div class="card shadow-sm">
+        <div class="card-body">
+
+        <form action="{{ route('superadmin.payment.index') }}" method="GET" class="mb-3">
+    <div class="row g-2">
+        <div class="col-md-4">
+            <input 
+                type="text" 
+                name="search" 
+                class="form-control"
+                placeholder="Cari nama / email..."
+                value="{{ request('search') }}"
+            >
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-primary">
+                Cari
+            </button>
+        </div>
+    </div>
+</form>
+
 
     <!-- CARD TABEL PAYMENT -->
     <div class="card shadow-sm">
@@ -17,6 +39,7 @@
             <table class="table table-bordered align-middle">
                 <thead class="table-light">
                     <tr>
+                        <th>No</th>
                         <th>Nama</th>
                         <th>Email</th>
                         <th>No HP</th>
@@ -28,6 +51,7 @@
                 <tbody>
                     @forelse($payments as $payment)
                     <tr>
+                          <td>{{ $payments->firstItem() + $loop->index }}</td>
                         <td>{{ $payment->nama }}</td>
                         <td>{{ $payment->email }}</td>
                         <td>{{ $payment->no_hp }}</td>
@@ -174,6 +198,9 @@
 
         </form>
     </div>
+    <div class="d-flex justify-content-center mt-3">
+    {{ $payments->links('pagination::bootstrap-5') }}
+</div>
 </div>
 @endforeach
 

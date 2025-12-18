@@ -24,7 +24,6 @@ class User extends Authenticatable
         'alamat',
         'foto_ktp',
 
-       
         
         'role',
     ];

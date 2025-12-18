@@ -34,19 +34,22 @@ class TeknisiController extends Controller
     //     return view('teknisi.jadwal-survei', compact('survei'));
     // }
 
-    public function jadwalSurveyTeknisi()
-    {
-        $teknisiId = session('user')->id;
+  public function jadwalSurveyTeknisi()
+{
+    $teknisiId = session('user.id');
 
-        $pesanan = Pemesanan::with(['pelanggan', 'paket'])
-            ->where('teknisi_id', $teknisiId)
-            ->whereNotNull('jadwal_survei')
-            ->orderBy('jadwal_survei', 'asc')
-            ->get();
-
-
-        return view('teknisi.jadwal-survei', compact('pesanan'));
+    if (!$teknisiId) {
+        abort(403, 'Session teknisi tidak ditemukan');
     }
+
+    $pesanan = Pemesanan::with(['pelanggan', 'paket'])
+        ->where('teknisi_id', $teknisiId)
+        ->whereNotNull('jadwal_survei')
+        ->orderBy('jadwal_survei', 'asc')
+        ->get();
+
+    return view('teknisi.jadwal-survei', compact('pesanan'));
+}
 
 
     /*
@@ -54,11 +57,13 @@ class TeknisiController extends Controller
     | DETAIL SURVEI
     |--------------------------------------------------------------------------
     */
-    public function detailSurvei($id)
-    {
-        $survei = Pemesanan::with(['user', 'paket'])->findOrFail($id);
-        return view('teknisi.detail-survei', compact('survei'));
-    }
+   public function detailSurvei($id)
+{
+    $survei = Pemesanan::with(['pelanggan', 'paket'])
+        ->findOrFail($id);
+
+    return view('teknisi.detail-survei', compact('survei'));
+}
 
     /*
     |--------------------------------------------------------------------------
@@ -136,60 +141,44 @@ class TeknisiController extends Controller
     */
     public function detailPemasangan($id)
     {
-        $pemasangan = Pemasangan::where('pemesanan_id', $id)->firstOrFail();
+        $pemasangan = Pemesanan::where('pemesanan_id', $id)->firstOrFail();
         return view('teknisi.detail-pemasangan', compact('pemasangan'));
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | FORM LAPORAN PEMASANGAN
-    |--------------------------------------------------------------------------
-    */
+    //LAPORAN
+
+      // tampilkan jadwal survei teknisi
     public function formLaporan()
     {
-        $pemesanan = Pemesanan::where('teknisi_id', Auth::id())
-            ->where('status', 'paid')
+        $pesanan = Pemesanan::where('teknisi_id', Auth::id())
+            ->where('status', 'menunggu_survei')
             ->get();
 
-        return view('teknisi.kirim-laporan', compact('pemesanan'));
+        return view('teknisi.kirim-laporan', compact('pesanan'));
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | KIRIM LAPORAN PEMASANGAN
-    |--------------------------------------------------------------------------
-    */
+    // simpan laporan
     public function kirimLaporanPemasangan(Request $request)
     {
         $request->validate([
-            'pemesanan_id' => 'required|exists:pemesanan,id',
-            'catatan'      => 'nullable|string|max:255',
-            'foto'         => 'nullable|image|max:2048'
+            'pemesanan_id' => 'required',
+            'hasil' => 'required',
+            'laporan_teknisi' => 'nullable'
         ]);
 
-        $foto = null;
-        if ($request->hasFile('foto')) {
-            $file = $request->file('foto');
-            $filename = time().'_'.$file->getClientOriginalName();
-            $file->storeAs('public/pemasangan', $filename);
-            $foto = 'pemasangan/'.$filename;
+        $pesanan = Pemesanan::findOrFail($request->pemesanan_id);
+
+        if ($request->hasil == 'diterima') {
+            $pesanan->status = 'survei_selesai';
+            $pesanan->laporan_teknisi = 'Survei diterima';
+        } else {
+            $pesanan->status = 'ditolak_survei';
+            $pesanan->laporan_teknisi = $request->laporan_teknisi;
         }
 
-        DB::transaction(function () use ($request, $foto) {
+        $pesanan->save();
 
-            Instalasi::create([
-                'pemesanan_id' => $request->pemesanan_id,
-                'catatan'      => $request->catatan,
-                'foto'         => $foto,
-                'teknisi_id'   => Auth::id(),
-                'status'       => 'selesai'
-            ]);
-
-            Pemesanan::where('id', $request->pemesanan_id)
-                ->update(['status' => 'pemasangan_selesai']);
-        });
-
-        return back()->with('success', 'Laporan pemasangan berhasil dikirim!');
+        return back()->with('success', 'Laporan survei berhasil dikirim');
     }
 
     /*

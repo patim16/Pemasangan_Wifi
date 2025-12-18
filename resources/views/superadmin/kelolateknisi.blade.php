@@ -16,6 +16,28 @@
         + Tambah Teknisi
     </button>
 
+      <div class="card shadow-sm">
+        <div class="card-body">
+
+        <form action="{{ route('superadmin.teknisi.index') }}" method="GET" class="mb-3">
+    <div class="row g-2">
+        <div class="col-md-4">
+            <input 
+                type="text" 
+                name="search" 
+                class="form-control"
+                placeholder="Cari nama / email..."
+                value="{{ request('search') }}"
+            >
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-primary">
+                Cari
+            </button>
+        </div>
+    </div>
+</form>
+
     <!-- ============================== -->
     <!--            TABEL TEKNISI       -->
     <!-- ============================== -->
@@ -25,6 +47,7 @@
                 <table class="table table-bordered align-middle">
                     <thead class="table-light">
                         <tr>
+                            <th>No</th>
                             <th>Nama</th>
                             <th>Email</th>
                             <th>No HP</th>
@@ -36,6 +59,7 @@
                     <tbody>
                         @forelse($teknisis as $teknisi)
                         <tr>
+                              <td>{{ $teknisis->firstItem() + $loop->index }}</td>
                             <td>{{ $teknisi->nama }}</td>
                             <td>{{ $teknisi->email }}</td>
                             <td>{{ $teknisi->no_hp }}</td>
@@ -180,6 +204,9 @@
 
         </form>
     </div>
+    <div class="d-flex justify-content-center mt-3">
+    {{ $teknisis->links('pagination::bootstrap-5') }}
+</div>
 </div>
 
 @endsection

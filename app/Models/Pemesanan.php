@@ -19,10 +19,15 @@ class Pemesanan extends Model
         'longitude',
         'status',
         'invoice_code',
+
+
+        // tambahan
+
         'jadwal_survei',
         'jadwal_instalasi',
         'laporan_teknisi',
         'alasan_penolakan',
+
     ];
 
     protected $casts = [
@@ -30,27 +35,29 @@ class Pemesanan extends Model
         'jadwal_instalasi' => 'datetime',
     ];
 
-    // 🔹 pelanggan (user yang memesan)
+       
+    
+
     public function pelanggan()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    // 🔹 teknisi yang ditugaskan
-    public function teknisi()
-    {
-        return $this->belongsTo(User::class, 'teknisi_id');
-    }
-
-    // 🔹 paket layanan
     public function paket()
     {
-        return $this->belongsTo(PaketLayanan::class, 'paket_id');
+        return $this->belongsTo(\App\Models\PaketLayanan::class, 'paket_id');
     }
 
-    // 🔹 tagihan (optional)
     public function tagihan()
     {
-        return $this->hasOne(Tagihan::class, 'pesanan_id');
+        return $this->hasOne(\App\Models\Tagihan::class, 'pesanan_id');
     }
+
+    public function teknisi()
+{
+    return $this->belongsTo(User::class, 'teknisi_id');
+}
+
+
+
 }
