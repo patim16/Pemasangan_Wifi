@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Transaksi;
+use App\Models\TagihanBulanan;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\RekapExport;
 use PDF;
 
 class PaymentController extends Controller
@@ -78,90 +81,150 @@ class PaymentController extends Controller
     }
 
     // ============================================================
-    // REKAP HARIAN & BULANAN (GABUNG)
+    // REKAP TRANSAKSI
     // ============================================================
     public function rekapIndex(Request $request)
-    {
-        $mode = $request->mode ?? 'harian';
-        $tanggal = $request->tanggal;
-        $bulan   = $request->bulan;
+{
+    $start = $request->start_date;
+    $end   = $request->end_date;
 
-        $data = collect([]);
-        $totalPendapatan = 0;
+    $data = collect([]);
+    $totalPendapatan = 0;
 
-        // ======================= HARIAN =======================
-        if ($mode == 'harian' && $tanggal) {
-            $data = Transaksi::whereDate('created_at', $tanggal)
-                ->with(['pelanggan', 'paket'])
-                ->get();
+    if ($start && $end) {
+        $data = Transaksi::with(['pelanggan', 'paket'])
+            ->whereBetween('created_at', [$start . " 00:00:00", $end . " 23:59:59"])
+            ->orderBy('created_at', 'asc')
+            ->get();
 
-            $totalPendapatan = Transaksi::whereDate('created_at', $tanggal)
-                ->where('status', 'terverifikasi')
-                ->sum('total');
-        }
-
-        // ======================= BULANAN =======================
-        if ($mode == 'bulanan' && $bulan) {
-            $tahun = substr($bulan, 0, 4);
-            $bln   = substr($bulan, 5, 2);
-
-            $data = Transaksi::whereYear('created_at', $tahun)
-                ->whereMonth('created_at', $bln)
-                ->with(['pelanggan', 'paket'])
-                ->get();
-
-            $totalPendapatan = Transaksi::whereYear('created_at', $tahun)
-                ->whereMonth('created_at', $bln)
-                ->where('status', 'terverifikasi')
-                ->sum('total');
-        }
-
-        return view('payment.rekap.index', [
-            'mode'            => $mode,
-            'tanggal'         => $tanggal,
-            'bulan'           => $bulan,
-            'data'            => $data,
-            'totalPendapatan' => $totalPendapatan,
-        ]);
+        $totalPendapatan = Transaksi::where('status', 'terverifikasi')
+            ->whereBetween('created_at', [$start . " 00:00:00", $end . " 23:59:59"])
+            ->sum('total');
     }
 
-    // ============================================================
-    // EXPORT PDF
-    // ============================================================
+    return view('payment.rekap.index', compact(
+        'start', 'end', 'data', 'totalPendapatan'
+    ));
+}
+
+
     public function rekapPDF(Request $request)
-    {
-        $mode = $request->mode;
-        $tanggal = $request->tanggal;
-        $bulan = $request->bulan;
+{
+    $start = $request->start_date;
+    $end   = $request->end_date;
 
-        $data = collect([]);
-
-        if ($mode == 'harian' && $tanggal) {
-            $data = Transaksi::whereDate('created_at', $tanggal)
-                ->with(['pelanggan', 'paket'])
-                ->get();
-
-            return PDF::loadView('payment.rekap.pdf', [
-                'mode' => 'harian',
-                'tanggal' => $tanggal,
-                'data' => $data
-            ])->download('rekap-harian-'.$tanggal.'.pdf');
-        }
-
-        if ($mode == 'bulanan' && $bulan) {
-            $tahun = substr($bulan, 0, 4);
-            $bln   = substr($bulan, 5, 2);
-
-            $data = Transaksi::whereYear('created_at', $tahun)
-                ->whereMonth('created_at', $bln)
-                ->with(['pelanggan', 'paket'])
-                ->get();
-
-            return PDF::loadView('payment.rekap.pdf', [
-                'mode' => 'bulanan',
-                'bulan' => $bulan,
-                'data' => $data
-            ])->download('rekap-bulanan-'.$bulan.'.pdf');
-        }
+    if (!$start || !$end) {
+        return back()->with('error', 'Pilih tanggal terlebih dahulu!');
     }
+
+    $data = Transaksi::with(['pelanggan', 'paket'])
+        ->whereBetween('created_at', [$start . " 00:00:00", $end . " 23:59:59"])
+        ->orderBy('created_at', 'asc')
+        ->get();
+
+    $totalPendapatan = Transaksi::where('status', 'terverifikasi')
+        ->whereBetween('created_at', [$start . " 00:00:00", $end . " 23:59:59"])
+        ->sum('total');
+
+    $pdf = \PDF::loadView('payment.rekap.pdf', [
+        'start' => $start,
+        'end'   => $end,
+        'data'  => $data,
+        'totalPendapatan' => $totalPendapatan,
+    ])->setPaper('a4', 'portrait');
+
+    return $pdf->download("Rekap-Transaksi-$start-sampai-$end.pdf");
+
+}
+public function exportExcel(Request $request)
+{
+    $start = $request->start_date;
+    $end   = $request->end_date;
+
+    return Excel::download(new RekapExport($start, $end), 'rekap-transaksi.xlsx');
+}
+
+
+
+    // ============================================================
+    // TAGIHAN BULANAN
+    // ============================================================
+    public function tagihanBulanan()
+{
+    $tagihan = TagihanBulanan::with(['pelanggan', 'paket'])
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+    return view('payment.tagihan.bulanan', compact('tagihan'));
+}
+
+public function tagihanDetail($id)
+{
+    $tagihan = TagihanBulanan::with(['pelanggan', 'paket'])->findOrFail($id);
+
+    return view('payment.tagihan.detail', compact('tagihan'));
+}
+
+public function tagihanKonfirmasi($id)
+{
+    $tagihan = TagihanBulanan::findOrFail($id);
+
+    $tagihan->update([
+        'status' => 'lunas',
+        'tanggal_bayar' => now()
+    ]);
+
+    return back()->with('success', 'Tagihan berhasil dikonfirmasi sebagai LUNAS!');
+}
+public function kirimTagihan($id)
+{
+    $tagihan = TagihanBulanan::findOrFail($id);
+
+    // Update status jadi "menunggu_verifikasi" atau "dikirim"
+    $tagihan->update([
+        'status' => 'menunggu_verifikasi'
+    ]);
+
+    // TODO: Kirim notif ke pelanggan jika sudah ada fitur notifikasi
+
+    return back()->with('success', 'Tagihan berhasil dikirim ke pelanggan!');
+}
+// ===============================
+// VERIFIKASI TAGIHAN BULANAN
+// ===============================
+public function verifikasiTagihanIndex()
+{
+    $data = TagihanBulanan::with(['pelanggan','paket'])
+        ->where('status', 'menunggu_verifikasi')
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    return view('payment.tagihan.verifikasi', compact('data'));
+}
+
+public function verifikasiTagihanTerima($id)
+{
+    TagihanBulanan::findOrFail($id)->update([
+        'status' => 'lunas',
+        'tanggal_bayar' => now()
+    ]);
+
+    return back()->with('success', 'Tagihan berhasil diverifikasi');
+}
+
+public function verifikasiTagihanTolak(Request $request, $id)
+{
+    $request->validate(['alasan' => 'required']);
+
+    TagihanBulanan::findOrFail($id)->update([
+        'status' => 'ditolak',
+        'alasan_penolakan' => $request->alasan
+    ]);
+
+    return back()->with('success', 'Tagihan ditolak');
+}
+
+
+
+
 }

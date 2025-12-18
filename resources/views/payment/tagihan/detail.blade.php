@@ -81,15 +81,27 @@
             @else
                 <p class="text-danger fst-italic">Belum ada bukti pembayaran.</p>
             @endif
+            {{-- ALASAN PENOLAKAN --}}
+@if($tagihan->status == 'ditolak' && $tagihan->alasan_penolakan)
+    <div class="alert alert-danger mt-4">
+        <h6 class="fw-bold mb-2">
+            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+            Alasan Penolakan Pembayaran
+        </h6>
+        <p class="mb-0">
+            {{ $tagihan->alasan_penolakan }}
+        </p>
+    </div>
+@endif
+
 
             {{-- TOMBOL KONFIRMASI --}}
             @if($tagihan->status !== 'lunas')
-                <form action="{{ route('payment.tagihan.konfirmasi', $tagihan->id) }}" method="POST" class="mt-3">
-                    @csrf
-                    <button class="btn btn-success px-4 py-2 rounded-pill">
-                        <i class="bi bi-check-circle me-1"></i> Konfirmasi Lunas
-                    </button>
-                </form>
+                <button class="btn btn-success px-4 py-2 rounded-pill"
+                        data-bs-toggle="modal"
+                        data-bs-target="#verifikasiModal">
+                    <i class="bi bi-check-circle me-1"></i> Konfirmasi Lunas
+                </button>
             @endif
 
         </div>
@@ -97,7 +109,47 @@
 
 </div>
 
-{{-- STYLE TAMBAHAN --}}
+{{-- MODAL VERIFIKASI --}}
+<div class="modal fade" id="verifikasiModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Konfirmasi Pembayaran</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <p>
+                    Apakah kamu yakin ingin mengonfirmasi tagihan ini sebagai
+                    <strong class="text-success">LUNAS</strong>?
+                </p>
+
+                <ul class="mb-0">
+                    <li>Pelanggan: <strong>{{ $tagihan->pelanggan->nama }}</strong></li>
+                    <li>Bulan: <strong>{{ $tagihan->bulan }}</strong></li>
+                    <li>Total: <strong>Rp {{ number_format($tagihan->nominal,0,',','.') }}</strong></li>
+                </ul>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">
+                    Batal
+                </button>
+
+                <form action="{{ route('payment.tagihan.konfirmasi', $tagihan->id) }}" method="POST">
+                    @csrf
+                    <button class="btn btn-success">
+                        Ya, Konfirmasi
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{{-- STYLE --}}
 @push('styles')
 <style>
     .card-body h6 {

@@ -8,7 +8,6 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\MetodePembayaranController;
 use App\Http\Controllers\KelolaPesananController;
-use App\Http\Controllers\TeknisiController;
 use App\Models\PaketLayanan;
 
 /*
@@ -17,18 +16,14 @@ use App\Models\PaketLayanan;
 |--------------------------------------------------------------------------
 */
 Route::get('/', function () {
-    return view('welcome');
     $pakets = PaketLayanan::all();
     return view('landing', compact('pakets'));
 });
 
-
-
-// Auth
+// AUTH
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
-
 Route::get('/register', [AuthController::class, 'showRegister']);
 Route::post('/register', [AuthController::class, 'register']);
 
@@ -39,13 +34,11 @@ Route::post('/register', [AuthController::class, 'register']);
 */
 Route::prefix('superadmin')->group(function () {
 
-    // Dashboard
     Route::get('/dashboard', [UserController::class, 'superAdminDashboard'])
         ->name('superadmin.dashboard');
 
     // Paket Layanan
-    Route::get('/paketlayanan', [PaketLayananController::class, 'index'])
-        ->name('superadmin.paketlayanan');
+    Route::get('/paketlayanan', [PaketLayananController::class, 'index'])->name('superadmin.paketlayanan');
     Route::post('/paketlayanan/store', [PaketLayananController::class, 'store']);
     Route::put('/paketlayanan/update/{id}', [PaketLayananController::class, 'update']);
     Route::delete('/paketlayanan/delete/{id}', [PaketLayananController::class, 'destroy']);
@@ -68,38 +61,26 @@ Route::prefix('superadmin')->group(function () {
     Route::put('/payment/update/{id}', [UserController::class, 'updatePayment'])->name('superadmin.payment.update');
     Route::delete('/payment/delete/{id}', [UserController::class, 'deletePayment'])->name('superadmin.payment.delete');
 
-   // SUPERADMIN PELANGGAN
-Route::prefix('superadmin/pelanggan')->name('superadmin.pelanggan.')->group(function () {
-    Route::get('/', [UserController::class, 'indexPelanggan'])->name('index');
-    Route::put('/terima/{id}', [UserController::class, 'terimaPelanggan'])->name('terima');
-    Route::put('/tolak/{id}', [UserController::class, 'tolakPelanggan'])->name('tolak');
-});
-
-Route::put('/pelanggan/terima/{id}', [UserController::class, 'terimaPelanggan'])
-    ->name('superadmin.pelanggan.terima');
-
-Route::put('/pelanggan/tolak/{id}', [UserController::class, 'tolakPelanggan'])
-    ->name('superadmin.pelanggan.tolak');
+    // Kelola Pelanggan
+    Route::prefix('pelanggan')->name('superadmin.pelanggan.')->group(function () {
+        Route::get('/', [UserController::class, 'indexPelanggan'])->name('index');
+        Route::put('/update/{id}', [UserController::class, 'updatePelanggan'])->name('update');
+        Route::delete('/delete/{id}', [UserController::class, 'deletePelanggan'])->name('delete');
+        Route::put('/terima/{id}', [UserController::class, 'terimaPelanggan'])->name('terima');
+        Route::put('/tolak/{id}', [UserController::class, 'tolakPelanggan'])->name('tolak');
+    });
 
     // Metode Pembayaran
-    Route::get('/metodepembayaran', [MetodePembayaranController::class, 'index'])
-        ->name('superadmin.metodepembayaran');
+    Route::get('/metodepembayaran', [MetodePembayaranController::class, 'index'])->name('superadmin.metodepembayaran');
     Route::post('/metodepembayaran/store', [MetodePembayaranController::class, 'store']);
     Route::put('/metodepembayaran/update/{id}', [MetodePembayaranController::class, 'update']);
     Route::delete('/metodepembayaran/delete/{id}', [MetodePembayaranController::class, 'destroy']);
 
-
-
-     // Kelola Pesanan WiFi
-    Route::get('/kelolapesanan', [KelolaPesananController::class, 'index'])
-
-        ->name('superadmin.kelolapesanan');
-    Route::put('/pesanan/terima/{id}', [KelolaPesananController::class, 'terima'])
-        ->name('superadmin.pesanan.terima');
-    Route::put('/pesanan/tolak/{id}', [KelolaPesananController::class, 'tolak'])
-        ->name('superadmin.pesanan.tolak');
-    Route::put('/pesanan/jadwal/{id}', [KelolaPesananController::class, 'aturJadwal'])
-        ->name('superadmin.pesanan.jadwal');
+    // Kelola Pesanan
+    Route::get('/kelolapesanan', [KelolaPesananController::class, 'kelolaPesanan'])->name('superadmin.kelolapesanan');
+    Route::put('/pesanan/terima/{id}', [KelolaPesananController::class, 'terima'])->name('superadmin.pesanan.terima');
+    Route::put('/pesanan/tolak/{id}', [KelolaPesananController::class, 'tolak'])->name('superadmin.pesanan.tolak');
+    Route::put('/pesanan/jadwal/{id}', [KelolaPesananController::class, 'aturJadwal'])->name('superadmin.pesanan.jadwal');
 });
 
 /*
@@ -109,24 +90,31 @@ Route::put('/pelanggan/tolak/{id}', [UserController::class, 'tolakPelanggan'])
 */
 Route::prefix('admin')->group(function () {
 
-    Route::get('/dashboard', [UserController::class, 'adminDashboard'])
-        ->name('admin.dashboard');
-
-   
-    // Dashboard
-    Route::get('/dashboard', [UserController::class, 'adminDashboard'])
-        ->name('admin.dashboard');
+    Route::get('/dashboard', [UserController::class, 'adminDashboard'])->name('admin.dashboard');
 
     // Paket Layanan
-    Route::resource('/paketlayanan', PaketLayananController::class)->names([
-        'index' => 'admin.paketlayanan'
-    ]);
+    Route::get('/paketlayanan', [PaketLayananController::class, 'index'])->name('admin.paketlayanan');
+    Route::post('/paketlayanan/store', [PaketLayananController::class, 'store']);
+    Route::put('/paketlayanan/update/{id}', [PaketLayananController::class, 'update']);
+    Route::delete('/paketlayanan/delete/{id}', [PaketLayananController::class, 'destroy']);
 
     // Metode Pembayaran
-    Route::resource('/metodepembayaran', MetodePembayaranController::class)->names([
-        'index' => 'admin.metodepembayaran'
-    ]);
+    Route::get('/metodepembayaran', [MetodePembayaranController::class, 'index'])->name('admin.metodepembayaran');
+    Route::post('/metodepembayaran/store', [MetodePembayaranController::class, 'store']);
+    Route::put('/metodepembayaran/update/{id}', [MetodePembayaranController::class, 'update']);
+    Route::delete('/metodepembayaran/delete/{id}', [MetodePembayaranController::class, 'destroy']);
 
+    // Kelola Pesanan
+    Route::get('/kelolapesanan', [KelolaPesananController::class, 'kelolaPesanan'])->name('admin.kelolapesanan');
+    Route::post('/pesanan/{id}/terima', [KelolaPesananController::class, 'terima'])->name('admin.pesanan.terima');
+    Route::post('/pesanan/{id}/jadwal-survei', [KelolaPesananController::class, 'jadwalSurvei'])->name('admin.pesanan.jadwalSurvei');
+    Route::post('/pesanan/{id}/laporan-survei', [KelolaPesananController::class, 'laporanSurvei'])->name('admin.pesanan.laporanSurvei');
+    Route::post('/pesanan/{id}/kirim-tagihan', [KelolaPesananController::class, 'kirimTagihan'])->name('admin.pesanan.kirimTagihan');
+    Route::post('/pesanan/{id}/konfirmasi-bayar', [KelolaPesananController::class, 'konfirmasiPembayaran'])->name('admin.pesanan.konfirmasiPembayaran');
+    Route::post('/pesanan/{id}/jadwal-instalasi', [KelolaPesananController::class, 'jadwalInstalasi'])->name('admin.pesanan.jadwalInstalasi');
+    Route::post('/pesanan/{id}/instalasi-selesai', [KelolaPesananController::class, 'instalasiSelesai'])->name('admin.pesanan.instalasiSelesai');
+    Route::put('/pesanan/{id}/jadwal-survei/update', [KelolaPesananController::class, 'updateJadwalSurvei'])->name('admin.pesanan.jadwalSurvei.update');
+});
     // Kelola Payment
     Route::get('/kelolapayment', [UserController::class, 'indexPayment'])->name('admin.kelolapayment');
 
@@ -136,234 +124,48 @@ Route::prefix('admin')->group(function () {
     // Kelola Pelanggan
     Route::get('/kelolapelanggan', [UserController::class, 'indexPelanggan'])->name('admin.kelolapelanggan');
 
-    // Pesanan WiFi
-    Route::get('/kelolapesanan', [KelolaPesananController::class, 'kelolaPesanan'])
-        ->name('admin.kelolapesanan');
-    Route::put('/pesanan/terima/{id}', [KelolaPesananController::class, 'terima'])
-        ->name('admin.pesanan.terima');
-    Route::put('/pesanan/tolak/{id}', [KelolaPesananController::class, 'tolak'])
-        ->name('admin.pesanan.tolak');
-    Route::put('/pesanan/jadwal/{id}', [KelolaPesananController::class, 'aturJadwal'])
-        ->name('admin.pesanan.jadwal');
-
-  /*
-|---------------------------------------------
-| KELOLA PESANAN WIFI (ADMIN)
-|---------------------------------------------
-*/
-
-
-    
-    Route::get('/kelolapesanan', [KelolaPesananController::class, 'kelolaPesanan'])
-        ->name('admin.kelolapesanan');
-
-    // TERIMA PESANAN
-    Route::post('/pesanan/{id}/terima', [KelolaPesananController::class, 'terima'])
-        ->name('admin.pesanan.terima');
-
-    // JADWAL SURVEI
-    Route::post('/pesanan/{id}/jadwal-survei', [KelolaPesananController::class, 'jadwalSurvei'])
-        ->name('admin.pesanan.jadwalSurvei');
-
-    // LAPORAN SURVEI
-    Route::post('/pesanan/{id}/laporan-survei', [KelolaPesananController::class, 'laporanSurvei'])
-        ->name('admin.pesanan.laporanSurvei');
-
-    // KIRIM TAGIHAN
-    Route::post('/pesanan/{id}/kirim-tagihan', [KelolaPesananController::class, 'kirimTagihan'])
-        ->name('admin.pesanan.kirimTagihan');
-
-    // KONFIRMASI PEMBAYARAN
-    Route::post('/pesanan/{id}/konfirmasi-bayar', [KelolaPesananController::class, 'konfirmasiPembayaran'])
-        ->name('admin.pesanan.konfirmasiPembayaran');
-
-    // JADWAL INSTALASI
-    Route::post('/pesanan/{id}/jadwal-instalasi', [KelolaPesananController::class, 'jadwalInstalasi'])
-        ->name('admin.pesanan.jadwalInstalasi');
-
-    // INSTALASI SELESAI
-    Route::post('/pesanan/{id}/instalasi-selesai', [KelolaPesananController::class, 'instalasiSelesai'])
-        ->name('admin.pesanan.instalasiSelesai');
-//UPDATE JADWAL SURVEI
-    Route::put('/pesanan/{id}/jadwal-survei/update', [KelolaPesananController::class, 'updateJadwalSurvei'])
-    ->name('pesanan.jadwalSurvei.update');
-
-});
-
-/*
-|--------------------------------------------------------------------------
-| TEKNISI ROUTES
-|--------------------------------------------------------------------------
-*/
-Route::prefix('teknisi')->name('teknisi.')->group(function () {
-
-    // Dashboard
-    Route::get('/dashboard', [TeknisiController::class, 'dashboard'])->name('dashboard');
-
-    // Laporan Pemasangan
-    Route::get('/laporan', [TeknisiController::class, 'formLaporan'])->name('laporan.form');
-    Route::post('/laporan', [TeknisiController::class, 'kirimLaporanPemasangan'])->name('laporan.store');
-
-    // Jadwal Survei
-    Route::get('/jadwal-survei', [TeknisiController::class, 'jadwalSurveyTeknisi'])->name('jadwal-survei');
-    Route::get('/jadwal-survei/detail/{id}', [TeknisiController::class, 'detailSurvei'])->name('detail-survei');
-
-    // Jadwal Pemasangan
-    Route::get('/jadwal-pemasangan', [TeknisiController::class, 'jadwalPemasangan'])
-        ->name('jadwal-pemasangan');
-
-    Route::post('/jadwal-pemasangan/simpan', [TeknisiController::class, 'simpanJadwalPemasangan'])
-        ->name('jadwal-pemasangan.simpan');
-
-    // Detail Pemasangan
-    // Route::get('/detail-pemasangan/{kode}', [TeknisiController::class, 'detailPemasangan'])
-    //     ->name('detail-pemasangan');
-
-    // Detail Instalasi
-    Route::get('/instalasi/{id}/detail', [TeknisiController::class, 'detailInstalasi'])
-        ->name('instalasi.detail');
-
-    // Status Pemasangan
-    Route::get('/status', [TeknisiController::class, 'updateStatus'])->name('status');
-    Route::post('/status/update', [TeknisiController::class, 'updateStatusSubmit'])->name('status.update');
-
-
-    Route::get('/jadwal-pemasangan', [TeknisiController::class, 'jadwalPemasangan'])
-        ->name('jadwal-pemasangan');
-
-    Route::get('/detail-pemasangan/{id}', [TeknisiController::class, 'detailPemasangan'])
-        ->name('detail-pemasangan');
-});
-
-
-
 /*
 |--------------------------------------------------------------------------
 | PELANGGAN ROUTES
 |--------------------------------------------------------------------------
 */
-
 Route::prefix('pelanggan')->group(function () {
-
-    Route::get('/dashboard', [PelangganController::class, 'dashboard'])
-        ->name('pelanggan.dashboard');
-
-    // Pesan WiFi
-    Route::get('/pesan-wifi', [PelangganController::class, 'pilihPaket'])
-        ->name('pelanggan.pesanwifi');
-
-    Route::get('/pesan-wifi/{id}', [PelangganController::class, 'detailPaket'])
-        ->name('pelanggan.detailpaket');
-
-    // Jadwal
-    Route::get('/pesan-wifi/{id}/jadwal', [PelangganController::class, 'pilihJadwal'])
-        ->name('pelanggan.jadwal');
-    Route::post('/pesan-wifi/{id}/jadwal', [PelangganController::class, 'simpanJadwal'])
-        ->name('pelanggan.jadwal.simpan');
-
-    // Input Data
-    Route::get('/pesan-wifi/{id}/input-data', [PelangganController::class, 'inputData'])
-        ->name('pelanggan.inputdata');
-    Route::post('/pesan-wifi/{paket_id}/input-data', [PelangganController::class, 'simpanInputData'])
-        ->name('pelanggan.inputdata.simpan');
-
-    // Invoice
-    Route::get('/invoice/{paket_id}', [PelangganController::class, 'invoice'])
-        ->name('pelanggan.invoice');
-    Route::post('/invoice/{paket_id}/konfirmasi', [PelangganController::class, 'konfirmasiPemesanan'])
-        ->name('pelanggan.konfirmasi');
-    Route::get('/invoice/cetak/{id}', [PelangganController::class, 'cetakInvoice'])
-        ->name('pelanggan.invoice.cetak');
-
-    // Riwayat
-    Route::get('/riwayat', [PelangganController::class, 'riwayat'])
-        ->name('pelanggan.riwayat');
+    Route::get('/dashboard', [PelangganController::class, 'dashboard'])->name('pelanggan.dashboard');
+    Route::get('/pesan-wifi', [PelangganController::class, 'pilihPaket'])->name('pelanggan.pesanwifi');
+    Route::get('/pesan-wifi/{id}', [PelangganController::class, 'detailPaket'])->name('pelanggan.detailpaket');
+    Route::get('/pesan-wifi/{id}/jadwal', [PelangganController::class, 'pilihJadwal'])->name('pelanggan.jadwal');
+    Route::post('/pesan-wifi/{id}/jadwal', [PelangganController::class, 'simpanJadwal'])->name('pelanggan.jadwal.simpan');
+    Route::get('/pesan-wifi/{id}/input-data', [PelangganController::class, 'inputData'])->name('pelanggan.inputdata');
+    Route::post('/pesan-wifi/{paket_id}/input-data', [PelangganController::class, 'simpanInputData'])->name('pelanggan.inputdata.simpan');
+    Route::get('/invoice/{paket_id}', [PelangganController::class, 'invoice'])->name('pelanggan.invoice');
+    Route::post('/invoice/{paket_id}/konfirmasi', [PelangganController::class, 'konfirmasiPemesanan'])->name('pelanggan.konfirmasi');
+    Route::get('/invoice/cetak/{id}', [PelangganController::class, 'cetakInvoice'])->name('pelanggan.invoice.cetak');
+    Route::get('/riwayat', [PelangganController::class, 'riwayat'])->name('pelanggan.riwayat');
 });
-
-// PAYMENT
-Route::prefix('payment')->group(function () {
-
-    Route::get('/dashboard', [PaymentController::class, 'dashboard'])
-        ->name('payment.dashboard');
-
-    // Pembayaran
-    Route::get('/pembayaran', [PaymentController::class, 'list'])
-        ->name('payment.list');
-
-    Route::get('/pembayaran/{id}', [PaymentController::class, 'detail'])
-        ->name('payment.detail');
-
-   // (valid / invalid)
-    Route::post('/pembayaran/{id}/valid', [PaymentController::class, 'valid'])
-        ->name('payment.valid');
-
-    Route::post('/pembayaran/{id}/invalid', [PaymentController::class, 'invalid'])
-        ->name('payment.invalid');
-
-    // REKAP HARIAN & BULANAN
-    Route::prefix('payment')->group(function () {
-    Route::get('/rekap', [PaymentController::class, 'rekapIndex'])->name('payment.rekap.index');
-    Route::get('/rekap/pdf', [PaymentController::class, 'rekapPDF'])->name('payment.rekap.pdf');
-});
-
-     
-    //Halaman update status
-    Route::get('/payment/status', [PaymentController::class, 'statusPage'])
-    ->name('payment.status');
-    Route::post('/payment/status/update/{id}', [PaymentController::class, 'updateStatus'])
-    ->name('payment.status.update');
-
-});
-
-
-
-//pelanggan
 
 /*
 |--------------------------------------------------------------------------
-| PELANGGAN ROUTE
+| PAYMENT ROUTES
 |--------------------------------------------------------------------------
-*/// Dashboard Pelanggan
-    Route::get('/pelanggan/dashboard', [PelangganController::class, 'dashboard'])
-    ->name('pelanggan.dashboard');
+*/
+Route::prefix('payment')->group(function () {
+    Route::get('/dashboard', [PaymentController::class, 'dashboard'])->name('payment.dashboard');
+    Route::get('/pembayaran', [PaymentController::class, 'list'])->name('payment.list');
+    Route::get('/pembayaran/{id}', [PaymentController::class, 'detail'])->name('payment.detail');
+    Route::post('/pembayaran/{id}/valid', [PaymentController::class, 'valid'])->name('payment.valid');
+    Route::post('/pembayaran/{id}/invalid', [PaymentController::class, 'invalid'])->name('payment.invalid');
 
-//pilih paket
-    Route::get('/pelanggan/pesan-wifi', [PelangganController::class, 'pilihPaket'])
-     ->name('pelanggan.pesanwifi');
-//detail paket
-    Route::get('/pelanggan/paket/{id}', [PelangganController::class, 'detailPaket'])->name('pelanggan.paket.detail');
+    Route::get('/rekap', [PaymentController::class, 'rekapIndex'])->name('payment.rekap.index');
+    Route::get('/rekap/pdf', [PaymentController::class, 'rekapPDF'])->name('payment.rekap.pdf');
+    Route::get('/rekap/export-excel', [PaymentController::class, 'exportExcel'])->name('payment.rekap.excel');
 
-//pilih jadwal
-     Route::get('/pelanggan/pesan-wifi/{id}/jadwal', [PelangganController::class, 'pilihJadwal'])
-    ->name('pelanggan.jadwal');
-    Route::post('/pelanggan/pesan-wifi/{id}/jadwal', [PelangganController::class, 'simpanJadwal'])
-    ->name('pelanggan.jadwal.simpan');
-//input data
-    Route::get('/pelanggan/pesan-wifi/{id}/input-data', [PelangganController::class, 'inputData'])
-    ->name('pelanggan.inputdata');
-    Route::post('/pelanggan/pesan-wifi/{paket_id}/input-data', [PelangganController::class, 'simpanInputData'])
-    ->name('pelanggan.inputdata.simpan');
-//invoice
-    Route::get('/pelanggan/invoice/{paket_id}', [PelangganController::class, 'invoice'])
-    ->name('pelanggan.invoice');
-//konfirmasi pemesanan
-    Route::post('/pelanggan/invoice/{paket_id}/konfirmasi', [PelangganController::class, 'konfirmasiPemesanan'])
-    ->name('pelanggan.konfirmasi');
-// riwayat pemesanan
-    Route::get('/pelanggan/riwayat', [PelangganController::class, 'riwayat'])
-    ->name('pelanggan.riwayat');
-// cetak invoice    
-Route::get('/pelanggan/invoice/cetak/{id}', [PelangganController::class, 'cetakInvoice'])->name('pelanggan.invoice.cetak');
+    Route::post('/tagihan/kirim/{id}', [PaymentController::class, 'kirimTagihan'])->name('payment.tagihan.kirim');
+    Route::get('/status', [PaymentController::class, 'statusPage'])->name('payment.status');
+    Route::post('/status/update/{id}', [PaymentController::class, 'updateStatus'])->name('payment.status.update');
 
-
-
-
-
-
-
-    
-
-// Pelanggan (belum diisi)
-Route::prefix('pelanggan')->group(function () {
-  // nanti diisi
+    Route::prefix('tagihan')->group(function () {
+        Route::get('/', [PaymentController::class, 'tagihanBulanan'])->name('payment.tagihan.bulanan');
+        Route::get('/detail/{id}', [PaymentController::class, 'tagihanDetail'])->name('payment.tagihan.detail');
+        Route::post('/konfirmasi/{id}', [PaymentController::class, 'tagihanKonfirmasi'])->name('payment.tagihan.konfirmasi');
+    });
 });
