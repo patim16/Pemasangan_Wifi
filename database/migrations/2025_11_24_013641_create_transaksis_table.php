@@ -9,18 +9,20 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-   public function up()
+    public function up()
 {
     Schema::create('transaksis', function (Blueprint $table) {
         $table->id();
+        $table->unsignedBigInteger('pelanggan_id');
         $table->unsignedBigInteger('paket_id');
-        $table->unsignedBigInteger('konsumen_id');
-        $table->string('status_transaksi')->default('pending');
-        $table->timestamp('tanggal_pesan')->nullable();
-        
-        $table->foreign('paket_id')->references('id')->on('paket_layanans');
-        $table->foreign('konsumen_id')->references('id')->on('users');
+        $table->integer('total');
+        $table->string('bukti')->nullable();
+        $table->enum('status', ['menunggu', 'terverifikasi', 'ditolak'])->default('menunggu');
+        $table->text('alasan_penolakan')->nullable();
         $table->timestamps();
+
+        $table->foreign('pelanggan_id')->references('id')->on('users')->onDelete('cascade');
+        $table->foreign('paket_id')->references('id')->on('paket_layanans')->onDelete('cascade');
     });
 }
 

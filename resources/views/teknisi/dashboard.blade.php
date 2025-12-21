@@ -19,15 +19,15 @@
                     <div class="menu-card h-100 shadow-sm border-0">
                         <div class="menu-content">
                             <div class="d-flex align-items-center mb-3">
-                                <div class="icon-circle-md bg-info bg-opacity-10 me-3">
-                                    <i class="bi bi-calendar-event text-info fs-4"></i>
+                                <div class="icon-circle-md bg-primary bg-opacity-10 me-3">
+                                    <i class="bi bi-calendar-check text-primary fs-4"></i>
                                 </div>
                                 <div>
                                     <h6 class="menu-title mb-1">Jadwal Hari Ini</h6>
                                     <p class="menu-desc mb-0">2 Instalasi terjadwal</p>
                                 </div>
                             </div>
-                            <a href="{{ route('teknisi.jadwal-pemasangan') }}" class="btn btn-info btn-sm w-100 mt-auto">
+                            <a href="{{ route('teknisi.jadwal-survei') }}" class="btn btn-primary btn-sm w-100 mt-auto">
                                 <i class="bi bi-eye me-1"></i>Lihat Jadwal
                             </a>
                         </div>
@@ -67,7 +67,7 @@
                                     <p class="menu-desc mb-0">Kirim laporan instalasi</p>
                                 </div>
                             </div>
-                            <a href="{{ route('teknisi.laporan.store') }}" class="btn btn-success btn-sm w-100 mt-auto">
+                            <a href="{{ route('teknisi.kirim-laporan') }}" class="btn btn-success btn-sm w-100 mt-auto">
                                 <i class="bi bi-file-earmark-arrow-up me-1"></i>Kirim Laporan
                             </a>
                         </div>
@@ -80,11 +80,11 @@
                 <div class="col-12">
                     <div class="info-card-md shadow-sm border-0">
                         <div class="d-flex align-items-center">
-                            <div class="icon-circle-md bg-dark bg-opacity-10 me-3">
-                                <i class="bi bi-info-circle-fill text-dark fs-4"></i>
+                            <div class="icon-circle-md bg-primary bg-opacity-10 me-3">
+                                <i class="bi bi-info-circle-fill text-primary fs-4"></i>
                             </div>
                             <div>
-                                <h6 class="fw-bold mb-1 text-dark">Informasi Penting</h6>
+                                <h6 class="fw-bold mb-1 text-primary">Informasi Penting</h6>
                                 <p class="mb-0 text-muted">Pastikan untuk selalu update status instalasi dan kirim laporan setelah pekerjaan selesai.</p>
                             </div>
                         </div>
@@ -279,10 +279,10 @@
 
     /* Info Card */
     .info-card-md {
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        background: linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 100%);
         border-radius: 10px;
         padding: 1.25rem;
-        border-left: 3px solid #212529;
+        border-left: 3px solid #4e73df;
     }
 
     /* Stat Card */

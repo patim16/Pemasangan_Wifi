@@ -87,7 +87,7 @@
                     {{-- ================= MODAL LAPORAN ================= --}}
                     <div class="modal fade" id="laporanModal{{ $item->id }}" tabindex="-1">
                         <div class="modal-dialog">
-                            <form action="{{ route('teknisi.laporan.store') }}" method="POST">
+                            <form action="{{ route('teknisi.laporan') }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="pemesanan_id" value="{{ $item->id }}">
 

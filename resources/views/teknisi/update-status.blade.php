@@ -8,6 +8,8 @@
             {{-- Header Section --}}
             <div class="mb-3">
                 <h5 class="fw-bold mb-1 text-dark fs-4">Update Status Pemasangan</h5>
+                <h5 class="fw-bold mb-1">Update Status Pemasangan</h5>
+
                 <p class="text-muted mb-0" style="font-size: 0.8rem;">Kelola dan update status instalasi WiFi pelanggan</p>
             </div>
 

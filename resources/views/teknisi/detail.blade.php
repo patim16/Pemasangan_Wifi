@@ -32,12 +32,43 @@
     </div>
 
     {{-- INFORMASI PELANGGAN --}}
+
+    <h4 class="text-center mb-4">Detail Jadwal Instalasi</h4>
+
+    <div class="card p-3 mb-3">
+        <h6><strong>Detail Jadwal Instalasi</strong></h6>
+        <p>Order #{{ $instalasi->id }}</p>
+    </div>
+
+    <div class="card p-3 mb-3">
+        <h6><strong>Informasi Instalasi</strong></h6>
+
+        <div class="mb-3">
+            <label><strong>📅 Tanggal</strong></label>
+            <div class="border p-2">{{ $instalasi->tanggal }}</div>
+        </div>
+
+        <div class="mb-3">
+            <label><strong>⏰ Waktu</strong></label>
+            <div class="border p-2">{{ $instalasi->waktu }}</div>
+        </div>
+
+        <div class="mb-3">
+            <label><strong>📍 Lokasi</strong></label>
+            <div class="border p-2">{{ $instalasi->alamat }}</div>
+        </div>
+    </div>
+
     <div class="card p-3 mb-3">
         <h6><strong>Informasi Pelanggan</strong></h6>
 
         <div class="mb-3">
             <label><strong>👤 Nama Pelanggan</strong></label>
+
             <div class="border p-2">{{ $survei->nama_pelanggan ?? '-' }}</div>
+
+            <div class="border p-2">{{ $instalasi->nama_pelanggan }}</div>
+
         </div>
 
         <div class="mb-3">
@@ -76,6 +107,39 @@
     {{-- BUTTON BACK --}}
     <div class="d-flex gap-3">
         <a href="{{ route('teknisi.jadwal.survei') }}" class="btn btn-secondary">Kembali</a>
+
+            <div class="border p-2">{{ $instalasi->telepon }}</div>
+        </div>
+    </div>
+
+    <div class="card p-3 mb-3">
+        <h6><strong>Detail Layanan</strong></h6>
+
+        <div class="mb-3">
+            <label><strong>Teknisi</strong></label>
+            <div class="border p-2">{{ $instalasi->teknisi_nama ?? 'Belum ditetapkan' }}</div>
+        </div>
+
+        <div class="mb-3">
+            <label><strong>Paket Layanan</strong></label>
+            <div class="border p-2">{{ $instalasi->paket ?? '-' }}</div>
+        </div>
+
+        <div class="mb-3">
+            <label><strong>Biaya Instalasi</strong></label>
+            <div class="border p-2">{{ number_format($instalasi->biaya, 0, ',', '.') }}</div>
+        </div>
+    </div>
+
+    <div class="card p-3 mb-3">
+        <h6><strong>Catatan Tambahan</strong></h6>
+        <div class="border p-3" style="height: 100px;">
+            {{ $instalasi->catatan ?? '-' }}
+        </div>
+    </div>
+
+    <div class="d-flex gap-3">
+        <a href="{{ route('teknisi.update.status') }}" class="btn btn-secondary">Kembali</a>
     </div>
 
 </div>
