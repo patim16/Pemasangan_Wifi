@@ -1,95 +1,109 @@
-@extends('layout.app') 
+@extends('layout.app')
 
 @section('content')
 <div class="container-fluid py-4">
 
-    {{-- Header --}}
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h5 class="fw-bold mb-0">
-            <i class="bi bi-receipt me-2"></i>Tagihan Awal Pelanggan
-        </h5>
-    </div>
+    <h5 class="fw-bold mb-4">
+        <i class="bi bi-receipt me-2"></i>Tagihan Awal Pelanggan
+    </h5>
 
-    {{-- Alert --}}
     @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <div class="alert alert-success alert-dismissible fade show">
             {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <button class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
 
-    {{-- Card --}}
     <div class="card shadow-sm border-0">
-        <div class="card-body">
+        <div class="card-body table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>No</th>
+                        <th>Pelanggan</th>
+                        <th>Invoice</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th class="text-center">Aksi</th>
+                    </tr>
+                </thead>
 
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>No</th>
-                            <th>Nama Pelanggan</th>
-                            <th>Invoice</th>
-                            <th>Total Tagihan</th>
-                            <th>Status</th>
-                            <th class="text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                <tbody>
+                @forelse($pesanan as $item)
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
 
-                        @forelse($pesanan as $item)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
+                        <td>
+                            <strong>{{ $item->pelanggan->nama }}</strong><br>
+                            <small class="text-muted">{{ $item->pelanggan->no_hp }}</small>
+                        </td>
 
-                            <td>
-                                <div class="fw-semibold">
-                                    {{ $item->pelanggan->nama }}
+                        <td>
+                            <span class="badge bg-secondary">
+                                {{ $item->invoice_code }}
+                            </span>
+                        </td>
+
+                        <td class="fw-bold text-success">
+                            Rp {{ number_format($item->paket->harga, 0, ',', '.') }}
+                        </td>
+
+                        <td>
+                            <span class="badge bg-warning">Menunggu Tagihan</span>
+                        </td>
+
+                        <td class="text-center">
+                            <button class="btn btn-sm btn-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modal{{ $item->id }}">
+                                Kirim
+                            </button>
+                        </td>
+                    </tr>
+
+                    {{-- MODAL DETAIL --}}
+                    <div class="modal fade" id="modal{{ $item->id }}" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Detail Tagihan</h5>
+                                    <button class="btn-close" data-bs-dismiss="modal"></button>
                                 </div>
-                                <small class="text-muted">
-                                    {{ $item->pelanggan->no_hp ?? '-' }}
-                                </small>
-                            </td>
 
-                            <td>
-                                <span class="badge bg-secondary">
-                                    {{ $item->invoice_code }}
-                                </span>
-                            </td>
+                                <div class="modal-body">
+                                    <p><b>Pelanggan:</b> {{ $item->pelanggan->nama }}</p>
+                                    <p><b>Paket:</b> {{ $item->paket->nama_paket }}</p>
+                                    <p><b>Harga:</b> Rp {{ number_format($item->paket->harga,0,',','.') }}</p>
+                                    <p><b>Alamat:</b> {{ $item->alamat }}</p>
+                                    <p><b>Laporan Teknisi:</b> {{ $item->laporan_teknisi }}</p>
+                                </div>
 
-                            <td class="fw-bold text-success">
-                                Rp {{ number_format($item->total_bayar, 0, ',', '.') }}
-                            </td>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
 
-                            <td>
-                                <span class="badge bg-warning">
-                                    Menunggu Tagihan
-                                </span>
-                            </td>
+                                    <form action="{{ route('payment.tagihan.awal.kirim', $item->id) }}" method="POST">
+                                        @csrf
+                                        <button class="btn btn-success">
+                                            Kirim Tagihan
+                                        </button>
+                                    </form>
+                                </div>
 
-                            <td class="text-center">
-                                <form action="{{ route('payment.tagihan.awal.kirim', $item->id) }}" method="POST">
-                                    @csrf
-                                    <button type="submit"
-                                        class="btn btn-primary btn-sm"
-                                        onclick="return confirm('Kirim tagihan ke pelanggan?')">
-                                        <i class="bi bi-send me-1"></i>
-                                        Kirim Tagihan
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="6" class="text-center text-muted py-4">
-                                <i class="bi bi-inbox fs-3 d-block mb-2"></i>
-                                Tidak ada data tagihan awal
-                            </td>
-                        </tr>
-                        @endforelse
+                            </div>
+                        </div>
+                    </div>
 
-                    </tbody>
-                </table>
-            </div>
+                @empty
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">
+                            Tidak ada data
+                        </td>
+                    </tr>
+                @endforelse
+                </tbody>
 
+            </table>
         </div>
     </div>
 

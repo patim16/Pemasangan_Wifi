@@ -116,6 +116,7 @@ public function konfirmasiPemesanan($paket_id)
         'latitude'  => $data['latitude'],
         'longitude' => $data['longitude'],
         'invoice_code' => $invoice,
+        'total_bayar' => $paket->harga,
         'status'    => 'pending',
     ]);
 

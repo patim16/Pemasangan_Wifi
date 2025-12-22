@@ -243,7 +243,7 @@ public function kirimTagihanAwal(Pemesanan $pemesanan)
         'jenis'        => 'awal',
         'jatuh_tempo'  => now()->addDays(3),
         'jumlah'       => $pemesanan->total_bayar,
-        'status'       => 'menunggu',
+        'status'       => 'pending',
     ]);
 
     

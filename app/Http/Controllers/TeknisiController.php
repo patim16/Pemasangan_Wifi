@@ -161,30 +161,27 @@ class TeknisiController extends Controller
  public function kirimLaporanPemasangan(Request $request)
 {
     $request->validate([
-        'pemesanan_id' => 'required',
-        'hasil' => 'required',
-        'laporan_teknisi' => 'nullable'
+        'pemesanan_id' => 'required|exists:pemesanan,id',
+        'hasil' => 'required|in:diterima,ditolak',
+        'alasan_penolakan' => 'nullable|string'
     ]);
 
     $pesanan = Pemesanan::findOrFail($request->pemesanan_id);
 
-    if ($request->hasil == 'diterima') {
-
-        
+    if ($request->hasil === 'diterima') {
         $pesanan->status = 'menunggu_tagihan_awal';
         $pesanan->laporan_teknisi = 'Survei diterima';
-
+        $pesanan->alasan_penolakan = null;
     } else {
-
         $pesanan->status = 'ditolak_survei';
-        $pesanan->alasan_penolakan = $request->laporan_teknisi;
+        $pesanan->laporan_teknisi = 'Survei ditolak';
+        $pesanan->alasan_penolakan = $request->alasan_penolakan;
     }
 
     $pesanan->save();
 
     return back()->with('success', 'Laporan survei berhasil dikirim');
 }
-
 
     /*
     |--------------------------------------------------------------------------

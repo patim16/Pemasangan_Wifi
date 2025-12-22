@@ -61,20 +61,21 @@ public function kelolaPesanan(Request $request)
 
         return back()->with('success', 'Jadwal survei berhasil diupdate!');
     }
+public function laporanSurvei(Request $request, $id)
+{
+    $request->validate([
+        'laporan_teknisi' => 'required'
+    ]);
 
-    public function laporanSurvei(Request $request, $id)
-    {
-        $request->validate([
-            'laporan_teknisi' => 'required'
-        ]);
+    $pesanan = Pemesanan::findOrFail($id);
 
-        $pesanan = Pemesanan::findOrFail($id);
-        $pesanan->laporan_teknisi = $request->laporan_teknisi;
-        $pesanan->status = 'survei_selesai';
-        $pesanan->save();
+    // ADMIN HANYA MELIHAT / CATAT
+    $pesanan->laporan_teknisi = $request->laporan_teknisi;
+    $pesanan->save();
 
-        return back()->with('success','Laporan survei disimpan.');
-    }
+    return back()->with('success','Catatan survei disimpan.');
+}
+
 
     public function kirimTagihan($id)
     {

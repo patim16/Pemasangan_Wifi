@@ -440,6 +440,66 @@
                                     </a>
                                 </nav>
                             </div>
+                            
+                            <!-- Payment Menu Dropdown -->
+                            <div class="sb-sidenav-menu-heading">Payment Menu</div>
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#paymentCollapse" aria-expanded="false" aria-controls="paymentCollapse">
+                                <div class="sb-nav-link-icon"><i class="fas fa-money-bill-wave"></i></div>
+                                Payment Menu
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="paymentCollapse" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link {{ request()->routeIs('payment.list') ? 'active' : '' }}" href="{{ route('payment.list') }}">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-money-bill-wave"></i></div>
+                                        Verifikasi Pembayaran
+                                    </a>
+                                    <a class="nav-link {{ request()->routeIs('payment.status') ? 'active' : '' }}" href="{{ route('payment.status') }}">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-edit"></i></div>
+                                        Update status pembayaran
+                                    </a>
+                                    <a class="nav-link {{ request()->routeIs('payment.rekap.index') ? 'active' : '' }}" href="{{ route('payment.rekap.index') }}">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-chart-bar"></i></div>
+                                        Rekap Transaksi
+                                    </a>
+                                    <a class="nav-link {{ request()->routeIs('payment.tagihan.bulanan') ? 'active' : '' }}" href="{{ route('payment.tagihan.bulanan') }}">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                                        Tagihan Bulanan
+                                    </a>
+                                    <a class="nav-link {{ request()->routeIs('payment.tagihan.awal') ? 'active' : '' }}" href="{{ route('payment.tagihan.awal') }}">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                                        Tagihan Awal
+                                    </a>
+                                </nav>
+                            </div>
+                            
+                            <!-- Teknisi Menu Dropdown -->
+                            <div class="sb-sidenav-menu-heading">Teknisi Menu</div>
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#teknisiCollapse" aria-expanded="false" aria-controls="teknisiCollapse">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tools"></i></div>
+                                Teknisi Menu
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="teknisiCollapse" aria-labelledby="headingThree" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link {{ request()->is('teknisi/jadwal-survei') ? 'active' : '' }}" href="{{ route('teknisi.jadwal-survei') }}">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-calendar-check"></i></div>
+                                        Jadwal Survei
+                                    </a>
+                                    <a class="nav-link {{ request()->is('teknisi/jadwal-pemasangan') ? 'active' : '' }}" href="{{ route('teknisi.jadwal-pemasangan') }}">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-calendar-plus"></i></div>
+                                        Atur Jadwal Pemasangan
+                                    </a>
+                                    <a class="nav-link {{ request()->is('teknisi/laporan') ? 'active' : '' }}" href="{{ url('/teknisi/laporan') }}">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-file-signature"></i></div>
+                                        Kirim Laporan Instalasi
+                                    </a>
+                                    <a class="nav-link {{ request()->is('teknisi/status') ? 'active' : '' }}" href="/teknisi/status">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-sync-alt"></i></div>
+                                        Update Status Pemasangan
+                                    </a>
+                                </nav>
+                            </div>
                         @endif
 
                      
@@ -480,9 +540,27 @@
                         {{-- TEKNISI MENU --}}
                         
                         @if(session()->has('user') && session('user')->role == 'teknisi')
-                    
+                            <div class="sb-sidenav-menu-heading">Teknisi</div>
 
-                
+                            <a class="nav-link {{ request()->is('teknisi/jadwal-survei') ? 'active' : '' }}" href="{{ route('teknisi.jadwal-survei') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-calendar-check"></i></div>
+                                Jadwal Survei
+                            </a>
+
+                            <a class="nav-link {{ request()->is('teknisi/jadwal-pemasangan') ? 'active' : '' }}" href="{{ route('teknisi.jadwal-pemasangan') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-calendar-plus"></i></div>
+                                Atur Jadwal Pemasangan
+                            </a>
+
+                            <a class="nav-link {{ request()->is('teknisi/laporan') ? 'active' : '' }}" href="{{ url('/teknisi/laporan') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-file-signature"></i></div>
+                                Kirim Laporan Instalasi
+                            </a>
+
+                            <a class="nav-link {{ request()->is('teknisi/status') ? 'active' : '' }}" href="/teknisi/status">
+                                <div class="sb-nav-link-icon"><i class="fas fa-sync-alt"></i></div>
+                                Update Status Pemasangan
+                            </a>
                         @endif
 
                         
@@ -521,32 +599,6 @@
                             <a class="nav-link {{ request()->routeIs('admin.metodepembayaran') ? 'active' : '' }}" href="{{ route('admin.metodepembayaran') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
                                 Kelola Metode Pembayaran
-                            </a>
-                        @endif
-
-
-                    {{-- TEKNISI MENU --}}
-                        @if(session()->has('user') && session('user')->role == 'teknisi')
-                            <div class="sb-sidenav-menu-heading">Teknisi</div>
-
-                            <a class="nav-link {{ request()->is('teknisi/jadwal-survei') ? 'active' : '' }}" href="{{ route('teknisi.jadwal-survei') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-calendar-check"></i></div>
-                                Jadwal Survei
-                            </a>
-
-                            <a class="nav-link {{ request()->is('teknisi/jadwal-pemasangan') ? 'active' : '' }}" href="{{ route('teknisi.jadwal-pemasangan') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-calendar-plus"></i></div>
-                                Atur Jadwal Pemasangan
-                            </a>
-
-                            <a class="nav-link {{ request()->is('teknisi/laporan') ? 'active' : '' }}" href="{{ url('/teknisi/laporan') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-file-signature"></i></div>
-                                Kirim Laporan Instalasi
-                            </a>
-
-                            <a class="nav-link {{ request()->is('teknisi/status') ? 'active' : '' }}" href="/teknisi/status">
-                                <div class="sb-nav-link-icon"><i class="fas fa-sync-alt"></i></div>
-                                Update Status Pemasangan
                             </a>
                         @endif
                     </div>

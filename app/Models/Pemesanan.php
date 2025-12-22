@@ -19,10 +19,7 @@ class Pemesanan extends Model
         'longitude',
         'status',
         'invoice_code',
-
-
-        // tambahan
-
+        'total_bayar',
         'jadwal_survei',
         'jadwal_instalasi',
         'laporan_teknisi',
