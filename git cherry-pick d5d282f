@@ -1,0 +1,33 @@
+* [33md5d282f[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Fitur pelanggan: aktivitas, riwayat transaksi, notifikasi, ktp & nik
+* [33m7275e39[m tambahan
+*   [33mb83d88d[m tagihan
+[32m|[m[33m\[m  
+[32m|[m * [33mbb4a86d[m payment
+[32m|[m *   [33m02f0dff[m Resolve merge conflicts
+[32m|[m [34m|[m[35m\[m  
+[32m|[m * [35m|[m [33m055ac1c[m diperbarui
+[32m|[m * [35m|[m [33m2c11f79[m save changes before applying stash
+[32m|[m * [35m|[m [33mfd4be2a[m fix merge conflict
+[32m|[m * [35m|[m [33m938ed7b[m fix merge conflict
+[32m|[m * [35m|[m   [33ma88d9d9[m fix merge conflict
+[32m|[m [36m|[m[1;31m\[m [35m\[m  
+[32m|[m * [1;31m|[m [35m|[m [33md393d9b[m fix merge conflicts
+* [1;31m|[m [1;31m|[m [35m|[m [33m901ca9a[m resolve merge conflict
+[35m|[m [1;31m|[m[35m_[m[1;31m|[m[35m/[m  
+[35m|[m[35m/[m[1;31m|[m [1;31m|[m   
+* [1;31m|[m [1;31m|[m [33mb6127cc[m perbaikan jadwal survei
+* [1;31m|[m [1;31m|[m [33m8bf9081[m tolongperbaiki
+* [1;31m|[m [1;31m|[m [33m31328f9[m dashboard teknisi
+[1;31m|[m [1;31m|[m[1;31m/[m  
+[1;31m|[m[1;31m/[m[1;31m|[m   
+* [1;31m|[m [33md3175c9[m lanjutan superadmin dan admin
+[1;31m|[m[1;31m/[m  
+[1;31m|[m * [33mefb092e[m[33m ([m[1;35mrefs/stash[m[33m)[m WIP on main: 56af0d3 landing page dan fitur pelanggan
+[1;31m|[m[1;31m/[m[1;33m|[m 
+[1;31m|[m * [33m1ad7c16[m index on main: 56af0d3 landing page dan fitur pelanggan
+[1;31m|[m[1;31m/[m  
+* [33m56af0d3[m landing page dan fitur pelanggan
+* [33me6a5dad[m dashboard superadmin
+* [33mb1c724d[m payment dan teknisi
+* [33mcd5a00a[m login dan register
+* [33m76abc9c[m first commit

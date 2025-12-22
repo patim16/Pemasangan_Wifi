@@ -253,7 +253,7 @@
 
                           <p><b>Pelanggan:</b> {{ $p->pelanggan->nama ?? '-' }}</p>
                             <p><b>Pelanggan:</b> {{ $p->pelanggan->nama }}</p>
-                            <p><b>Paket:</b> {{ $p->paket->nama_paket }}</p>
+                            <p><b>Paket:</b> {{ $p->nama_paket }}</p>
                             <p><b>Status:</b> {{ $p->status }}</p>
 
                             <hr>

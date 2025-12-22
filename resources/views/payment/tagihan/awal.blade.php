@@ -45,7 +45,7 @@
                         </td>
 
                         <td class="fw-bold text-success">
-                            Rp {{ number_format($item->paket->harga, 0, ',', '.') }}
+                            Rp {{ number_format($item->harga, 0, ',', '.') }}
                         </td>
 
                         <td>
@@ -73,8 +73,8 @@
 
                                 <div class="modal-body">
                                     <p><b>Pelanggan:</b> {{ $item->pelanggan->nama }}</p>
-                                    <p><b>Paket:</b> {{ $item->paket->nama_paket }}</p>
-                                    <p><b>Harga:</b> Rp {{ number_format($item->paket->harga,0,',','.') }}</p>
+                                    <p><b>Paket:</b> {{ $item->nama_paket }}</p>
+                                    <p><b>Harga:</b> Rp {{ number_format($item->harga,0,',','.') }}</p>
                                     <p><b>Alamat:</b> {{ $item->alamat }}</p>
                                     <p><b>Laporan Teknisi:</b> {{ $item->laporan_teknisi }}</p>
                                 </div>

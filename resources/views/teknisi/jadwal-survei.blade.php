@@ -31,7 +31,7 @@
                         </td>
 
                         <td>{{ $item->alamat }}</td>
-                        <td>{{ $item->paket->nama_paket }}</td>
+                        <td>{{ $item->nama_paket }}</td>
 
                         <td>
                             {{ \Carbon\Carbon::parse($item->jadwal_survei)->format('d M Y H:i') }}
@@ -71,7 +71,7 @@
                                     <p><b>Pelanggan:</b> {{ $item->pelanggan->nama }}</p>
                                     <p><b>No HP:</b> {{ $item->pelanggan->no_hp }}</p>
                                     <p><b>Alamat:</b> {{ $item->alamat }}</p>
-                                    <p><b>Paket:</b> {{ $item->paket->nama_paket }}</p>
+                                    <p><b>Paket:</b> {{ $item->nama_paket }}</p>
                                     <p><b>Jadwal:</b>
                                         {{ \Carbon\Carbon::parse($item->jadwal_survei)->format('d M Y H:i') }}
                                     </p>

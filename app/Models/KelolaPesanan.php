@@ -2,33 +2,34 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class KelolaPesanan extends Model
+class Pemesanan extends Model
 {
-    use HasFactory;
-
-    protected $table = 'pemesanan'; // nama table di database
+    protected $table = 'pemesanan';
 
     protected $fillable = [
-        'pelanggan_id',
+        'user_id',
         'paket_id',
+        'alamat',
+        'patokan',
+        'catatan',
+        'latitude',
+        'longitude',
+        'invoice_code',
         'status',
-        'alasan_penolakan',
-        'jadwal_instalasi',
+        'ktp',
+        'nik',
+        'total_bayar',
     ];
 
-    // public function pelanggan()
-    // {
-    //     return $this->belongsTo(User::class, 'pelanggan_id');
-    // }
-
+    // RELASI KE USER (PELANGGAN)
     public function pelanggan()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    // RELASI KE PAKET
     public function paket()
     {
         return $this->belongsTo(PaketLayanan::class, 'paket_id');
