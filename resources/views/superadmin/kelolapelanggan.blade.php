@@ -1,207 +1,522 @@
 @extends('layout.app')
 
 @section('content')
-<div class="container mt-4">
+<style>
+    /* Clean Blue Theme - Same as Other Pages */
+    .page-header {
+        background-color: #0066cc;
+        color: white;
+        padding: 2.5rem 0;
+        margin-bottom: 2rem;
+    }
+    
+    .btn-primary {
+        background-color: #0066cc;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-primary:hover {
+        background-color: #0052a3;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 102, 204, 0.2);
+    }
+    
+    .card {
+        border: 1px solid #e3e8f0;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        transition: box-shadow 0.2s ease;
+    }
+    
+    .card:hover {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    }
+    
+    .table {
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+    
+    .table thead th {
+        background-color: #f8fafc;
+        border: none;
+        font-weight: 600;
+        color: #475569;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 16px;
+    }
+    
+    .table tbody tr {
+        transition: background-color 0.2s ease;
+    }
+    
+    .table tbody tr:hover {
+        background-color: #f8fafc;
+    }
+    
+    .table tbody td {
+        padding: 16px;
+        vertical-align: middle;
+        border-top: 1px solid #f1f5f9;
+        border-bottom: none;
+        border-left: none;
+        border-right: none;
+    }
+    
+    .table tbody tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .btn-action {
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-size: 0.875rem;
+        margin: 0 2px;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-warning {
+        background-color: #f59e0b;
+        border: none;
+        color: white;
+    }
+    
+    .btn-warning:hover {
+        background-color: #d97706;
+    }
+    
+    .btn-danger {
+        background-color: #ef4444;
+        border: none;
+        color: white;
+    }
+    
+    .btn-danger:hover {
+        background-color: #dc2626;
+    }
+    
+    .search-box {
+        position: relative;
+    }
+    
+    .search-box input {
+        border-radius: 8px;
+        padding-left: 45px;
+        border: 1px solid #d1d5db;
+        transition: border-color 0.2s ease;
+    }
+    
+    .search-box input:focus {
+        border-color: #0066cc;
+        box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        outline: none;
+    }
+    
+    .search-box::before {
+        content: "🔍";
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 10;
+    }
+    
+    .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+    
+    .modal-header {
+        background-color: #0066cc;
+        color: white;
+        border-radius: 12px 12px 0 0;
+        border: none;
+    }
+    
+    .modal-header .btn-close {
+        filter: brightness(0) invert(1);
+        opacity: 0.8;
+    }
+    
+    .form-control, .form-select {
+        border-radius: 8px;
+        border: 1px solid #d1d5db;
+        transition: border-color 0.2s ease;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #0066cc;
+        box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        outline: none;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 6px;
+    }
+    
+    .avatar-circle {
+        border-radius: 50%;
+        width: 42px;
+        height: 42px;
+        background-color: #0066cc;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        margin-right: 12px;
+    }
+    
+    .empty-state {
+        padding: 60px 20px;
+        text-align: center;
+        color: #6b7280;
+    }
+    
+    .empty-state-icon {
+        font-size: 3rem;
+        margin-bottom: 16px;
+        opacity: 0.6;
+    }
+    
+    .number-badge {
+        background-color: #0066cc;
+        color: white;
+        border-radius: 20px;
+        padding: 4px 10px;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+    
+    .ktp-image {
+        border-radius: 8px;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+    }
+    
+    .ktp-image:hover {
+        transform: scale(1.05);
+    }
+    
+    .no-image {
+        background-color: #f8fafc;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 80px;
+        height: 80px;
+    }
+    
+    .maps-link {
+        background-color: #f1f5f9;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        color: #0066cc;
+        text-decoration: none;
+        transition: background-color 0.2s ease;
+    }
+    
+    .maps-link:hover {
+        background-color: #e2e8f0;
+        color: #0052a3;
+    }
+</style>
 
-    <h2 class="mb-4 fw-bold text-dark">Daftar Pelanggan Terdaftar</h2>
-
-    <div class="card shadow-sm">
-        <div class="card-body">
-
-          <div class="card shadow-sm">
-        <div class="card-body">
-
-        <form action="{{ route('superadmin.pelanggan.index') }}" method="GET" class="mb-3">
-    <div class="row g-2">
-        <div class="col-md-4">
-            <input 
-                type="text" 
-                name="search" 
-                class="form-control"
-                placeholder="Cari nama / email..."
-                value="{{ request('search') }}"
-            >
-        </div>
-        <div class="col-auto">
-            <button class="btn btn-primary">
-                Cari
-            </button>
+<div class="container-fluid p-0">
+    <!-- Clean Blue Header - Same Style as Other Pages -->
+    <div class="page-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h2 class="mb-2 fw-bold">
+                        <i class="fas fa-users me-3"></i>Daftar Pelanggan Terdaftar
+                    </h2>
+                    <p class="mb-0 opacity-90">Manajemen Data Pelanggan</p>
+                </div>
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                    <div class="d-flex justify-content-end">
+                        <span class="badge bg-white text-blue px-3 py-2">
+                            <i class="fas fa-users me-1"></i>
+                            {{ $pelanggans->count() }} Pelanggan
+                        </span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</form>
 
-            <table class="table table-bordered align-middle">
-                <thead class="table-light">
-                    <tr>
-                          <th>No</th>
-                        <th>Foto KTP</th>
-                        <th>Nama</th>
-                        <th>Email</th>
-                        <th>No HP</th>
-                        <th>Alamat</th>
-                        <th>Koordinat</th>
-                        <th width="150px">Aksi</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @forelse ($pelanggans as $p)
-                    <tr>
-
-                        <td>
-                            @if($p->foto_ktp)
-                                <img src="{{ asset('storage/' . $p->foto_ktp) }}"
-                                     width="90" class="border rounded">
-                            @else
-                                <span class="text-muted">-</span>
-                            @endif
-                        </td>
-                         <td>{{ $pelanggans->firstItem() + $loop->index }}</td>
-                        <td>{{ $p->nama }}</td>
-                        <td>{{ $p->email }}</td>
-                        <td>{{ $p->no_hp }}</td>
-                        <td>{{ $p->alamat }}</td>
-
-                        <td>
-                            @if($p->latitude && $p->longitude)
-                                {{ $p->latitude }}, {{ $p->longitude }}
-
-                                <br>
-                                <a href="https://www.google.com/maps?q={{ $p->latitude }},{{ $p->longitude }}"
-                                   target="_blank"
-                                   class="btn btn-sm btn-outline-primary mt-1">
-                                    Lihat Maps
-                                </a>
-                            @else
-                                <span class="text-muted">-</span>
-                            @endif
-                        </td>
-
-                        <td>
-                            <!-- EDIT -->
-                            <button class="btn btn-warning btn-sm"
-                                data-bs-toggle="modal"
-                                data-bs-target="#modalEdit{{ $p->id }}">
-                                Edit
+    <div class="container">
+        <!-- Search Section - Same Style -->
+        <div class="card mb-4">
+            <div class="card-body p-4">
+                <form action="{{ route('superadmin.pelanggan.index') }}" method="GET">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="search-box">
+                                <input 
+                                    type="text" 
+                                    name="search" 
+                                    class="form-control form-control-lg"
+                                    placeholder="Cari nama atau email..."
+                                    value="{{ request('search') }}"
+                                >
+                            </div>
+                        </div>
+                        <div class="col-md-4 mt-3 mt-md-0">
+                            <button class="btn btn-primary btn-lg w-100">
+                                <i class="fas fa-search me-2"></i>Cari
                             </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
 
-                            <!-- HAPUS -->
-                            <button class="btn btn-danger btn-sm"
-                                data-bs-toggle="modal"
-                                data-bs-target="#modalHapus{{ $p->id }}">
-                                Hapus
-                            </button>
-                        </td>
-
-                    </tr>
-
-                    @empty
-                    <tr>
-                        <td colspan="7" class="text-center text-muted">Belum ada pelanggan</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-
+        <!-- Data Table - Same Style -->
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table mb-0">
+                        <thead>
+                            <tr>
+                                <th width="60">No</th>
+                                <th width="120">Foto KTP</th>
+                                <th>Informasi Pelanggan</th>
+                                <th>Kontak</th>
+                                <th>Alamat</th>
+                                <th>Koordinat</th>
+                                <th width="180">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($pelanggans as $p)
+                            <tr>
+                                <td>
+                                    <span class="number-badge">{{ $pelanggans->firstItem() + $loop->index }}</span>
+                                </td>
+                                <td>
+                                    @if($p->foto_ktp)
+                                        <a href="{{ asset('storage/' . $p->foto_ktp) }}" target="_blank">
+                                            <img src="{{ asset('storage/' . $p->foto_ktp) }}"
+                                                 width="80" class="ktp-image border shadow-sm">
+                                        </a>
+                                    @else
+                                        <div class="no-image">
+                                            <i class="fas fa-image text-muted fa-2x"></i>
+                                        </div>
+                                    @endif
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-circle">
+                                            {{ substr(strtoupper($p->nama), 0, 1) }}
+                                        </div>
+                                        <div>
+                                            <strong>{{ $p->nama }}</strong>
+                                            <br>
+                                            <small class="text-muted">{{ $p->email }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-phone text-success me-2"></i>
+                                        <span>{{ $p->no_hp }}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-start">
+                                        <i class="fas fa-map-marker-alt text-danger me-2 mt-1"></i>
+                                        <span>{{ $p->alamat }}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    @if($p->latitude && $p->longitude)
+                                        <div>
+                                            <small class="text-muted d-block">{{ $p->latitude }}, {{ $p->longitude }}</small>
+                                            <a href="https://www.google.com/maps?q={{ $p->latitude }},{{ $p->longitude }}"
+                                               target="_blank"
+                                               class="maps-link">
+                                                <i class="fas fa-map-marked-alt me-1"></i>Lihat Maps
+                                            </a>
+                                        </div>
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <button class="btn btn-action btn-warning"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalEdit{{ $p->id }}">
+                                        <i class="fas fa-edit me-1"></i> Edit
+                                    </button>
+                                    <button class="btn btn-action btn-danger"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalHapus{{ $p->id }}">
+                                        <i class="fas fa-trash me-1"></i> Hapus
+                                    </button>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="7">
+                                    <div class="empty-state">
+                                        <div class="empty-state-icon">👥</div>
+                                        <h5>Belum Ada Data</h5>
+                                        <p>Pelanggan belum ditambahkan</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            @if($pelanggans->hasPages())
+            <div class="card-footer bg-light">
+                <div class="d-flex justify-content-between align-items-center py-2">
+                    <small class="text-muted">
+                        Menampilkan {{ $pelanggans->firstItem() }} - {{ $pelanggans->lastItem() }} dari total {{ $pelanggans->total() }} data
+                    </small>
+                    <div>
+                        {{ $pelanggans->links('pagination::bootstrap-5') }}
+                    </div>
+                </div>
+            </div>
+            @endif
         </div>
     </div>
-
 </div>
 
-{{-- ========================= --}}
-{{--     MODAL EDIT PELANGGAN  --}}
-{{-- ========================= --}}
+<!-- ====================================================== -->
+<!-- MODAL EDIT PELANGGAN - Same Style as Other Pages        -->
+<!-- ====================================================== -->
 @foreach ($pelanggans as $p)
 <div class="modal fade" id="modalEdit{{ $p->id }}" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <form class="modal-content"
               method="POST"
               action="{{ url('superadmin/pelanggan/update/' . $p->id) }}"
               enctype="multipart/form-data">
-
             @csrf
             @method('PUT')
-
+            
             <div class="modal-header">
-                <h5 class="modal-title">Edit Pelanggan</h5>
-                <button class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title">
+                    <i class="fas fa-edit me-2"></i>Edit Data Pelanggan
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-
-            <div class="modal-body">
-
-                <div class="mb-2">
-                    <label>Nama</label>
-                    <input type="text" name="nama" class="form-control" value="{{ $p->nama }}" required>
+            
+            <div class="modal-body p-4">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Nama Lengkap</label>
+                            <input type="text" name="nama" class="form-control" value="{{ $p->nama }}" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" value="{{ $p->email }}" required>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="mb-2">
-                    <label>Email</label>
-                    <input type="email" name="email" class="form-control" value="{{ $p->email }}" required>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Nomor HP</label>
+                            <input type="text" name="no_hp" class="form-control" value="{{ $p->no_hp }}" required>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="mb-2">
-                    <label>No HP</label>
-                    <input type="text" name="no_hp" class="form-control" value="{{ $p->no_hp }}" required>
+                <div class="mb-3">
+                    <label class="form-label">Alamat Lengkap</label>
+                    <textarea name="alamat" class="form-control" rows="3">{{ $p->alamat }}</textarea>
                 </div>
 
-                <div class="mb-2">
-                    <label>Alamat</label>
-                    <textarea name="alamat" class="form-control">{{ $p->alamat }}</textarea>
+                <div class="mb-3">
+                    <label class="form-label">Foto KTP</label>
+                    <div class="d-flex gap-3">
+                        <div class="flex-grow-1">
+                            <input type="file" name="foto_ktp" class="form-control">
+                            <small class="text-muted">Biarkan kosong jika tidak ingin mengubah foto KTP</small>
+                        </div>
+                        @if($p->foto_ktp)
+                            <div class="flex-shrink-0">
+                                <a href="{{ asset('storage/' . $p->foto_ktp) }}" target="_blank">
+                                    <img src="{{ asset('storage/' . $p->foto_ktp) }}"
+                                         width="100" class="border rounded shadow-sm">
+                                </a>
+                            </div>
+                        @endif
+                    </div>
                 </div>
-
-                <div class="mb-2">
-                    <label>Foto KTP Baru (opsional)</label>
-                    <input type="file" name="foto_ktp" class="form-control">
-                    @if($p->foto_ktp)
-                        <img src="{{ asset('storage/' . $p->foto_ktp) }}" width="70" class="mt-2">
-                    @endif
-                </div>
-
             </div>
-
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button class="btn btn-warning">Update</button>
+            
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i> Batal
+                </button>
+                <button type="submit" class="btn btn-warning">
+                    <i class="fas fa-sync me-1"></i> Update
+                </button>
             </div>
-
         </form>
     </div>
 </div>
 @endforeach
 
-
-{{-- ========================= --}}
-{{--     MODAL HAPUS PELANGGAN --}}
-{{-- ========================= --}}
+<!-- ====================================================== -->
+<!-- MODAL HAPUS PELANGGAN - Same Style as Other Pages       -->
+<!-- ====================================================== -->
 @foreach ($pelanggans as $p)
 <div class="modal fade" id="modalHapus{{ $p->id }}" tabindex="-1">
     <div class="modal-dialog">
-        <form class="modal-content"
-              method="POST"
-              action="{{ url('superadmin/pelanggan/delete/' . $p->id) }}">
-              
-            @csrf
-            @method('DELETE')
-
-            <div class="modal-header">
-                <h5 class="modal-title">Hapus Pelanggan</h5>
-                <button class="btn-close" data-bs-dismiss="modal"></button>
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Konfirmasi Hapus
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-
-            <div class="modal-body">
-                Apakah kamu yakin ingin menghapus <strong>{{ $p->nama }}</strong> ?
+            
+            <div class="modal-body text-center p-4">
+                <i class="fas fa-trash-alt fa-3x text-danger mb-3"></i>
+                <h5>Apakah Anda yakin?</h5>
+                <p class="text-muted">Anda akan menghapus <strong>"{{ $p->nama }}"</strong></p>
+                <p class="text-danger small">⚠️ Tindakan ini tidak dapat dibatalkan!</p>
             </div>
-
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button class="btn btn-danger">Hapus</button>
+            
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i> Batal
+                </button>
+                <form method="POST" action="{{ url('superadmin/pelanggan/delete/' . $p->id) }}" style="display:inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-1"></i> Hapus
+                    </button>
+                </form>
             </div>
-
-        </form>
+        </div>
     </div>
-    <div class="d-flex justify-content-center mt-3">
-    {{ $pelanggans->links('pagination::bootstrap-5') }}
-</div>
 </div>
 @endforeach
 

@@ -50,4 +50,11 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    
+
+public function pemesanan()
+{
+    return $this->hasMany(Pemesanan::class, 'teknisi_id');
+}
+
 }

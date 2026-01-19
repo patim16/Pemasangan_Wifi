@@ -9,23 +9,43 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
-{
-    Schema::create('transaksis', function (Blueprint $table) {
-        $table->id();
-        $table->unsignedBigInteger('pelanggan_id');
-        $table->unsignedBigInteger('paket_id');
-        $table->integer('total');
-        $table->string('bukti')->nullable();
-        $table->enum('status', ['menunggu', 'terverifikasi', 'ditolak'])->default('menunggu');
-        $table->text('alasan_penolakan')->nullable();
-        $table->timestamps();
+    public function up(): void
+    {
+        Schema::create('transaksis', function (Blueprint $table) {
+            $table->id();
 
-        $table->foreign('pelanggan_id')->references('id')->on('users')->onDelete('cascade');
-        $table->foreign('paket_id')->references('id')->on('paket_layanans')->onDelete('cascade');
-    });
-}
+            $table->unsignedBigInteger('pelanggan_id');
+            $table->unsignedBigInteger('paket_id');
 
+            // uang → jangan integer kecil
+            $table->bigInteger('total')->default(0);
+
+            // path bukti pembayaran
+            $table->string('bukti')->nullable();
+
+            // status verifikasi admin
+            $table->enum('status', [
+                'menunggu',        // menunggu verifikasi admin
+                'terverifikasi',   // diterima
+                'ditolak',         // ditolak
+            ])->default('menunggu');
+
+            $table->text('alasan_penolakan')->nullable();
+
+            $table->timestamps();
+
+            // foreign key
+            $table->foreign('pelanggan_id')
+                  ->references('id')
+                  ->on('users')
+                  ->onDelete('cascade');
+
+            $table->foreign('paket_id')
+                  ->references('id')
+                  ->on('paket_layanans')
+                  ->onDelete('cascade');
+        });
+    }
 
     /**
      * Reverse the migrations.

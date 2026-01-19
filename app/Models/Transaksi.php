@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\PaketLayanan;
+use App\Models\MetodePembayaran;
+
 
 class Transaksi extends Model
 {
-    use HasFactory;
+    protected $table = 'transaksis';
 
     protected $fillable = [
         'pelanggan_id',
@@ -17,7 +19,9 @@ class Transaksi extends Model
         'total',
         'bukti',
         'status',
+        'metode_pembayaran_id',
         'alasan_penolakan',
+        'jenis',
     ];
 
     public function pelanggan()
@@ -29,4 +33,12 @@ class Transaksi extends Model
     {
         return $this->belongsTo(PaketLayanan::class, 'paket_id');
     }
+    public function metodePembayaran()
+{
+    return $this->belongsTo(MetodePembayaran::class, 'metode_pembayaran_id');
 }
+
+
+    
+}
+

@@ -21,8 +21,9 @@
 
                 <div class="col-md-6 mb-3">
                     <h6 class="text-muted mb-1">Paket</h6>
-                    <div class="fw-bold">{{ $tagihan->paket->nama }}</div>
+                    <div class="fw-bold">{{ $tagihan->paket->nama_paket }}</div>
                 </div>
+
 
                 <div class="col-md-6 mb-3">
                     <h6 class="text-muted mb-1">Bulan Tagihan</h6>
@@ -74,9 +75,10 @@
 
             @if($tagihan->bukti_pembayaran)
                 <div class="text-center mb-4">
-                    <img src="{{ asset('uploads/bukti/' . $tagihan->bukti_pembayaran) }}"
-                         class="img-thumbnail shadow-sm rounded"
-                         style="max-width: 350px;">
+                   <img src="{{ asset('storage/' . $tagihan->bukti_pembayaran) }}"
+     class="img-thumbnail shadow-sm rounded"
+     style="max-width: 350px;">
+
                 </div>
             @else
                 <p class="text-danger fst-italic">Belum ada bukti pembayaran.</p>

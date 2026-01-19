@@ -1,310 +1,408 @@
 @extends('layout.app')
 
 @section('content')
-<div class="container-fluid px-3 px-md-4 py-3">
-    <div class="row">
-        <div class="col-12">
-
-            {{-- Header --}}
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                   <h5 class="fw-bold mb-1 text-dark" style="font-size: 1.4rem;">Atur Jadwal Pemasangan</h5>
-                    <p class="text-muted mb-0">Jadwalkan instalasi, perbaikan, atau upgrade WiFi untuk pelanggan</p>
-                </div>
-                <a href="{{ route('teknisi.dashboard') }}" class="btn btn-sm btn-outline-secondary">
-                    <i class="bi bi-arrow-left me-1"></i>Kembali
-                </a>
-            </div>
-
-            {{-- Filter Jenis Pemasangan --}}
-            <div class="card border-0 shadow-sm mb-3">
-                <div class="card-body py-2">
-                    <div class="d-flex flex-wrap gap-2">
-                        <button class="btn btn-sm btn-outline-primary active filter-btn" data-filter="all">
-                            <i class="bi bi-list-ul me-1"></i>Semua
-                        </button>
-                        <button class="btn btn-sm btn-outline-success filter-btn" data-filter="baru">
-                            <i class="bi bi-plus-circle me-1"></i>Pemasangan Baru
-                        </button>
-                        <button class="btn btn-sm btn-outline-warning filter-btn" data-filter="perbaikan">
-                            <i class="bi bi-tools me-1"></i>Perbaikan
-                        </button>
-                        <button class="btn btn-sm btn-outline-info filter-btn" data-filter="upgrade">
-                            <i class="bi bi-arrow-up-circle me-1"></i>Upgrade
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Jadwal Pemasangan List --}}
-            <div class="card border-0 shadow-sm mb-4">
-                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="card-title mb-0 fw-bold">Daftar Jadwal Pemasangan</h6>
-
-                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#tambahJadwalModal">
-                        <i class="bi bi-plus-circle me-1"></i>Tambah Jadwal
-                    </button>
-                </div>
-
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Pelanggan</th>
-                                    <th>Lokasi</th>
-                                    <th>Jenis Pemasangan</th>
-                                    <th>Paket</th>
-                                    <th>Tanggal</th>
-                                    <th>Catatan</th>
-                                    <th class="text-center">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                                @forelse ($pemasangan as $item)
-                                <tr data-jenis="{{ $item->jenis_pemasangan ?? 'baru' }}">
-                                    <td class="py-3">#{{ $item->id }}</td>
-
-                                    <td class="py-3">
-                                        <div class="fw-bold">
-                                            {{ $item->pelanggan->nama ?? 'Tidak ada nama' }}
-                                        </div>
-                                        <small class="text-muted">
-                                            {{ $item->pelanggan->no_hp ?? '-' }}
-                                        </small>
-                                    </td>
-
-                                    <td class="py-3">
-                                        <div class="d-flex align-items-start">
-                                            <i class="bi bi-geo-alt text-danger me-2 mt-1"></i>
-                                            <div>
-                                                <div class="fw-medium">{{ $item->pelanggan->alamat ?? '-' }}</div>
-                                                @if($item->pelanggan->kelurahan)
-                                                    <small class="text-muted">
-                                                        {{ $item->pelanggan->kelurahan }}, {{ $item->pelanggan->kecamatan }}
-                                                    </small>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </td>
-
-                                    <td class="py-3">
-                                        @php
-                                            $jenis = $item->jenis_pemasangan ?? 'baru';
-                                            $badgeClass = [
-                                                'baru' => 'bg-success',
-                                                'perbaikan' => 'bg-warning',
-                                                'upgrade' => 'bg-info'
-                                            ][$jenis] ?? 'bg-secondary';
-                                            $label = [
-                                                'baru' => 'Pemasangan Baru',
-                                                'perbaikan' => 'Perbaikan',
-                                                'upgrade' => 'Upgrade'
-                                            ][$jenis] ?? 'Tidak Diketahui';
-                                        @endphp
-                                        <span class="badge {{ $badgeClass }}">{{ $label }}</span>
-                                    </td>
-
-                                    <td class="py-3">
-                                        {{ $item->paket->nama_paket ?? '-' }}
-                                    </td>
-
-                                    <td class="py-3">
-                                        {{ \Carbon\Carbon::parse($item->tanggal_pemasangan)->format('d M Y') }}
-                                    </td>
-
-                                    <td class="py-3">
-                                        {{ $item->catatan ?? '-' }}
-                                    </td>
-
-                                    <td class="py-3 text-center">
-                                        <a href="{{ route('teknisi.detail-pemasangan', $item->id) }}" class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-eye me-1"></i>Detail
-                                        </a>
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="8" class="text-center py-4 text-muted">
-                                        Tidak ada jadwal pemasangan.
-                                    </td>
-                                </tr>
-                                @endforelse
-
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-
-{{-- Modal Tambah Jadwal --}}
-<div class="modal fade" id="tambahJadwalModal" tabindex="-1" aria-labelledby="tambahJadwalModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-
-            <form action="{{ route('teknisi.jadwal-pemasangan.simpan') }}" method="POST">
-                @csrf
-
-                <div class="modal-header">
-                    <h5 class="modal-title">Tambah Jadwal Pemasangan</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-
-                <div class="modal-body">
-
-                    {{-- Jenis Pemasangan --}}
-                    <div class="mb-3">
-                        <label class="form-label">Jenis Pemasangan</label>
-                        <select name="jenis_pemasangan" class="form-select" required>
-                            <option value="" disabled selected>Pilih Jenis Pemasangan</option>
-                            <option value="baru">Pemasangan Baru</option>
-                            <option value="perbaikan">Perbaikan</option>
-                            <option value="upgrade">Upgrade</option>
-                        </select>
-                    </div>
-
-                    {{-- Pelanggan --}}
-                    <div class="mb-3">
-                        <label class="form-label">Pelanggan</label>
-                        <select name="pemesanan_id" class="form-select" required id="pelangganSelect">
-                            <option value="" disabled selected>Pilih Pelanggan</option>
-                           @foreach ($pemasangan as $p)
-                                <option value="{{ $p->id }}" 
-                                    data-alamat="{{ $p->pelanggan->alamat ?? '' }}"
-                                    data-kelurahan="{{ $p->pelanggan->kelurahan ?? '' }}"
-                                    data-kecamatan="{{ $p->pelanggan->kecamatan ?? '' }}">
-                                    {{ $p->pelanggan->nama }} — ({{ $p->paket->nama_paket }})
-                                </option>
-                            @endforeach
-                        </select>
-                        <small class="text-muted">Hanya pelanggan yang sudah membayar.</small>
-                    </div>
-
-                    {{-- Lokasi --}}
-                    <div class="mb-3">
-                        <label class="form-label">Lokasi Pemasangan</label>
-                        <div class="card bg-light">
-                            <div class="card-body py-2">
-                                <div id="lokasiDisplay" class="text-muted">
-                                    <i class="bi bi-info-circle me-1"></i>Pilih pelanggan terlebih dahulu untuk melihat lokasi
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Tanggal --}}
-                    <div class="mb-3">
-                        <label class="form-label">Tanggal Pemasangan</label>
-                        <input type="date" name="tanggal_pemasangan" class="form-control" required>
-                    </div>
-
-                    {{-- Catatan --}}
-                    <div class="mb-3">
-                        <label class="form-label">Catatan Tambahan (opsional)</label>
-                        <textarea name="catatan" rows="2" class="form-control"></textarea>
-                    </div>
-
-                </div>
-
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button class="btn btn-primary" type="submit">Simpan Jadwal</button>
-                </div>
-
-            </form>
-
-        </div>
-    </div>
-</div>
-
 <style>
-    .table th {
+    /* Clean Blue Theme - Same as Other Pages */
+    .page-header {
+        background-color: #0066cc;
+        color: white;
+        padding: 2.5rem 0;
+        margin-bottom: 2rem;
+    }
+    
+    .schedule-card {
+        border: 1px solid #e3e8f0;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+    
+    .schedule-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .card-header-custom {
+        background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%);
+        color: white;
+        padding: 25px;
+        border: none;
+    }
+    
+    .card-header-custom h5 {
+        margin: 0;
         font-weight: 600;
-        color: #495057;
-        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .card-header-custom h5 i {
+        margin-right: 10px;
+    }
+    
+    .table {
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+    
+    .table thead th {
+        background-color: #f8fafc;
+        border: none;
+        font-weight: 600;
+        color: #475569;
+        font-size: 0.875rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-    }
-    .table td { 
-        font-size: 0.9rem; 
-        vertical-align: middle; 
+        padding: 16px;
     }
     
-    /* Filter buttons */
-    .filter-btn.active {
-        background-color: var(--bs-primary);
+    .table tbody tr {
+        transition: background-color 0.2s ease;
+    }
+    
+    .table tbody tr:hover {
+        background-color: #f8fafc;
+    }
+    
+    .table tbody td {
+        padding: 16px;
+        vertical-align: middle;
+        border-top: 1px solid #f1f5f9;
+        border-bottom: none;
+        border-left: none;
+        border-right: none;
+    }
+    
+    .table tbody tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .id-badge {
+        background-color: #0066cc;
         color: white;
-        border-color: var(--bs-primary);
+        border-radius: 20px;
+        padding: 4px 10px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        font-family: monospace;
     }
     
-    /* Badge styling */
-    .badge {
+    .status-badge {
+        padding: 4px 10px;
+        border-radius: 20px;
         font-size: 0.75rem;
-        padding: 0.35em 0.65em;
+        font-weight: 600;
+        text-transform: capitalize;
+        display: inline-flex;
+        align-items: center;
     }
     
-    /* Lokasi display */
-    #lokasiDisplay {
-        font-size: 0.9rem;
+    .status-badge i {
+        margin-right: 4px;
+    }
+    
+    .status-jadwal-instalasi {
+        background-color: #dbeafe;
+        color: #1e40af;
+    }
+    
+    .btn-action {
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-size: 0.875rem;
+        margin: 0 2px;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-outline-primary {
+        border-color: #0066cc;
+        color: #0066cc;
+    }
+    
+    .btn-outline-primary:hover {
+        background-color: #0066cc;
+        border-color: #0066cc;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 102, 204, 0.2);
+    }
+    
+    .btn-primary {
+        background-color: #0066cc;
+        border-color: #0066cc;
+    }
+    
+    .btn-primary:hover {
+        background-color: #0052a3;
+        border-color: #0052a3;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 102, 204, 0.2);
+    }
+    
+    .btn-success {
+        background-color: #10b981;
+        border-color: #10b981;
+    }
+    
+    .btn-success:hover {
+        background-color: #059669;
+        border-color: #059669;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+    }
+    
+    .empty-state {
+        padding: 60px 20px;
+        text-align: center;
+        color: #6b7280;
+    }
+    
+    .empty-state-icon {
+        font-size: 3rem;
+        margin-bottom: 16px;
+        opacity: 0.6;
+    }
+    
+    .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+    
+    .modal-header {
+        background-color: #0066cc;
+        color: white;
+        border-radius: 12px 12px 0 0;
+        border: none;
+    }
+    
+    .modal-header .btn-close {
+        filter: brightness(0) invert(1);
+        opacity: 0.8;
+    }
+    
+    .modal-footer {
+        background-color: #f8fafc;
+        border-top: none;
+    }
+    
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 6px;
     }
 </style>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Filter functionality
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    const tableRows = document.querySelectorAll('tbody tr[data-jenis]');
-    
-    filterButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            // Update active button
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            this.classList.add('active');
-            
-            // Filter table rows
-            const filterValue = this.getAttribute('data-filter');
-            
-            tableRows.forEach(row => {
-                if (filterValue === 'all' || row.getAttribute('data-jenis') === filterValue) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
-    });
-    
-    // Display location when pelanggan is selected
-    const pelangganSelect = document.getElementById('pelangganSelect');
-    const lokasiDisplay = document.getElementById('lokasiDisplay');
-    
-    pelangganSelect.addEventListener('change', function() {
-        const selectedOption = this.options[this.selectedIndex];
-        
-        if (selectedOption.value) {
-            const alamat = selectedOption.getAttribute('data-alamat');
-            const kelurahan = selectedOption.getAttribute('data-kelurahan');
-            const kecamatan = selectedOption.getAttribute('data-kecamatan');
-            
-            let lokasiText = `<i class="bi bi-geo-alt-fill text-danger me-2"></i>`;
-            lokasiText += `<strong>${alamat}</strong>`;
-            
-            if (kelurahan) {
-                lokasiText += `<br><small class="text-muted">${kelurahan}, ${kecamatan}</small>`;
-            }
-            
-            lokasiDisplay.innerHTML = lokasiText;
-        } else {
-            lokasiDisplay.innerHTML = '<i class="bi bi-info-circle me-1"></i>Pilih pelanggan terlebih dahulu untuk melihat lokasi';
-        }
-    });
-});
-</script>
+<div class="container-fluid p-0">
+    <!-- Clean Blue Header - Same Style as Other Pages -->
+    <div class="page-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h2 class="mb-2 fw-bold">
+                        <i class="fas fa-tools me-3"></i>Jadwal Instalasi
+                    </h2>
+                    <p class="mb-0 opacity-90">Daftar jadwal instalasi yang dikirim admin</p>
+                </div>
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                    <div class="d-flex justify-content-end">
+                        <span class="badge bg-white text-blue px-3 py-2">
+                            <i class="fas fa-list me-1"></i>
+                            {{ $pemasangan->count() }} Jadwal
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Alert --}}
+    @if(session('success'))
+        <div class="container">
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        </div>
+    @endif
+
+    <div class="container">
+        <div class="schedule-card">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Invoice</th>
+                            <th>Pelanggan</th>
+                            <th>Alamat</th>
+                            <th>Paket</th>
+                            <th>Tanggal Instalasi</th>
+                            <th>Status</th>
+                            <th class="text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($pemasangan as $item)
+                        <tr>
+                            <td>
+                                <span class="id-badge">{{ $item->invoice_code }}</span>
+                            </td>
+
+                            <td>
+                                @if ($item->pelanggan)
+                                    <strong>{{ $item->pelanggan->nama ?? '-' }}</strong><br>
+                                    <small class="text-muted">
+                                        <i class="fas fa-phone me-1"></i>
+                                        {{ $item->pelanggan->no_hp ?? '-' }}
+                                    </small>
+                                @else
+                                    <span class="text-danger">
+                                        <i class="fas fa-exclamation-circle me-1"></i>
+                                        Pelanggan tidak ditemukan
+                                    </span>
+                                @endif
+                            </td>
+
+                            <td>
+                                <span class="text-muted">
+                                    <i class="fas fa-map-marker-alt me-1"></i>
+                                    {{ $item->pelanggan->alamat ?? '-' }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="badge bg-light text-dark">
+                                    <i class="fas fa-wifi me-1"></i>
+                                    {{ $item->paket->nama_paket ?? '-' }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="text-muted">
+                                    <i class="fas fa-clock me-1"></i>
+                                    {{ \Carbon\Carbon::parse($item->jadwal_instalasi)->format('d M Y H:i') }}
+                                </span>
+                            </td>
+
+                            {{-- STATUS + SELESAI --}}
+                            <td>
+                                <span class="status-badge status-jadwal-instalasi">
+                                    <i class="fas fa-calendar-check"></i>
+                                    Jadwal Instalasi
+                                </span>
+
+                                <form action="{{ route('teknisi.instalasi.selesai', $item->id) }}"
+                                      method="POST"
+                                      onsubmit="return confirm('Yakin instalasi sudah selesai?')"
+                                      class="mt-2">
+                                    @csrf
+                                    <button class="btn btn-success btn-sm w-100">
+                                        <i class="fas fa-check-circle me-1"></i>
+                                        Selesai Instalasi
+                                    </button>
+                                </form>
+                            </td>
+
+                            {{-- AKSI --}}
+                            <td class="text-center">
+                                <div class="action-buttons">
+                                    <button class="btn btn-sm btn-outline-primary btn-action"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#detailModal{{ $item->id }}"
+                                            title="Detail">
+                                        <i class="fas fa-info-circle"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="7" class="text-center py-5">
+                                <div class="empty-state">
+                                    <div class="empty-state-icon">📅</div>
+                                    <h5>Belum Ada Jadwal Instalasi</h5>
+                                    <p>Belum ada jadwal instalasi dari admin</p>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- ================= MODAL DETAIL - DIPINDAH KE LUAR TABEL ================= --}}
+@foreach ($pemasangan as $item)
+<div class="modal fade" id="detailModal{{ $item->id }}" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Detail Instalasi
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body p-4">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <h6 class="text-muted">Invoice</h6>
+                            <p class="mb-0 fw-semibold">{{ $item->invoice_code }}</p>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h6 class="text-muted">Pelanggan</h6>
+                            <p class="mb-0 fw-semibold">{{ $item->pelanggan->nama ?? '-' }}</p>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h6 class="text-muted">No HP</h6>
+                            <p class="mb-0">{{ $item->pelanggan->no_hp ?? '-' }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <h6 class="text-muted">Alamat</h6>
+                            <p class="mb-0">{{ $item->pelanggan->alamat ?? '-' }}</p>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h6 class="text-muted">Paket</h6>
+                            <p class="mb-0">{{ $item->paket->nama_paket ?? '-' }}</p>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h6 class="text-muted">Tanggal Instalasi</h6>
+                            <p class="mb-0">
+                                {{ \Carbon\Carbon::parse($item->jadwal_instalasi)->format('d M Y H:i') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="mb-3">
+                    <h6 class="text-muted">Status</h6>
+                    <span class="status-badge status-jadwal-instalasi">
+                        <i class="fas fa-calendar-check"></i>
+                        Jadwal Instalasi
+                    </span>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+@endforeach
+
 @endsection

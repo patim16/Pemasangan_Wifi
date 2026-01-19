@@ -13,5 +13,11 @@ class MetodePembayaran extends Model
         'deskripsi',
         'icon',
         'nomor_pembayaran',
+        'status',
     ];
+
+      public function transaksi()
+    {
+        return $this->hasMany(Transaksi::class, 'metode_pembayaran_id');
+    }
 }

@@ -359,10 +359,19 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-clock"></i></div>
                                 Riwayat Pemesanan
                             </a>
-                            <a class="nav-link" href="#">
-                                <div class="sb-nav-link-icon"><i class="fas fa-receipt"></i></div>
-                                Riwayat Transaksi
+                           <a class="nav-link" href="{{ route('pelanggan.riwayat-transaksi') }}">
+                              <div class="sb-nav-link-icon">
+                                <i class="fas fa-receipt"></i>
+                              </div>
+                                  Riwayat Transaksi
+                           </a>
+
+                             
+                             <a class="nav-link {{ request()->routeIs('pelanggan.tagihan') ? 'active' : '' }}" href="{{ route('pelanggan.tagihan') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-clock"></i></div>
+                                Tagihan
                             </a>
+
                         @endif
 
                         {{-- SUPER ADMIN MENU --}}
@@ -454,10 +463,7 @@
                                         <div class="sb-nav-link-icon"><i class="fas fa-money-bill-wave"></i></div>
                                         Verifikasi Pembayaran
                                     </a>
-                                    <a class="nav-link {{ request()->routeIs('payment.status') ? 'active' : '' }}" href="{{ route('payment.status') }}">
-                                        <div class="sb-nav-link-icon"><i class="fas fa-edit"></i></div>
-                                        Update status pembayaran
-                                    </a>
+                                  
                                     <a class="nav-link {{ request()->routeIs('payment.rekap.index') ? 'active' : '' }}" href="{{ route('payment.rekap.index') }}">
                                         <div class="sb-nav-link-icon"><i class="fas fa-chart-bar"></i></div>
                                         Rekap Transaksi
@@ -488,16 +494,22 @@
                                     </a>
                                     <a class="nav-link {{ request()->is('teknisi/jadwal-pemasangan') ? 'active' : '' }}" href="{{ route('teknisi.jadwal-pemasangan') }}">
                                         <div class="sb-nav-link-icon"><i class="fas fa-calendar-plus"></i></div>
-                                        Atur Jadwal Pemasangan
+                                     Jadwal Instalasi
                                     </a>
                                     <a class="nav-link {{ request()->is('teknisi/laporan') ? 'active' : '' }}" href="{{ url('/teknisi/laporan') }}">
                                         <div class="sb-nav-link-icon"><i class="fas fa-file-signature"></i></div>
-                                        Kirim Laporan Instalasi
                                     </a>
                                     <a class="nav-link {{ request()->is('teknisi/status') ? 'active' : '' }}" href="/teknisi/status">
                                         <div class="sb-nav-link-icon"><i class="fas fa-sync-alt"></i></div>
-                                        Update Status Pemasangan
                                     </a>
+                                    <a class="nav-link {{ request()->is('teknisi/riwayat-instalasi') ? 'active' : '' }}"
+                                       href="{{ route('teknisi.riwayat-instalasi') }}">
+                                    <div class="sb-nav-link-icon">
+                                         <i class="fas fa-history"></i>
+                                   </div>
+                                        Riwayat Instalasi
+                                      </a>
+
                                 </nav>
                             </div>
                         @endif
@@ -513,10 +525,6 @@
                                <a class="nav-link" href="{{ route('payment.list') }}">
                                   <div class="sb-nav-link-icon"><i class="fas fa-money-bill-wave"></i></div>
                                    Verifikasi Pembayaran
-                               </a>
-                               <a class="nav-link" href="{{ route('payment.status') }}">
-                                  <div class="sb-nav-link-icon"><i class="fas fa-edit"></i></div>
-                                  Update status pembayaran
                                </a>
                                 <a class="nav-link" href="{{ route('payment.rekap.index') }}">
                                   <div class="sb-nav-link-icon"><i class="fas fa-chart-bar"></i></div>
@@ -542,38 +550,29 @@
                         @if(session()->has('user') && session('user')->role == 'teknisi')
                             <div class="sb-sidenav-menu-heading">Teknisi</div>
 
-                            <a class="nav-link {{ request()->is('teknisi/jadwal-survei') ? 'active' : '' }}" href="{{ route('teknisi.jadwal-survei') }}">
+                            <a class="nav-link {{ request()->is('/jadwal-survei') ? 'active' : '' }}" href="{{ route('teknisi.jadwal-survei') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-calendar-check"></i></div>
                                 Jadwal Survei
                             </a>
 
                             <a class="nav-link {{ request()->is('teknisi/jadwal-pemasangan') ? 'active' : '' }}" href="{{ route('teknisi.jadwal-pemasangan') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-calendar-plus"></i></div>
-                                Atur Jadwal Pemasangan
+                                Jadwal instalasi
                             </a>
 
-                            <a class="nav-link {{ request()->is('teknisi/laporan') ? 'active' : '' }}" href="{{ url('/teknisi/laporan') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-file-signature"></i></div>
-                                Kirim Laporan Instalasi
-                            </a>
+                            <a class="nav-link {{ request()->is('teknisi/riwayat-instalasi') ? 'active' : '' }}"
+                               href="{{ route('teknisi.riwayat-instalasi') }}">
+                              <div class="sb-nav-link-icon">
+                                   <i class="fas fa-history"></i>
+                             </div>
+                                Riwayat Instalasi
+                               </a>
 
-                            <a class="nav-link {{ request()->is('teknisi/status') ? 'active' : '' }}" href="/teknisi/status">
-                                <div class="sb-nav-link-icon"><i class="fas fa-sync-alt"></i></div>
-                                Update Status Pemasangan
-                            </a>
                         @endif
 
                         
-                        {{-- PELANGGAN MENU --}}
-                    
-                        @if(session()->has('user') && session('user')->role == 'pelanggan')
-                            <div class="sb-sidenav-menu-heading">Pelanggan</div>
-
-                            <a class="nav-link" href="#">
-                                <div class="sb-nav-link-icon"><i class="fas fa-user-circle"></i></div>
-                                My Profile
-        </a>
-        @endif
+                      
+        
                         @if(session()->has('user') && session('user')->role == 'admin')
                             <div class="sb-sidenav-menu-heading">Admin</div>
                             <a class="nav-link {{ request()->routeIs('admin.kelolapayment') ? 'active' : '' }}" href="{{ route('admin.kelolapayment') }}">
@@ -630,47 +629,42 @@
         </div>
     </div>
 
-    {{-- SCRIPT --}}
+       {{-- SCRIPT --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"></script>
     <script src="{{ asset('js/scripts.js') }}"></script>
 
-    
+    {{-- 🔥 SCRIPT DARI HALAMAN (Chart.js, animasi, dll) --}}
+    @stack('scripts')
+
     {{-- SCRIPT TAMBAHAN UNTUK PERBAIKAN --}}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const sidebar = document.querySelector('.sb-sidenav');
             const sidebarMenu = document.querySelector('.sb-sidenav-menu');
 
-            // Perbaikan: Kembalikan posisi scroll dari sessionStorage saat halaman dimuat
             const savedScrollPosition = sessionStorage.getItem('sidebarScrollPosition');
             if (savedScrollPosition && sidebar) {
                 sidebar.scrollTop = parseInt(savedScrollPosition, 10);
-                // Hapus penyimpanan setelah dipulihkan agar tidak mempengaruhi navigasi lain
                 sessionStorage.removeItem('sidebarScrollPosition');
             }
 
-            // Perbaikan: Simpan posisi scroll saat ada link di sidebar yang diklik
             if (sidebarMenu) {
                 sidebarMenu.addEventListener('click', function(event) {
                     const targetLink = event.target.closest('a');
-                    // Pastikan yang diklik adalah link dan bukan link dropdown atau link tanpa href
                     if (targetLink && targetLink.href && !targetLink.getAttribute('data-bs-toggle')) {
                         sessionStorage.setItem('sidebarScrollPosition', sidebar.scrollTop);
                     }
                 });
             }
 
-            // Fitur tambahan: Buka dropdown jika ada menu aktif di dalamnya
             const activeNestedLink = document.querySelector('.sb-sidenav-menu-nested .nav-link.active');
             if (activeNestedLink) {
                 const collapseElement = activeNestedLink.closest('.collapse');
                 if (collapseElement) {
                     const triggerLink = document.querySelector(`[data-bs-target="#${collapseElement.id}"]`);
                     if (triggerLink) {
-                        const bsCollapse = new bootstrap.Collapse(collapseElement, {
-                            show: true
-                        });
+                        new bootstrap.Collapse(collapseElement, { show: true });
                         triggerLink.classList.remove('collapsed');
                         triggerLink.setAttribute('aria-expanded', 'true');
                     }

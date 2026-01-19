@@ -24,6 +24,7 @@
                         <th>Nama Paket</th>
                         <th>Kecepatan</th>
                         <th>Harga</th>
+                        <th>Biaya Pemasangan</th>
                         <th>Deskripsi</th>
                         <th width="140px">Aksi</th>
                     </tr>
@@ -35,7 +36,8 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $p->nama_paket }}</td>
                             <td>{{ $p->kecepatan }} Mbps</td>
-                            <td>Rp {{ number_format($p->harga) }}</td>
+                            <td>Rp {{ number_format($p->harga,0,',','.') }}</td>
+                            <td>Rp {{ number_format($p->biaya_pemasangan,0,',','.') }}</td>
                             <td>{{ $p->deskripsi }}</td>
 
                             <td>
@@ -94,9 +96,10 @@
                     </div>
 
                     <div class="mb-2">
-                        <label>Harga</label>
-                        <input type="number" name="harga" class="form-control" required>
+                       <label>Biaya Pemasangan</label>
+                       <input type="number" name="biaya_pemasangan" class="form-control" required>
                     </div>
+
 
                     <div class="mb-2">
                         <label>Deskripsi</label>
@@ -154,6 +157,12 @@
                         <input type="number" name="harga" class="form-control"
                                value="{{ $p->harga }}">
                     </div>
+                    <div class="mb-2">
+    <label>Biaya Pemasangan</label>
+    <input type="number" name="biaya_pemasangan" class="form-control"
+           value="{{ $p->biaya_pemasangan }}">
+</div>
+
 
                     <div class="mb-2">
                         <label>Deskripsi</label>

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -59,33 +60,32 @@ class AuthController extends Controller
     }
 
     // PROSES LOGIN
-    public function login(Request $request)
-    {
-        $user = User::where('email', $request->email)->first();
+   public function login(Request $request)
+{
+    $user = User::where('email', $request->email)->first();
 
-        if (!$user) {
-            return back()->with('error', 'Email tidak ditemukan');
-        }
-
-        if (!Hash::check($request->password, $user->password)) {
-            return back()->with('error', 'Password salah');
-        }
-
-        session(['user' => $user]);
-
-        switch ($user->role) {
-            case 'superadmin':
-                return redirect('/superadmin/dashboard');
-            case 'admin':
-                return redirect('/admin/dashboard');
-            case 'teknisi':
-                return redirect('/teknisi/dashboard');
-            case 'payment':
-                return redirect('/payment/dashboard');
-            default:
-                return redirect('/pelanggan/dashboard');
-        }
+    if (!$user || !Hash::check($request->password, $user->password)) {
+        return back()->with('error', 'Email atau password salah');
     }
+
+    // LOGIN RESMI LARAVEL
+    Auth::login($user);
+
+    session(['user' => $user]); // biar kompatibel dengan kode lama
+
+    switch ($user->role) {
+        case 'superadmin':
+            return redirect('/superadmin/dashboard');
+        case 'admin':
+            return redirect('/admin/dashboard');
+        case 'teknisi':
+            return redirect()->route('teknisi.dashboard');
+        case 'payment':
+            return redirect('/payment/dashboard');
+        default:
+            return redirect('/pelanggan/dashboard');
+    }
+}
 
     // LOGOUT
     public function logout()
